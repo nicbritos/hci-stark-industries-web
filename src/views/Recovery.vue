@@ -5,20 +5,20 @@
         <v-card class="elevation-12">
           <v-toolbar dark color="primary">
             <v-toolbar-title
-              ><v-icon>lock_open</v-icon> Reset Password</v-toolbar-title
+              ><v-icon>lock_open</v-icon> Recuperar contraseña</v-toolbar-title
             >
           </v-toolbar>
           <v-card-text>
             <p class="subheading mb-0">
-              An email with instructions on how to reset your password will be
-              sent to your email address.
+              Enviaremos un correo a tu dirección en el que, siguiendo los
+              pasos, podrás recuperar tu contraseña
             </p>
             <v-form @submit.prevent="submitForm" id="login">
               <v-text-field
                 v-model="email"
                 prepend-icon="alternate_email"
                 name="email"
-                label="Email address *"
+                label="Correo electrónico"
                 type="text"
                 @change="$v.email.$touch()"
                 @blur="$v.email.$touch()"
@@ -34,7 +34,7 @@
                   'text--darken-1': theme == 'light',
                   'text--lighten-2': theme == 'dark'
                 }"
-                >Log in</router-link
+                >Iniciar sesión</router-link
               ><br />
             </div>
           </v-card-text>
@@ -49,7 +49,7 @@
               v-blur
             >
               <v-icon left>outlined_flag</v-icon>
-              RESET
+              RECUPERAR
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -74,8 +74,8 @@ export default {
     emailErrors() {
       const errors = [];
       if (!this.$v.email.$dirty) return errors;
-      !this.$v.email.email && errors.push("Email address not valid");
-      !this.$v.email.required && errors.push("This is a mandatory field");
+      !this.$v.email.email && errors.push("Debe ser un correo válido");
+      !this.$v.email.required && errors.push("Este campo es obligatorio");
       return errors;
     }
   },

@@ -4,7 +4,7 @@
       <v-flex xs12 sm8 md6 lg4>
         <v-card class="elevation-12">
           <v-toolbar dark color="primary">
-            <v-toolbar-title>Sign Up</v-toolbar-title>
+            <v-toolbar-title>Registro</v-toolbar-title>
           </v-toolbar>
           <v-card-text>
             <v-form @submit.prevent="submitForm" id="register">
@@ -12,7 +12,7 @@
                 v-model="email"
                 prepend-icon="alternate_email"
                 name="email"
-                label="Email address *"
+                label="Correo electrónico"
                 type="text"
                 @change="$v.email.$touch()"
                 @blur="$v.email.$touch()"
@@ -22,7 +22,7 @@
                 v-model="displayName"
                 prepend-icon="person"
                 name="displayName"
-                label="Name *"
+                label="Nombre"
                 hint="Ej: María Rodriguez"
                 type="text"
                 maxlength="40"
@@ -37,7 +37,7 @@
                 :append-icon="show ? 'visibility' : 'visibility_off'"
                 :type="show ? 'text' : 'password'"
                 name="password"
-                label="Password *"
+                label="Contraseña"
                 id="password"
                 :hint="passwordStrength"
                 :loading="focus"
@@ -62,7 +62,7 @@
                 :append-icon="show ? 'visibility' : 'visibility_off'"
                 :type="show ? 'text' : 'password'"
                 name="passwordVerify"
-                label="Repeat password *"
+                label="Repetir contraseña"
                 @change="$v.passwordVerify.$touch()"
                 @blur="$v.passwordVerify.$touch()"
                 :error-messages="passwordVerifyErrors"
@@ -77,7 +77,7 @@
                   'text--darken-1': theme == 'light',
                   'text--lighten-2': theme == 'dark'
                 }"
-                >I already have an account</router-link
+                >Ya tengo una cuenta</router-link
               ><br />
             </div>
           </v-card-text>
@@ -92,7 +92,7 @@
               v-blur
             >
               <v-icon left>person_add</v-icon>
-              SIGN UP
+              REGISTRARME
             </v-btn>
           </v-card-actions>
           <SocialLogin />
@@ -103,7 +103,6 @@
 </template>
 
 <script>
-import database from "@/database";
 import SocialLogin from "@/components/SocialLogin";
 import {
   required,
@@ -145,12 +144,12 @@ export default {
 
       this.loading = true;
 
-      database
-        .createUserWithEmailAndPassword(this.email, this.password)
-        .then(() => {
-          this.loading = false;
-          this.$router.push("/login");
-        });
+      // database
+      //   .createUserWithEmailAndPassword(this.email, this.password)
+      //   .then(() => {
+      //     this.loading = false;
+      //     this.$router.push("/login");
+      //   });
     }
   },
   computed: {
@@ -163,10 +162,10 @@ export default {
     },
     passwordStrength() {
       return this.color == "success"
-        ? "Security level: high"
+        ? "Nivel de seguridad alto"
         : this.color == "warning"
-        ? "Security level: medium"
-        : "Password must be 6 characters long or more";
+        ? "Nivel de seguridad medio"
+        : "Debe tener 6 caracteres como mínimo";
     },
     written() {
       return this.password.length > 0;
@@ -174,35 +173,35 @@ export default {
     emailErrors() {
       const errors = [];
       if (!this.$v.email.$dirty) return errors;
-      !this.$v.email.email && errors.push("Email address not valid");
-      !this.$v.email.required && errors.push("This is a mandatory field");
+      !this.$v.email.email && errors.push("Debe ser un correo válido");
+      !this.$v.email.required && errors.push("Este campo es obligatorio");
       return errors;
     },
     displayNameErrors() {
       const errors = [];
       if (!this.$v.displayName.$dirty) return errors;
       !this.$v.displayName.minLength &&
-        errors.push("Name must be 4 characters long or more");
+        errors.push("Debe tener 4 caracteres como mínimo");
       !this.$v.displayName.maxLength &&
-        errors.push("Name should not be 40 characters long or more");
-      !this.$v.displayName.required && errors.push("This is a mandatory field");
+        errors.push("Debe tener 40 caracteres como máximo");
+      !this.$v.displayName.required && errors.push("Este campo es obligatorio");
       return errors;
     },
     passwordErrors() {
       const errors = [];
       if (!this.$v.password.$dirty) return errors;
       !this.$v.password.minLength &&
-        errors.push("Password must be 6 characters long or more");
-      !this.$v.password.required && errors.push("This is a mandatory field");
+        errors.push("Debe tener 6 caracteres como mínimo");
+      !this.$v.password.required && errors.push("Este campo es obligatorio");
       return errors;
     },
     passwordVerifyErrors() {
       const errors = [];
       if (!this.$v.passwordVerify.$dirty) return errors;
       !this.$v.passwordVerify.sameAs &&
-        errors.push("Passwords don't match");
+        errors.push("Las contraseñas deben coincidir");
       !this.$v.passwordVerify.required &&
-        errors.push("This is a mandatory field");
+        errors.push("Este campo es obligatorio");
       return errors;
     }
   }

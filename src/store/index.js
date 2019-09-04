@@ -4,6 +4,82 @@ import user from "./modules/user";
 
 Vue.use(Vuex);
 
+let deviceTypes = {
+  light: {
+    image: "@/assets/devices/lightbulb.svg"
+  },
+  ac: {
+      image: "@/assets/devices/air-conditioner.svg"
+  }
+};
+
+let rooms = [
+  {
+    id: "cuarto1",
+    name: "Comedor",
+    devices: []
+  }
+];
+
+let devices = [
+  {
+    id: "1",
+    type: "light",
+    name: "Luz",
+    color: "",
+    on: false,
+    brightness: 100,
+    room: rooms[0]
+  },
+  {
+    id: "2",
+    type: "ac",
+    name: "Aire Acondicionado",
+    swing: {
+      vertical: 0,
+      horizontal: 0
+    },
+    mode: "cool",
+    on: false,
+    room: rooms[0]
+  }
+];
+
+let routines = [
+  {
+    id: "1",
+    name: "Llegando a casa",
+    description: "Prende el AC a 24C frio del comedor",
+    devices: [devices[1]],
+    on: true
+  },
+  {
+    id: "2",
+    name: "Saliendo de casa",
+    description: "Apaga el AC y la luz del comedor",
+    devices: [devices[0], devices[1]],
+    on: false
+  }
+];
+
+let favouriteRoutines = [
+  routines[0],
+  routines[1]
+];
+
+let favouriteDevices = [
+  devices[0],
+  devices[1]
+];
+
+let regions = [
+  {
+    id: "pbaja",
+    name: "Planta baja",
+    devices: []
+  }
+];
+
 export default new Vuex.Store({
   modules: {
     user
@@ -11,36 +87,16 @@ export default new Vuex.Store({
   // App global-access state for views and components.
   state: {
     loading: true,
-    rooms: [
-      {
-        name: "Kitchen",
-        accessories: [
-          {
-            name: "Light",
-            icon: "light_bulb.jpg"
-          },
-          {
-            name: "Coffee Machine",
-            icon: "help"
-          }
-        ]
-      },
-      {
-        name: "Bedroom",
-        accessories: [
-          {
-            name: "Light",
-            icon: "help"
-          },
-          {
-            name: "TV",
-            icon: "help"
-          }
-        ]
-      }
-    ],
     windowWidth: 0,
     ratingVisibility: false,
+    devices: {
+      items: devices,
+      favourites: favouriteDevices
+    },
+    routines: {
+      items: routines,
+      favourites: favouriteRoutines
+    },
     theme: "light"
   },
   // Store mutations in order to not modify the state directly.
@@ -78,12 +134,6 @@ export default new Vuex.Store({
       localStorage.userPreferences = JSON.stringify(userPreferences);
 
       commit("SET_THEME", theme);
-    },
-    setStops({ commit }, stops) {
-      console.log(stops);
-    },
-    setDefaultTrips({ commit }, trips) {
-      console.log(trips);
     }
   },
   // Getters act as computed properties.

@@ -1,14 +1,12 @@
 import Vue from "vue";
 import Vuelidate from "vuelidate";
-import App from "./App.vue";
-import router from "./router";
-import store from "./store/index";
-import "./registerServiceWorker";
-import database from "@/database";
+import App from "@/App.vue";
+import router from "@/router/router";
+import store from "@/store";
+import "@/data/registerServiceWorker";
 import vuetify from "@/plugins/vuetify";
 
 Vue.use(Vuelidate);
-database.init();
 
 Vue.config.productionTip = false;
 

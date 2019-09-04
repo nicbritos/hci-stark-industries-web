@@ -4,7 +4,7 @@
       <v-flex xs12 sm8 md6 lg4>
         <v-card class="elevation-12">
           <v-toolbar dark color="primary">
-            <v-toolbar-title>Log In</v-toolbar-title>
+            <v-toolbar-title>Inicio de sesión</v-toolbar-title>
           </v-toolbar>
           <v-card-text>
             <v-form @submit.prevent="submitForm" id="login">
@@ -12,7 +12,7 @@
                 v-model="email"
                 prepend-icon="alternate_email"
                 name="email"
-                label="Email address *"
+                label="Correo electrónico"
                 type="text"
                 @change="$v.email.$touch()"
                 @blur="$v.email.$touch()"
@@ -25,7 +25,7 @@
                 :append-icon="show ? 'visibility' : 'visibility_off'"
                 :type="show ? 'text' : 'password'"
                 name="password"
-                label="Password *"
+                label="Contraseña"
                 id="password"
                 @change="$v.password.$touch()"
                 @blur="$v.password.$touch()"
@@ -42,7 +42,7 @@
                   'text--darken-1': theme == 'light',
                   'text--lighten-2': theme == 'dark'
                 }"
-                >Reset password</router-link
+                >Olvidé mi contraseña</router-link
               ><br />
               <router-link
                 to="/register"
@@ -52,7 +52,7 @@
                   'text--darken-1': theme == 'light',
                   'text--lighten-2': theme == 'dark'
                 }"
-                >Create an account</router-link
+                >No tengo una cuenta</router-link
               >
             </div>
           </v-card-text>
@@ -67,7 +67,7 @@
               v-blur
             >
               <v-icon left>exit_to_app</v-icon>
-              LOG IN
+              CONECTARME
             </v-btn>
           </v-card-actions>
           <SocialLogin />
@@ -78,7 +78,6 @@
 </template>
 
 <script>
-import database from "@/database";
 import SocialLogin from "@/components/SocialLogin";
 import { required, email, minLength } from "vuelidate/lib/validators";
 import { mapGetters } from "vuex";
@@ -102,13 +101,13 @@ export default {
     emailErrors() {
       const errors = [];
       if (!this.$v.email.$dirty) return errors;
-      !this.$v.email.required && errors.push("This is a mandatory field");
+      !this.$v.email.required && errors.push("Este campo es obligatorio");
       return errors;
     },
     passwordErrors() {
       const errors = [];
       if (!this.$v.password.$dirty) return errors;
-      !this.$v.password.required && errors.push("This is a mandatory field");
+      !this.$v.password.required && errors.push("Este campo es obligatorio");
       return errors;
     }
   },
@@ -119,16 +118,16 @@ export default {
 
       this.loading = true;
 
-      database
-        .signInWithEmailAndPassword(this.email, this.password)
-        .then(() => {
-          this.loading = false;
-          this.$router.push("/");
-        })
-        .catch(err => {
-          this.loading = false;
-          console.log(err);
-        });
+      // database
+      //   .signInWithEmailAndPassword(this.email, this.password)
+      //   .then(() => {
+      //     this.loading = false;
+      //     this.$router.push("/");
+      //   })
+      //   .catch(err => {
+      //     this.loading = false;
+      //     console.log(err);
+      //   });
     }
   }
 };

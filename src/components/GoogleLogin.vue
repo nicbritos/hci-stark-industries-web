@@ -8,20 +8,18 @@
     <div class="google-btn__container">
       <v-btn class="google-btn" @click="googleLogin" v-blur
         ><img class="google-logo" src="@/assets/google-logo.svg" alt="" />
-        CONNECT WITH GOOGLE</v-btn
+        CONECTARME CON GOOGLE</v-btn
       >
     </div>
   </div>
 </template>
 
 <script>
-import database from "@/database";
-
 export default {
   methods: {
-    googleLogin() {
-      database.prepareGoogleSignIn();
-    }
+    // googleLogin() {
+    //   database.prepareGoogleSignIn();
+    // }
   }
 };
 </script>

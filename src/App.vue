@@ -1,11 +1,10 @@
 <template>
-  <v-app :dark="theme == 'dark' ? true : false">
+  <v-app>
     <Loader :loading="loading" />
-    <Rating @rate="rate" :visible="ratingVisibility" />
     <v-navigation-drawer
       :expand-on-hover="expandOnHover"
       value="true"
-      permanent="true"
+      permanent
       fixed
       app
       touchless
@@ -16,14 +15,60 @@
           Icon
         </v-list-item>
       </v-list>
+
       <v-list>
+        <v-list-item router :to="this.homeItem.to" exact ripple>
+          <v-list-item-action>
+            <v-icon v-html="this.homeItem.icon" />
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title v-text="this.homeItem.title" />
+          </v-list-item-content>
+          <v-spacer />
+        </v-list-item>
+
+        <v-list-group
+                v-for="(item, i) in expandableItems"
+                :key="1 + i + items.length + item.items.length"
+                ripple
+                :prepend-icon="item.icon"
+                dense
+                v-model="item.expanded"
+        >
+          <template v-slot:activator>
+            <v-list-item-content>
+              <v-list-item-title v-text="item.title" />
+            </v-list-item-content>
+          </template>
+
+          <v-divider v-if="item.expanded && item.items.length > 0"></v-divider>
+          <v-list-item
+                  v-for="(expandableItem, j) in item.items"
+                  :key="(1 + i) * j + items.length"
+                  router
+                  :to="expandableItem.to"
+                  exact
+                  ripple
+          >
+            <v-list-item-action>
+              <v-icon v-html="expandableItem.icon" />
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title v-text="expandableItem.title" />
+            </v-list-item-content>
+            <v-spacer />
+          </v-list-item>
+
+          <v-divider v-if="item.expanded && item.items.length > 0"></v-divider>
+        </v-list-group>
+
         <v-list-item
-          v-for="(item, i) in items"
-          :key="i"
-          router
-          :to="item.to"
-          exact
-          ripple
+                v-for="(item, i) in items"
+                :key="i"
+                router
+                :to="item.to"
+                exact
+                ripple
         >
           <v-list-item-action>
             <v-icon v-html="item.icon" />
@@ -32,44 +77,33 @@
             <v-list-item-title v-text="item.title" />
           </v-list-item-content>
           <v-spacer />
-          <v-chip
-            disabled
-            color="warning"
-            class="x-small white--text"
-            v-if="item.chip"
-            >{{ item.chip }}</v-chip
-          >
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
 
     <v-app-bar elevate-on-scroll app dark class="grey darken-3" dense>
-      <v-spacer />
-      <v-tooltip bottom>
-        <template v-slot:activator="{ on }">
-          <v-btn
-            icon
-            @click="
-              theme == 'light'
-                ? $store.dispatch('setTheme', 'dark')
-                : $store.dispatch('setTheme', 'light')
-            "
-            v-blur
-            v-on="on"
-          >
-            <v-icon>{{
-              theme == "light" ? "brightness_3" : "brightness_5"
-            }}</v-icon>
-          </v-btn>
-        </template>
-        <span>{{
-          theme == "light" ? "Apply dark theme" : "Apply light theme"
-        }}</span>
-      </v-tooltip>
+      <v-app-bar-nav-icon
+        v-blur
+        v-if="!this.noBackButtonRoutes.includes(this.$router.currentRoute.name)"
+        @click="this.upOneLevel"
+      >
+        <v-icon>arrow_back</v-icon>
+      </v-app-bar-nav-icon>
+      <img id="logo" src="@/assets/logo.png" alt="logo castelar bus" />
 
-      <v-btn to="/login" light class="nav-btn" v-if="!loggedIn" v-blur>
+      <v-text-field
+        hide-details
+        prepend-icon="search"
+        single-line
+        class="ml-3"
+        placeholder="Start typing to Search"
+        v-model="search"
+        clearable
+      ></v-text-field>
+
+      <v-btn to="/login" light class="nav-btn ml-4" v-if="!loggedIn" v-blur>
         <v-icon left>exit_to_app</v-icon>
-        LOG IN
+        CONECTARME
       </v-btn>
       <v-btn
         to="/register"
@@ -77,7 +111,7 @@
         color="primary"
         v-if="!loggedIn"
         v-blur
-        ><v-icon left>person_add</v-icon> SIGN UP</v-btn
+        ><v-icon left>person_add</v-icon> REGISTRARME</v-btn
       >
       <v-menu absolute v-if="loggedIn">
         <template v-slot:activator="{ on }">
@@ -111,7 +145,6 @@
 </template>
 
 <script>
-import database from "@/database";
 import Loader from "@/components/Loader";
 import Rating from "@/components/Rating";
 import { mapGetters } from "vuex";
@@ -124,15 +157,31 @@ export default {
   },
   data: () => ({
     fixed: false,
+    noBackButtonRoutes: ["regions", "home", "login", "register", "about"],
+    homeItem: { icon: "home", title: "Home", to: "/" },
+    routinesItem:
+            { icon: "update", title: "Routines", to: "/routines" },
     items: [
-      { icon: "bookmarks", title: "Bookmarks", to: "/" },
-      { icon: "amp_stories", title: "Rooms", to: "/rooms" },
-      { icon: "autorenew", title: "Routines", to: "/routines" },
-      { icon: "apps", title: "Accessories", to: "/accessories" },
-      { icon: "exit_to_app", title: "Log In", to: "/login" },
-      { icon: "person_add", title: "Sign Up", to: "/register" }
+      { icon: "group", title: "Users", to: "/users" },
+      { icon: "exit_to_app", title: "Ingresar", to: "/login" },
+      { icon: "person_add", title: "Registrarme", to: "/register" },
+      { icon: "help", title: "About", to: "/about" }
     ],
-    title: "KIRI Surveys",
+    expandableItems: [
+      { icon: "layers", title: "Regions", expanded: false, items: [
+          { icon: "apps", title: "All Regions", to: "/regions" },
+          { icon: "view_day", title: "First Floor", to: "/regions/firstFloor" },
+          { icon: "view_day", title: "Second Floor", to: "/regions/secondFloor" },
+          { icon: "add", title: "New Region", to: "/regions/new" }
+        ]},
+      { icon: "devices", title: "Devices", expanded: false, items: [
+          { icon: "apps", title: "All Devices", to: "/regions" },
+          { title: "Lights", to: "/regions/firstFloor" },
+          { title: "AC", to: "/regions/secondFloor" },
+          { icon: "add", title: "New Device", to: "/regions/new" }
+        ]},
+    ],
+    title: "Stark Industries",
     rating: {}
   }),
   computed: {
@@ -167,18 +216,18 @@ export default {
     this.$store.dispatch("setWindowWidth");
     this.$store.state.loading = false;
 
-    database.onAuthStateChanged(async user => {
-      if (user) {
-        localStorage.loggedIn = true;
-        const userData = await database.getUserInformation();
-        this.$store.dispatch("setUserData", userData);
-        this.$store.state.loading = false;
-      } else {
-        localStorage.loggedIn = false;
-        this.$store.dispatch("resetUserData");
-        this.$store.state.loading = false;
-      }
-    });
+    // database.onAuthStateChanged(async user => {
+    //   if (user) {
+    //     localStorage.loggedIn = true;
+    //     const userData = await database.getUserInformation();
+    //     this.$store.dispatch("setUserData", userData);
+    //     this.$store.state.loading = false;
+    //   } else {
+    //     localStorage.loggedIn = false;
+    //     this.$store.dispatch("resetUserData");
+    //     this.$store.state.loading = false;
+    //   }
+    // });
 
     // database
     //   .getStops()
@@ -200,16 +249,27 @@ export default {
   },
   methods: {
     logOut() {
-      database.signOut().then(() => {
-        this.$router.push("/");
-        location.reload();
-      });
+      // database.signOut().then(() => {
+      //   this.$router.push("/");
+      //   location.reload();
+      // });
     },
     showLoader() {
       this.$store.state.loading = true;
     },
     rate(payload) {
       this.rating = payload;
+    },
+    upOneLevel() {
+      let path = this.$router.currentRoute.path.substring(
+        0,
+        this.$router.currentRoute.path.lastIndexOf(
+          "/",
+          this.$router.currentRoute.path.length - 2
+        )
+      );
+      if (path.length > 0) this.$router.push(path);
+      else this.$router.push("/");
     }
   }
 };

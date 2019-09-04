@@ -4,7 +4,7 @@
       <div
         :class="{ line: true, dark: theme == 'dark', light: theme == 'light' }"
       ></div>
-      <span>or</span>
+      <span>o</span>
       <div
         :class="{ line: true, dark: theme == 'dark', light: theme == 'light' }"
       ></div>
@@ -15,14 +15,13 @@
         @click="googleLogin"
         v-blur
         ><img class="google-logo" src="@/assets/google-logo.svg" alt="" />
-        CONNECT WITH GOOGLE</v-btn
+        CONECTARME CON GOOGLE</v-btn
       >
     </div>
   </div>
 </template>
 
 <script>
-import database from "@/database";
 import { mapGetters } from "vuex";
 
 export default {
@@ -31,10 +30,10 @@ export default {
   },
   methods: {
     googleLogin() {
-      database.prepareGoogleSignIn().then(() => {
-        this.$store.state.loading = true;
-        this.$router.push("/");
-      });
+      // database.prepareGoogleSignIn().then(() => {
+      //   this.$store.state.loading = true;
+      //   this.$router.push("/");
+      // });
     }
   }
 };
