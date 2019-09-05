@@ -17,7 +17,9 @@ export default new Vuetify({
         accent: colors.indigo.base, // #3F51B5
         blue: colors.blue.darken1,
         lightblue: colors.blue.lighten4,
-        grey4: colors.grey.darken4
+        grey4: colors.grey.darken4,
+        "inner-drawer": "#272727",
+        "normal-drawer": "#393939"
       }
     }
   }

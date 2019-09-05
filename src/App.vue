@@ -9,10 +9,12 @@
       app
       touchless
       dark
+      stateless
+      width="300"
     >
       <v-list class="list-title">
         <v-list-item>
-          Icon
+          Stark
         </v-list-item>
       </v-list>
 
@@ -28,12 +30,12 @@
         </v-list-item>
 
         <v-list-group
-                v-for="(item, i) in expandableItems"
-                :key="1 + i + items.length + item.items.length"
-                ripple
-                :prepend-icon="item.icon"
-                dense
-                v-model="item.expanded"
+          v-for="(item, i) in expandableItems"
+          :key="1 + i + items.length + item.items.length"
+          ripple
+          :prepend-icon="item.icon"
+          dense
+          v-model="item.expanded"
         >
           <template v-slot:activator>
             <v-list-item-content>
@@ -43,12 +45,13 @@
 
           <v-divider v-if="item.expanded && item.items.length > 0"></v-divider>
           <v-list-item
-                  v-for="(expandableItem, j) in item.items"
-                  :key="(1 + i) * j + items.length"
-                  router
-                  :to="expandableItem.to"
-                  exact
-                  ripple
+            v-for="(expandableItem, j) in item.items"
+            :key="(1 + i) * j + items.length"
+            router
+            :to="expandableItem.to"
+            exact
+            ripple
+            class="inner-drawer"
           >
             <v-list-item-action>
               <v-icon v-html="expandableItem.icon" />
@@ -63,12 +66,12 @@
         </v-list-group>
 
         <v-list-item
-                v-for="(item, i) in items"
-                :key="i"
-                router
-                :to="item.to"
-                exact
-                ripple
+          v-for="(item, i) in items"
+          :key="i"
+          router
+          :to="item.to"
+          exact
+          ripple
         >
           <v-list-item-action>
             <v-icon v-html="item.icon" />
@@ -89,7 +92,7 @@
       >
         <v-icon>arrow_back</v-icon>
       </v-app-bar-nav-icon>
-      <img id="logo" src="@/assets/logo.png" alt="logo castelar bus" />
+      <!--      <img id="logo" src="@/assets/logo.png" alt="logo castelar bus" />-->
 
       <v-text-field
         hide-details
@@ -101,25 +104,19 @@
         clearable
       ></v-text-field>
 
-      <v-btn to="/login" light class="nav-btn ml-4" v-if="!loggedIn" v-blur>
+      <v-btn to="/login" light class="nav-btn ml-4" v-if="false" v-blur>
         <v-icon left>exit_to_app</v-icon>
         CONECTARME
       </v-btn>
-      <v-btn
-        to="/register"
-        class="nav-btn"
-        color="primary"
-        v-if="!loggedIn"
-        v-blur
+      <v-btn to="/register" class="nav-btn" color="primary" v-if="false" v-blur
         ><v-icon left>person_add</v-icon> REGISTRARME</v-btn
       >
-      <v-menu absolute v-if="loggedIn">
+      <v-menu absolute v-if="true">
         <template v-slot:activator="{ on }">
           <v-btn id="profile-btn" :icon="mobile" text v-on="on" v-blur>
-            <v-icon large :left="!mobile">
+            <v-icon large>
               account_circle
             </v-icon>
-            <span v-if="!mobile">{{ displayName }} {{ stringID }}</span>
           </v-btn>
         </template>
 
@@ -159,8 +156,7 @@ export default {
     fixed: false,
     noBackButtonRoutes: ["regions", "home", "login", "register", "about"],
     homeItem: { icon: "home", title: "Home", to: "/" },
-    routinesItem:
-            { icon: "update", title: "Routines", to: "/routines" },
+    routinesItem: { icon: "update", title: "Routines", to: "/routines" },
     items: [
       { icon: "group", title: "Users", to: "/users" },
       { icon: "exit_to_app", title: "Ingresar", to: "/login" },
@@ -168,18 +164,32 @@ export default {
       { icon: "help", title: "About", to: "/about" }
     ],
     expandableItems: [
-      { icon: "layers", title: "Regions", expanded: false, items: [
+      {
+        icon: "layers",
+        title: "Regions",
+        expanded: false,
+        items: [
           { icon: "apps", title: "All Regions", to: "/regions" },
           { icon: "view_day", title: "First Floor", to: "/regions/firstFloor" },
-          { icon: "view_day", title: "Second Floor", to: "/regions/secondFloor" },
+          {
+            icon: "view_day",
+            title: "Second Floor",
+            to: "/regions/secondFloor"
+          },
           { icon: "add", title: "New Region", to: "/regions/new" }
-        ]},
-      { icon: "devices", title: "Devices", expanded: false, items: [
+        ]
+      },
+      {
+        icon: "devices",
+        title: "Devices",
+        expanded: false,
+        items: [
           { icon: "apps", title: "All Devices", to: "/regions" },
           { title: "Lights", to: "/regions/firstFloor" },
           { title: "AC", to: "/regions/secondFloor" },
           { icon: "add", title: "New Device", to: "/regions/new" }
-        ]},
+        ]
+      }
     ],
     title: "Stark Industries",
     rating: {}
@@ -256,9 +266,6 @@ export default {
     },
     showLoader() {
       this.$store.state.loading = true;
-    },
-    rate(payload) {
-      this.rating = payload;
     },
     upOneLevel() {
       let path = this.$router.currentRoute.path.substring(

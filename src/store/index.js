@@ -6,44 +6,72 @@ Vue.use(Vuex);
 
 let deviceTypes = {
   light: {
-    image: "@/assets/devices/lightbulb.svg"
+    image: "/img/devices/lightbulb.svg"
   },
   ac: {
-      image: "@/assets/devices/air-conditioner.svg"
+    image: "/img/devices/air-conditioner.svg"
   }
 };
 
-let rooms = [
-  {
-    id: "cuarto1",
-    name: "Comedor",
-    devices: []
-  }
-];
+let regions = [],
+  rooms = [],
+  devices = [];
 
-let devices = [
-  {
-    id: "1",
-    type: "light",
-    name: "Luz",
-    color: "",
-    on: false,
-    brightness: 100,
-    room: rooms[0]
+let plantaBaja = {
+  id: "pbaja",
+  name: "First Floor",
+  rooms: []
+};
+
+let primerPiso = {
+  id: "primerpiso",
+  name: "Second Floor",
+  rooms: []
+};
+regions.push(plantaBaja);
+regions.push(primerPiso);
+
+let comedor = {
+  id: "cuarto1",
+  name: "Comedor",
+  devices: []
+};
+rooms.push(comedor);
+plantaBaja.rooms.push(comedor);
+
+let dormitorio = {
+  id: "dormitorio1",
+  name: "Dormitorio",
+  devices: []
+};
+rooms.push(comedor);
+primerPiso.rooms.push(dormitorio);
+
+let luzComedor = {
+  id: "1",
+  type: deviceTypes.light,
+  name: "Luz",
+  color: "",
+  on: false,
+  brightness: 100,
+  room: comedor
+};
+let ac = {
+  id: "2",
+  type: deviceTypes.ac,
+  name: "AC",
+  swing: {
+    vertical: 0,
+    horizontal: 0
   },
-  {
-    id: "2",
-    type: "ac",
-    name: "Aire Acondicionado",
-    swing: {
-      vertical: 0,
-      horizontal: 0
-    },
-    mode: "cool",
-    on: false,
-    room: rooms[0]
-  }
-];
+  mode: "cool",
+  on: false,
+  room: comedor
+};
+devices.push(ac);
+devices.push(luzComedor);
+comedor.devices.push(ac);
+comedor.devices.push(luzComedor);
 
 let routines = [
   {
@@ -62,23 +90,9 @@ let routines = [
   }
 ];
 
-let favouriteRoutines = [
-  routines[0],
-  routines[1]
-];
+let favouriteRoutines = [routines[0], routines[1]];
 
-let favouriteDevices = [
-  devices[0],
-  devices[1]
-];
-
-let regions = [
-  {
-    id: "pbaja",
-    name: "Planta baja",
-    devices: []
-  }
-];
+let favouriteDevices = [devices[0], devices[1]];
 
 export default new Vuex.Store({
   modules: {
@@ -97,6 +111,8 @@ export default new Vuex.Store({
       items: routines,
       favourites: favouriteRoutines
     },
+    rooms: rooms,
+    regions: regions,
     theme: "light"
   },
   // Store mutations in order to not modify the state directly.
