@@ -19,12 +19,19 @@
       </v-list>
 
       <v-list>
-        <v-list-item router :to="this.homeItem.to" exact ripple>
+        <v-list-item
+          v-for="(item, i) in items"
+          :key="i"
+          router
+          :to="item.to"
+          exact
+          ripple
+        >
           <v-list-item-action>
-            <v-icon v-html="this.homeItem.icon" />
+            <v-icon v-html="item.icon" />
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title v-text="this.homeItem.title" />
+            <v-list-item-title v-text="item.title" />
           </v-list-item-content>
           <v-spacer />
         </v-list-item>
@@ -54,7 +61,16 @@
             class="inner-drawer"
           >
             <v-list-item-action>
-              <v-icon v-html="expandableItem.icon" />
+              <v-icon
+                v-html="expandableItem.icon"
+                v-if="expandableItem.icon !== undefined"
+              />
+              <v-icon>
+                <v-img
+                  :src="expandableItem.image"
+                  v-if="expandableItem.image !== undefined"
+                ></v-img>
+              </v-icon>
             </v-list-item-action>
             <v-list-item-content>
               <v-list-item-title v-text="expandableItem.title" />
@@ -66,7 +82,7 @@
         </v-list-group>
 
         <v-list-item
-          v-for="(item, i) in items"
+          v-for="(item, i) in items2"
           :key="i"
           router
           :to="item.to"
@@ -134,8 +150,6 @@
     </v-app-bar>
 
     <v-content>
-      {{ rating.rate }}
-      {{ rating.comment }}
       <router-view />
     </v-content>
   </v-app>
@@ -143,56 +157,49 @@
 
 <script>
 import Loader from "@/components/Loader";
-import Rating from "@/components/Rating";
 import { mapGetters } from "vuex";
 
 export default {
   name: "App",
   components: {
-    Loader,
-    Rating
+    Loader
   },
   data: () => ({
     fixed: false,
     noBackButtonRoutes: ["regions", "home", "login", "register", "about"],
-    homeItem: { icon: "home", title: "Home", to: "/" },
-    routinesItem: { icon: "update", title: "Routines", to: "/routines" },
     items: [
-      { icon: "group", title: "Users", to: "/users" },
-      { icon: "exit_to_app", title: "Ingresar", to: "/login" },
-      { icon: "person_add", title: "Registrarme", to: "/register" },
-      { icon: "help", title: "About", to: "/about" }
-    ],
-    expandableItems: [
+      { icon: "home", title: "Home", to: "/" },
       {
         icon: "layers",
         title: "Regions",
-        expanded: false,
-        items: [
-          { icon: "apps", title: "All Regions", to: "/regions" },
-          { icon: "view_day", title: "First Floor", to: "/regions/firstFloor" },
-          {
-            icon: "view_day",
-            title: "Second Floor",
-            to: "/regions/secondFloor"
-          },
-          { icon: "add", title: "New Region", to: "/regions/new" }
-        ]
+        to: "/regions"
       },
+      { icon: "update", title: "Routines", to: "/routines" }
+    ],
+    items2: [
+      { icon: "group", title: "Users", to: "/users" },
+      // { icon: "exit_to_app", title: "Ingresar", to: "/login" },
+      // { icon: "person_add", title: "Registrarme", to: "/register" },
+      { icon: "help", title: "About", to: "/about" }
+    ],
+    expandableItems: [
       {
         icon: "devices",
         title: "Devices",
         expanded: false,
         items: [
           { icon: "apps", title: "All Devices", to: "/regions" },
-          { title: "Lights", to: "/regions/firstFloor" },
+          {
+            icon: "this.$vuetify.icons.lightbulb",
+            title: "Lights",
+            to: "/regions/firstFloor"
+          },
           { title: "AC", to: "/regions/secondFloor" },
           { icon: "add", title: "New Device", to: "/regions/new" }
         ]
       }
     ],
-    title: "Stark Industries",
-    rating: {}
+    title: "Stark Industries"
   }),
   computed: {
     ...mapGetters([

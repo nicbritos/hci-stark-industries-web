@@ -47,12 +47,23 @@ let dormitorio = {
 rooms.push(comedor);
 primerPiso.rooms.push(dormitorio);
 
-let luzComedor = {
+let luz1Comedor = {
   id: "1",
   type: deviceTypes.light,
-  name: "Luz",
+  name: "Luz 1",
   color: "",
   on: false,
+  favourited: true,
+  brightness: 100,
+  room: comedor
+};
+let luz2Comedor = {
+  id: "3",
+  type: deviceTypes.light,
+  name: "Luz 2",
+  color: "",
+  on: false,
+  favourited: false,
   brightness: 100,
   room: comedor
 };
@@ -65,13 +76,16 @@ let ac = {
     horizontal: 0
   },
   mode: "cool",
+  favourited: true,
   on: false,
   room: comedor
 };
 devices.push(ac);
-devices.push(luzComedor);
+devices.push(luz1Comedor);
+devices.push(luz2Comedor);
 comedor.devices.push(ac);
-comedor.devices.push(luzComedor);
+comedor.devices.push(luz1Comedor);
+comedor.devices.push(luz2Comedor);
 
 let routines = [
   {

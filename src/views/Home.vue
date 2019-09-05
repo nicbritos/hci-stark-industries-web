@@ -24,7 +24,7 @@
             </h2>
           </v-toolbar-title>
         </v-toolbar>
-        <DeviceContainer :items="devices"></DeviceContainer>
+        <DeviceContainer :room="true" :items="devices"></DeviceContainer>
       </v-col>
     </v-row> </v-container
 ></template>

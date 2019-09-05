@@ -1,5 +1,5 @@
 <template>
-  <v-breadcrumbs class="pl-4 pb-0" large :items="items">
+  <v-breadcrumbs class="pb-0" large :items="items">
     <template v-slot:divider>
       <v-icon>chevron_right</v-icon>
     </template>
@@ -8,6 +8,7 @@
             slot="item"
             slot-scope="{ item }"
             exact
+            :disabled="item.disabled === true"
             :to="item.to">
       {{ item.text }}
     </v-breadcrumbs-item>

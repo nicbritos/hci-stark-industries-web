@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-row justify="start">
       <v-col cols="auto" v-for="item in items" :key="item.id">
-        <Device :device="item"></Device>
+        <Device :room="room" :device="item"></Device>
       </v-col>
     </v-row>
   </v-container>
@@ -17,6 +17,10 @@ export default {
     items: {
       type: Array,
       required: true
+    },
+    room: {
+      type: Boolean,
+      required: false
     }
   }
 };

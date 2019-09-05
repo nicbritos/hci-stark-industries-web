@@ -1,8 +1,8 @@
 <template>
   <v-expansion-panel>
     <v-expansion-panel-header v-slot="{ open }">
-      <v-row no-gutters>
-        <v-col cols="4">
+      <v-row>
+        <v-col cols="6">
           <v-fade-transition leave-absolute>
             <h3 v-if="!open" key="0" class="text-no-bold">
               {{ region.name }}
@@ -14,7 +14,7 @@
           </v-fade-transition>
         </v-col>
 
-        <v-col cols="8" class="text--secondary">
+        <v-col cols="auto" class="text--secondary">
           <v-fade-transition leave-absolute>
             <span v-if="!open">
               {{ roomQuantityString }}
@@ -24,9 +24,22 @@
       </v-row>
     </v-expansion-panel-header>
     <v-expansion-panel-content>
-        <v-divider></v-divider>
-      <RoomContainer :items="region.rooms"></RoomContainer>
+      <v-row>
+        <v-spacer></v-spacer>
+        <v-btn color="error" class="mb-2 mr-4" dark v-on="on" v-blur
+          >DELETE REGION</v-btn
+        >
+      </v-row>
+      <v-divider></v-divider>
 
+      <v-row>
+        <v-spacer></v-spacer>
+        <v-btn color="primary" class="ma-2 mr-4" dark v-on="on" v-blur
+          >NEW ROOM</v-btn
+        >
+      </v-row>
+
+      <RoomContainer :items="region.rooms"></RoomContainer>
     </v-expansion-panel-content>
   </v-expansion-panel>
 </template>

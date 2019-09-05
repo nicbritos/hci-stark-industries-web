@@ -2,6 +2,7 @@ import Home from "@/views/Home.vue";
 import Users from "@/views/Users.vue";
 import Login from "@/views/Login.vue";
 import About from "@/views/About.vue";
+import Rooms from "@/views/Rooms.vue";
 import Regions from "@/views/Regions.vue";
 import Register from "@/views/Register.vue";
 import Recovery from "@/views/Recovery.vue";
@@ -24,6 +25,14 @@ const routes = {
         requiresAuth: false
       },
       component: Regions
+    },
+    rooms: {
+      path: "/regions/:rid",
+      name: "rooms",
+      meta: {
+        requiresAuth: false
+      },
+      component: Rooms
     },
     users: {
       path: "/users",

@@ -2,12 +2,18 @@ import Vue from "vue";
 import Vuetify from "vuetify/lib";
 import colors from "vuetify/lib/util/colors";
 import "vuetify/src/styles/main.sass";
+import Lightbulb from "@/components/icons/Lightbulb";
 
 Vue.use(Vuetify);
 
 export default new Vuetify({
   icons: {
-    iconfont: "md"
+    iconfont: "md",
+    values: {
+      lightbulb: {
+        component: Lightbulb
+      }
+    }
   },
   theme: {
     themes: {

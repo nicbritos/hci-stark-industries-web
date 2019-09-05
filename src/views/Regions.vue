@@ -36,9 +36,6 @@ export default {
     return {
       regions: this.$store.state.regions
     };
-  },
-  mounted() {
-    console.log("ASD")
   }
 };
 </script>
