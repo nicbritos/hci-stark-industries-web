@@ -1,13 +1,16 @@
 <template>
   <v-container grid-list-md fluid>
     <v-toolbar class="ml-n6" flat color="transparent">
-      <Breadcrumbs :items="[{ to: '/', text: 'First Floor' }, { to: '/', text: 'Comedor', disabled: true  }]"></Breadcrumbs>
-
+      <Breadcrumbs
+        :items="[
+          { to: '/', text: 'First Floor' },
+          { to: '/', text: 'Comedor', disabled: true }
+        ]"
+      ></Breadcrumbs>
       <v-spacer></v-spacer>
 
-      <v-btn color="primary" dark class="ml-3 mt-4" v-on="on" v-blur
-      >NEW DEVICE</v-btn
-      >
+      <v-btn class="mt-4 mr-4" text outlined color="primary" v-on="on" v-blur>EDIT</v-btn>
+      <v-btn class="mt-4 mr-n6" text outlined color="error" v-on="on" v-blur>DELETE</v-btn>
     </v-toolbar>
 
     <v-row>
@@ -21,7 +24,6 @@
         </v-toolbar>
         <DeviceContainer :items="favouriteDevices"></DeviceContainer>
         <v-divider></v-divider>
-
       </v-col>
     </v-row>
 
@@ -33,6 +35,9 @@
               All Devices
             </h2>
           </v-toolbar-title>
+          <v-spacer></v-spacer>
+
+          <v-btn outlined text color="primary" v-on="on" v-blur>NEW DEVICE</v-btn>
         </v-toolbar>
         <DeviceContainer :items="devices"></DeviceContainer>
       </v-col>

@@ -22,9 +22,9 @@
         </v-icon>
       </v-btn>
       <v-spacer></v-spacer>
-      <v-btn icon v-blur text color="primary">
-        <v-icon v-if="device.favourited" key="0">favorite</v-icon>
-        <v-icon v-else key="1">favorite_outline</v-icon>
+      <v-btn large icon v-blur text color="primary">
+        <v-icon large v-if="device.favourited" key="0">favorite</v-icon>
+        <v-icon large v-else key="1">favorite_outline</v-icon>
       </v-btn>
       <v-switch class="mt-5 ml-4" v-model="device.on" v-blur color="primary">
       </v-switch>

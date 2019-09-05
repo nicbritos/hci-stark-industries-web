@@ -13,11 +13,17 @@
       </div>
     </v-card-text>
     <v-card-actions class="mt-n4">
-      <v-spacer></v-spacer>
-      <v-btn icon v-blur text color="primary">
-        <v-icon>favorite</v-icon>
+      <v-btn icon v-blur text>
+        <v-icon>
+          more_horiz
+        </v-icon>
       </v-btn>
-      <v-btn icon v-blur>
+      <v-spacer></v-spacer>
+      <v-btn large icon v-blur text color="primary">
+        <v-icon large v-if="routine.favourited" key="0">favorite</v-icon>
+        <v-icon large v-else key="1">favorite_outline</v-icon>
+      </v-btn>
+      <v-btn large icon v-blur>
         <v-icon large color="primary">play_circle_outline</v-icon>
       </v-btn>
     </v-card-actions>

@@ -2,9 +2,10 @@ import Home from "@/views/Home.vue";
 import Users from "@/views/Users.vue";
 import Login from "@/views/Login.vue";
 import About from "@/views/About.vue";
-import Rooms from "@/views/Rooms.vue";
+import Rooms from "@/views/Room.vue";
 import Regions from "@/views/Regions.vue";
 import Register from "@/views/Register.vue";
+import Routines from "@/views/Routines.vue";
 import Recovery from "@/views/Recovery.vue";
 import PageNotFound from "@/views/PageNotFound.vue";
 
@@ -33,6 +34,14 @@ const routes = {
         requiresAuth: false
       },
       component: Rooms
+    },
+    routines: {
+      path: "/routines",
+      name: "routines",
+      meta: {
+        requiresAuth: false
+      },
+      component: Routines
     },
     users: {
       path: "/users",

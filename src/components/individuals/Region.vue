@@ -26,15 +26,25 @@
     <v-expansion-panel-content>
       <v-row>
         <v-spacer></v-spacer>
-        <v-btn color="error" class="mb-2 mr-4" dark v-on="on" v-blur
-          >DELETE REGION</v-btn
+        <v-btn color="primary" outlined text class="mb-2 mr-4" v-on="on" v-blur
+        >EDIT</v-btn
+        >
+        <v-btn text outlined color="error" class="mb-2 mr-4" v-on="on" v-blur
+        >DELETE</v-btn
         >
       </v-row>
       <v-divider></v-divider>
 
       <v-row>
+        <v-toolbar flat color="transparent">
+        <v-toolbar-title>
+          <h4 class="text-no-bold">
+            Rooms
+          </h4>
+        </v-toolbar-title>
+      </v-toolbar>
         <v-spacer></v-spacer>
-        <v-btn color="primary" class="ma-2 mr-4" dark v-on="on" v-blur
+        <v-btn text color="primary" class="ma-2 mr-4" outlined v-on="on" v-blur
           >NEW ROOM</v-btn
         >
       </v-row>

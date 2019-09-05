@@ -93,14 +93,24 @@ let routines = [
     name: "Llegando a casa",
     description: "Prende el AC a 24C frio del comedor",
     devices: [devices[1]],
-    on: true
+    on: true,
+    favourited: true
   },
   {
     id: "2",
     name: "Saliendo de casa",
-    description: "Apaga el AC y la luz del comedor",
-    devices: [devices[0], devices[1]],
-    on: false
+    description: "Apaga el AC y las luces del comedor",
+    devices: [devices[0], devices[1], devices[2]],
+    on: false,
+    favourited: true
+  },
+  {
+    id: "3",
+    name: "House Party",
+    description: "Prende todas las luces de la casa",
+    devices: [devices[1], devices[2]],
+    on: false,
+    favourited: false
   }
 ];
 

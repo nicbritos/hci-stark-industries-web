@@ -129,7 +129,7 @@
       >
       <v-menu absolute v-if="true">
         <template v-slot:activator="{ on }">
-          <v-btn id="profile-btn" :icon="mobile" text v-on="on" v-blur>
+          <v-btn id="profile-btn" icon v-on="on" v-blur>
             <v-icon large>
               account_circle
             </v-icon>
