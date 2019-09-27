@@ -21,7 +21,7 @@
 # Generated files
 
 .idea/**/contentModel.xml
-
+node_modules/
 
 
 # Sensitive or high-churn files
