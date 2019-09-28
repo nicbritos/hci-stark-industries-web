@@ -7,7 +7,7 @@
 
       <v-card dark raised>
         <v-card-title>
-          <span class="headline">Alarm</span>
+          <span class="headline">{{Name}}</span>
           <v-btn icon absolute right @click="AlarmMenu = false">
             <v-avatar color="red">
               <v-icon>delete</v-icon>
@@ -20,8 +20,8 @@
                 <span>Mode</span>
               </v-row>
             <v-row class="justify-center">
-                <v-radio-group v-model="row" row>
-                    <v-radio label="Deactivated" value="1" :checked="true" />
+                <v-radio-group v-model="AlarmState" row>
+                    <v-radio label="Deactivated" value="1" />
                     <v-radio label="Home Mode" value="2"/>
                     <v-radio label="Full Mode" value="3"/>
                 </v-radio-group>
@@ -93,16 +93,24 @@ export default {
   directives: {
     mask
   },
-  data: () => ({
-    AlarmMenu: false,
-    changePass: false,
-    notifications: false,
-    sound: true,
-    widgets: false,
-    mask: "####"
-  }),
-    props:['MenuMode'],
-    // Puede tener valor create o edit
+  data () {
+      return{
+          AlarmState:'1',
+          AlarmMenu: false,
+          changePass: false,
+          notifications: false,
+          sound: true,
+          widgets: false,
+          mask: "####",
+      }
+  },
+    props:[
+        'MenuMode',
+        // Puede tener valor create o edit
+        'Name'
+        // Nombre de la Alarma
+    ],
+
 
   method: {
     ChangePassword() {

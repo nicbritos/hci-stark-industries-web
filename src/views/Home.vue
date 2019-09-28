@@ -14,7 +14,7 @@
         <v-divider></v-divider>
       </v-col>
     </v-row>
-
+      <AlarmMenu name="La alarma de abajo" menu-mode="create"/>
     <v-row>
       <v-col>
         <v-toolbar flat color="transparent">
@@ -32,10 +32,11 @@
 <script>
 import RoutineContainer from "@/components/containers/RoutineContainer";
 import DeviceContainer from "@/components/containers/DeviceContainer";
+import AlarmMenu from "../components/AlarmMenu";
 
 export default {
   name: "Home",
-  components: { RoutineContainer, DeviceContainer },
+  components: { RoutineContainer, DeviceContainer,AlarmMenu },
   data() {
     return {
       devices: this.$store.state.devices.favourites,
