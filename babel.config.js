@@ -1,4 +1,3 @@
 module.exports = {
-  presets: ["@vue/app"],
-  transpileDependencies: ['vuetify']
+  presets: ["@vue/app"]
 };
