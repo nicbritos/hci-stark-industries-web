@@ -15,8 +15,7 @@
       </v-col>
     </v-row>
     <v-row>
-
-
+      
     </v-row>
 
     <v-row>
@@ -36,10 +35,11 @@
 <script>
 import RoutineContainer from "@/components/containers/RoutineContainer";
 import DeviceContainer from "@/components/containers/DeviceContainer";
+import CurtainsMenu from "../components/Menus/CurtainsMenu";
 
 export default {
   name: "Home",
-  components: { RoutineContainer, DeviceContainer },
+  components: { CurtainsMenu,RoutineContainer, DeviceContainer },
   data() {
     return {
       devices: this.$store.state.devices.favourites,

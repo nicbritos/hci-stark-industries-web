@@ -10,7 +10,7 @@
             <span class="headline">Curtains</span>
 
 
-            <v-btn icon absolute right>
+            <v-btn icon absolute right @click="CurtainsMenu = false">
                 <v-avatar color="red">
                     <v-icon>delete</v-icon>
 
@@ -34,8 +34,8 @@
                             <br/>
                         </v-row>
                         <v-row>
-                            <v-btn width="50" height="60" color="green">
-                                <v-img  style="rotation:180deg " src="../../assets/arrowUp.svg"/>
+                            <v-btn width="50" height="60" color="blue">
+                                <v-img  style="rotation:180deg " src="../../assets/arrowDown.svg"/>
                             </v-btn>
                         </v-row>
                     </v-col>
@@ -62,7 +62,6 @@
         methods:{
 
         }
-
 
     }
 
