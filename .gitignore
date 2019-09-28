@@ -49,6 +49,7 @@ node_modules/
 
 .idea/**/libraries
 
+.idea/
 
 
 # Gradle and Maven with auto-import
