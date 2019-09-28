@@ -7,7 +7,7 @@
 
     <v-card dark raised>
         <v-card-title>
-            <span class="headline">Curtains</span>
+            <span class="headline">{{Name}}</span>
 
 
             <v-btn icon absolute right @click="CurtainsMenu = false">
@@ -56,13 +56,14 @@
 <script>
     export default {
         name: "CurtainsMenu",
+        props:[
+            'Name'
+        ],
         data: () => ({
             CurtainsMenu: false,
         }),
         methods:{
-
         }
-
     }
 
 
