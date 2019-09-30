@@ -22,6 +22,7 @@
 
 .idea/**/contentModel.xml
 node_modules/
+.idea/**.xml
 
 
 # Sensitive or high-churn files

@@ -9,6 +9,7 @@
         <span class="headline">{{ Name }}</span>
 
         <v-btn icon absolute right @click="FridgeMenu = false">
+
           <v-avatar color="red">
             <v-icon>delete</v-icon>
           </v-avatar>
@@ -70,6 +71,7 @@
         <div class="text-center">
           <v-btn color="red" @click="FridgeMenu = false">Cancel</v-btn>
           <v-btn color="blue" @click="FridgeMenu = false">Confirm</v-btn>
+
         </div>
       </v-card-actions>
     </v-card>
