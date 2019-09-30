@@ -51,6 +51,7 @@ node_modules/
 
 .idea/
 
+.package-lock.json
 
 # Gradle and Maven with auto-import
 
