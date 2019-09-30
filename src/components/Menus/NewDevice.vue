@@ -153,11 +153,12 @@
               </span>
               <span class="text--secondary">
                 and Room:
-                <span class="blue--text">'{{
-                  region != null
+                <span class="blue--text"
+                  >'{{
+                    region != null
                       ? getRoomName(room)
-                    : getRoomName(selectedRoom)
-                }}'
+                      : getRoomName(selectedRoom)
+                  }}'
                 </span>
               </span>
             </v-col>
@@ -181,7 +182,7 @@
             </v-col> </v-row
           ><v-row>
             <v-col>
-              <v-spacer></v-spacer>
+              <v-spacer> </v-spacer>
             </v-col>
             <v-col cols="auto">
               <v-btn
@@ -216,7 +217,8 @@
           <v-row dense>
             <v-col>
               <span class="text--secondary">
-                For Region: <span class="blue--text">
+                For Region:
+                <span class="blue--text">
                   '{{
                     region != null
                       ? getRegionName(region)
@@ -226,17 +228,17 @@
               </span>
               <span class="text--secondary">
                 Room:
-                <span class="blue--text">'{{
-                  region != null
-                    ? getRoomName(room)
-                    : getRoomName(selectedRoom)
-                }}',
+                <span class="blue--text"
+                  >'{{
+                    region != null
+                      ? getRoomName(room)
+                      : getRoomName(selectedRoom)
+                  }}',
                 </span>
               </span>
               <span class="text--secondary">
-                and Device: <span class="blue--text">
-                  '{{ getDeviceName(device) }}'
-                </span>
+                and Device:
+                <span class="blue--text"> '{{ getDeviceName(device) }}' </span>
               </span>
             </v-col>
           </v-row>
@@ -268,12 +270,12 @@
 
     <v-card-actions>
       <v-spacer></v-spacer>
-      <v-btn color="blue darken-1" text @click="" v-blur>Cancel</v-btn>
+      <v-btn color="blue darken-1" text @click="onCancel" v-blur>Cancel</v-btn>
       <v-btn
         :disabled="stepper < 4 || error || name == null"
         color="blue darken-1"
         text
-        @click=""
+        @click="onSave"
         v-blur
         >Save</v-btn
       >
@@ -284,6 +286,9 @@
 <script>
 export default {
   name: "NewDevice",
+  model: {
+    events: ["cancel", "save"]
+  },
   props: {
     room: {
       type: String,
@@ -392,6 +397,19 @@ export default {
         messages.push("Please, enter a Name");
       this.errorMessages = messages;
       this.error = messages.length > 0;
+    },
+
+    onCancel() {
+      this.$emit("cancel");
+    },
+    onSave() {
+      let newDevice = {
+        region: this.region != null ? this.region : this.selectedRegion,
+        room: this.room != null ? this.room : this.selectedRoom,
+        device: this.device,
+        name: this.name
+      };
+      this.$emit("save", newDevice);
     }
   }
 };
