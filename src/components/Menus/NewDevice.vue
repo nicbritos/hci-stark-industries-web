@@ -1,12 +1,12 @@
 <template>
   <v-card>
-<!--    <v-img-->
-<!--      class="white&#45;&#45;text"-->
-<!--      src="@/assets/response_blue.png"-->
-<!--      position="top center"-->
-<!--      max-height="300"-->
-<!--    >-->
-<!--    </v-img>-->
+    <!--    <v-img-->
+    <!--      class="white&#45;&#45;text"-->
+    <!--      src="@/assets/response_blue.png"-->
+    <!--      position="top center"-->
+    <!--      max-height="300"-->
+    <!--    >-->
+    <!--    </v-img>-->
     <v-card-text>
       <v-container fluid>
         <v-row>
@@ -30,7 +30,7 @@
         <v-stepper-content v-if="region == null" step="1">
           <v-row>
             <v-col>
-              <v-selects
+              <v-select
                 v-model="selectedRegion"
                 :items="regions"
                 label="Select Region"
@@ -43,7 +43,7 @@
                 :error="error"
                 :error-messages="errorMessages"
                 @change="validateRegion"
-              ></v-selects>
+              ></v-select>
             </v-col>
           </v-row>
           <v-row>
@@ -73,9 +73,23 @@
         </v-stepper-step>
 
         <v-stepper-content v-if="room == null" step="2">
-          <v-row>
+          <v-row dense>
             <v-col>
-              <v-selects
+              <span class="text--secondary">
+                For Region:
+                <span class="blue--text">
+                  '{{
+                    region != null
+                      ? getRegionName(region)
+                      : getRegionName(selectedRegion)
+                  }}'
+                </span>
+              </span>
+            </v-col>
+          </v-row>
+          <v-row dense>
+            <v-col>
+              <v-select
                 v-model="selectedRoom"
                 :items="rooms"
                 label="Select Room"
@@ -88,15 +102,16 @@
                 :error="error"
                 :error-messages="errorMessages"
                 @change="validateRoom"
-              ></v-selects>
-            </v-col> </v-row
-          ><v-row>
+              ></v-select>
+            </v-col>
+          </v-row>
+          <v-row>
             <v-col>
               <v-spacer></v-spacer>
             </v-col>
             <v-col cols="auto">
               <v-btn
-                v-if="region != null"
+                v-if="region == null"
                 text
                 v-blur
                 color="primary"
@@ -117,29 +132,52 @@
 
         <v-stepper-step
           step="3"
-          :rules="[() => stepper !== 2 || !error]"
-          :complete="stepper > 2 && !error"
+          :rules="[() => stepper !== 3 || !error]"
+          :complete="stepper > 3 && !error"
         >
-          Select Room
+          Select Device
         </v-stepper-step>
 
         <v-stepper-content step="3">
-          <v-row>
+          <v-row dense>
             <v-col>
-              <v-selects
+              <span class="text--secondary">
+                For Region:
+                <span class="blue--text">
+                  '{{
+                    region != null
+                      ? getRegionName(region)
+                      : getRegionName(selectedRegion)
+                  }}',
+                </span>
+              </span>
+              <span class="text--secondary">
+                and Room:
+                <span class="blue--text">'{{
+                  region != null
+                      ? getRoomName(room)
+                    : getRoomName(selectedRoom)
+                }}'
+                </span>
+              </span>
+            </v-col>
+          </v-row>
+          <v-row dense>
+            <v-col>
+              <v-select
                 v-model="device"
                 :items="devices"
                 label="Select Device"
                 item-value="id"
                 item-text="name"
                 clearable
-                id="room-id"
+                id="device-id"
                 menu-props="offsetY, offsetOverflow"
                 no-data-text="Room not found"
                 :error="error"
                 :error-messages="errorMessages"
                 @change="validateDevice"
-              ></v-selects>
+              ></v-select>
             </v-col> </v-row
           ><v-row>
             <v-col>
@@ -148,7 +186,7 @@
             <v-col cols="auto">
               <v-btn
                 text
-                v-if="room != null"
+                v-if="room == null"
                 v-blur
                 color="primary"
                 @click="backOneStep"
@@ -175,15 +213,42 @@
         </v-stepper-step>
 
         <v-stepper-content step="4">
-          <v-row>
+          <v-row dense>
+            <v-col>
+              <span class="text--secondary">
+                For Region: <span class="blue--text">
+                  '{{
+                    region != null
+                      ? getRegionName(region)
+                      : getRegionName(selectedRegion)
+                  }}',
+                </span>
+              </span>
+              <span class="text--secondary">
+                Room:
+                <span class="blue--text">'{{
+                  region != null
+                    ? getRoomName(room)
+                    : getRoomName(selectedRoom)
+                }}',
+                </span>
+              </span>
+              <span class="text--secondary">
+                and Device: <span class="blue--text">
+                  '{{ getDeviceName(device) }}'
+                </span>
+              </span>
+            </v-col>
+          </v-row>
+          <v-row dense>
             <v-col>
               <v-text-field
                 v-model="name"
-                label="Enter a Name"
+                label="Enter Name"
                 clearable
                 :error="error"
                 :error-messages="errorMessages"
-                @change="validateName(name)"
+                @input="validateName(name)"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -276,12 +341,12 @@ export default {
         this.stepper--;
         this.name = null;
       } else if (this.stepper === 3) {
-        if (this.room != null) {
+        if (this.room == null) {
           this.stepper--;
           this.device = null;
         }
       } else if (this.stepper === 2) {
-        if (this.region != null) {
+        if (this.region == null) {
           this.stepper--;
           this.room = null;
         }
@@ -289,6 +354,18 @@ export default {
 
       this.error = false;
       this.errorMessages = [];
+    },
+
+    getRegionName(regionId) {
+      return "Planta Baja";
+    },
+    getRoomName(roomId) {
+      return "Comedor";
+    },
+    getDeviceName(deviceId) {
+      if (deviceId === "L") return "Light";
+      if (deviceId === "AC") return "Air Conditioner";
+      return "N/A";
     },
 
     validateRegion() {
@@ -310,7 +387,11 @@ export default {
       this.error = messages.length > 0;
     },
     validateName(name) {
-      return true;
+      let messages = [];
+      if (typeof name !== "string" || name.trim().length === 0)
+        messages.push("Please, enter a Name");
+      this.errorMessages = messages;
+      this.error = messages.length > 0;
     }
   }
 };
