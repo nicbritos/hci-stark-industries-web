@@ -21,9 +21,12 @@
               </v-row>
             <v-row class="justify-center">
                 <v-radio-group v-model="AlarmState" row>
-                    <v-radio label="Deactivated" value="1" />
-                    <v-radio label="Home Mode" value="2"/>
-                    <v-radio label="Full Mode" value="3"/>
+                    <div v-for="(mode,index) in modes">
+                        <v-radio  :label="mode.name" :value="mode.id" @click="ChangeMode(index)"  />
+
+                    </div>
+
+
                 </v-radio-group>
             </v-row>
               <hr>
@@ -95,13 +98,17 @@ export default {
   },
   data () {
       return{
-          AlarmState:'1',
+          AlarmState:0,
           AlarmMenu: false,
           changePass: false,
-          notifications: false,
-          sound: true,
-          widgets: false,
           mask: "####",
+
+          modes:[
+              {id:0,name:"Deactivated"},
+              {id:1,name:"Home Mode"},
+              {id:2,name:"Full Mode"},
+          ]
+
       }
   },
     props:[
@@ -112,7 +119,10 @@ export default {
     ],
 
 
-  method: {
+  methods: {
+      ChangeMode(index){
+          this.AlarmState = this.modes[index].id;
+      },
     ChangePassword() {
       alert("Yay");
     }

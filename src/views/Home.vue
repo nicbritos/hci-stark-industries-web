@@ -33,7 +33,7 @@
 <script>
 import RoutineContainer from "@/components/containers/RoutineContainer";
 import DeviceContainer from "@/components/containers/DeviceContainer";
-import AlarmMenu from "../components/AlarmMenu";
+import AlarmMenu from "../components/Menus/AlarmMenu";
 import CurtainsMenu from "../components/Menus/CurtainsMenu";
 
 export default {
