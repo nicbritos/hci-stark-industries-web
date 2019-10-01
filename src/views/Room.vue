@@ -2,7 +2,12 @@
   <v-container grid-list-md fluid>
 <!--    <v-dialog persistent v-model="dialogs.devices.new" max-width="700px">-->
       <v-dialog v-model="dialogs.devices.new" max-width="700px">
-    <NewDevice></NewDevice>
+    <NewDevice
+            region="ABC1"
+            room="ABC2"
+            :value="dialogs.devices.new"
+            @cancel="newDeviceClose"
+    ></NewDevice>
     </v-dialog>
     <v-toolbar class="ml-n6" flat color="transparent">
       <Breadcrumbs

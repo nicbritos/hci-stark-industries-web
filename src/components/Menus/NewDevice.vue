@@ -16,13 +16,13 @@
         </v-row>
       </v-container>
     </v-card-text>
-    <v-stepper vertical class="elevation-0" v-model="stepper">
+    <v-stepper vertical class="elevation-0" v-model="data.stepper">
       <template>
         <v-stepper-step
           v-if="region == null"
           step="1"
-          :rules="[() => stepper !== 1 || !error]"
-          :complete="stepper > 1 && !error"
+          :rules="[() => data.stepper !== 1 || !data.error]"
+          :complete="data.stepper > 1 && !data.error"
         >
           Select Region
         </v-stepper-step>
@@ -31,7 +31,7 @@
           <v-row>
             <v-col>
               <v-select
-                v-model="selectedRegion"
+                v-model="data.selectedRegion"
                 :items="regions"
                 label="Select Region"
                 item-value="id"
@@ -40,8 +40,8 @@
                 id="region-id"
                 menu-props="offsetY, offsetOverflow"
                 no-data-text="Region not found"
-                :error="error"
-                :error-messages="errorMessages"
+                :error="data.error"
+                :error-messages="data.errorMessages"
                 @change="validateRegion"
               ></v-select>
             </v-col>
@@ -55,8 +55,8 @@
                 text
                 v-blur
                 color="primary"
-                @click="stepper++"
-                :disabled="error || selectedRegion == null"
+                @click="data.stepper++"
+                :disabled="data.error || data.selectedRegion == null"
                 >Continue</v-btn
               >
             </v-col>
@@ -65,14 +65,14 @@
 
         <v-stepper-step
           v-if="room == null"
-          step="2"
-          :rules="[() => stepper !== 2 || !error]"
-          :complete="stepper > 2 && !error"
+          :step="roomStep"
+          :rules="[() => data.stepper !== roomStep || !data.error]"
+          :complete="data.stepper > roomStep && !data.error"
         >
           Select Room
         </v-stepper-step>
 
-        <v-stepper-content v-if="room == null" step="2">
+        <v-stepper-content v-if="room == null" :step="roomStep">
           <v-row dense>
             <v-col>
               <span class="text--secondary">
@@ -81,7 +81,7 @@
                   '{{
                     region != null
                       ? getRegionName(region)
-                      : getRegionName(selectedRegion)
+                      : getRegionName(data.selectedRegion)
                   }}'
                 </span>
               </span>
@@ -90,7 +90,7 @@
           <v-row dense>
             <v-col>
               <v-select
-                v-model="selectedRoom"
+                v-model="data.selectedRoom"
                 :items="rooms"
                 label="Select Room"
                 item-value="id"
@@ -99,8 +99,8 @@
                 id="room-id"
                 menu-props="offsetY, offsetOverflow"
                 no-data-text="Room not found"
-                :error="error"
-                :error-messages="errorMessages"
+                :error="data.error"
+                :error-messages="data.errorMessages"
                 @change="validateRoom"
               ></v-select>
             </v-col>
@@ -122,8 +122,8 @@
                 text
                 v-blur
                 color="primary"
-                @click="stepper++"
-                :disabled="error || selectedRoom == null"
+                @click="data.stepper++"
+                :disabled="data.error || data.selectedRoom == null"
                 >Continue</v-btn
               >
             </v-col>
@@ -131,14 +131,14 @@
         </v-stepper-content>
 
         <v-stepper-step
-          step="3"
-          :rules="[() => stepper !== 3 || !error]"
-          :complete="stepper > 3 && !error"
+          :step="deviceStep"
+          :rules="[() => data.stepper !== deviceStep || !data.error]"
+          :complete="data.stepper > deviceStep && !data.error"
         >
           Select Device
         </v-stepper-step>
 
-        <v-stepper-content step="3">
+        <v-stepper-content :step="deviceStep">
           <v-row dense>
             <v-col>
               <span class="text--secondary">
@@ -147,7 +147,7 @@
                   '{{
                     region != null
                       ? getRegionName(region)
-                      : getRegionName(selectedRegion)
+                      : getRegionName(data.selectedRegion)
                   }}',
                 </span>
               </span>
@@ -157,7 +157,7 @@
                   >'{{
                     region != null
                       ? getRoomName(room)
-                      : getRoomName(selectedRoom)
+                      : getRoomName(data.selectedRoom)
                   }}'
                 </span>
               </span>
@@ -166,7 +166,7 @@
           <v-row dense>
             <v-col>
               <v-select
-                v-model="device"
+                v-model="data.device"
                 :items="devices"
                 label="Select Device"
                 item-value="id"
@@ -175,8 +175,8 @@
                 id="device-id"
                 menu-props="offsetY, offsetOverflow"
                 no-data-text="Room not found"
-                :error="error"
-                :error-messages="errorMessages"
+                :error="data.error"
+                :error-messages="data.errorMessages"
                 @change="validateDevice"
               ></v-select>
             </v-col> </v-row
@@ -197,8 +197,8 @@
                 text
                 v-blur
                 color="primary"
-                @click="stepper++"
-                :disabled="error || device == null"
+                @click="data.stepper++"
+                :disabled="data.error || data.device == null"
                 >Continue</v-btn
               >
             </v-col>
@@ -206,14 +206,14 @@
         </v-stepper-content>
 
         <v-stepper-step
-          step="4"
-          :rules="[() => stepper !== 4 || !error]"
-          :complete="stepper > 4 && !error"
+          :step="nameStep"
+          :rules="[() => data.stepper !== nameStep || !data.error]"
+          :complete="data.stepper > nameStep && !data.error"
         >
           Name
         </v-stepper-step>
 
-        <v-stepper-content step="4">
+        <v-stepper-content :step="nameStep">
           <v-row dense>
             <v-col>
               <span class="text--secondary">
@@ -222,7 +222,7 @@
                   '{{
                     region != null
                       ? getRegionName(region)
-                      : getRegionName(selectedRegion)
+                      : getRegionName(data.selectedRegion)
                   }}',
                 </span>
               </span>
@@ -232,25 +232,27 @@
                   >'{{
                     region != null
                       ? getRoomName(room)
-                      : getRoomName(selectedRoom)
+                      : getRoomName(data.selectedRoom)
                   }}',
                 </span>
               </span>
               <span class="text--secondary">
                 and Device:
-                <span class="blue--text"> '{{ getDeviceName(device) }}' </span>
+                <span class="blue--text">
+                  '{{ getDeviceName(data.device) }}'
+                </span>
               </span>
             </v-col>
           </v-row>
           <v-row dense>
             <v-col>
               <v-text-field
-                v-model="name"
+                v-model="data.name"
                 label="Enter Name"
                 clearable
-                :error="error"
-                :error-messages="errorMessages"
-                @input="validateName(name)"
+                :error="data.error"
+                :error-messages="data.errorMessages"
+                @input="validateName(data.name)"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -259,7 +261,12 @@
               <v-spacer></v-spacer>
             </v-col>
             <v-col cols="auto">
-              <v-btn text v-blur color="primary" @click="backOneStep"
+              <v-btn
+                :disabled="data.loading"
+                text
+                v-blur
+                color="primary"
+                @click="backOneStep"
                 >Back</v-btn
               >
             </v-col>
@@ -272,11 +279,12 @@
       <v-spacer></v-spacer>
       <v-btn color="blue darken-1" text @click="onCancel" v-blur>Cancel</v-btn>
       <v-btn
-        :disabled="stepper < 4 || error || name == null"
+        :disabled="data.stepper < 4 || data.error || data.name == null"
         color="blue darken-1"
         text
         @click="onSave"
         v-blur
+        :loading="data.loading"
         >Save</v-btn
       >
     </v-card-actions>
@@ -297,20 +305,43 @@ export default {
     region: {
       type: String,
       required: false
+    },
+    value: {
+      type: Boolean,
+      required: true
     }
   },
   data() {
     return {
-      stepper: 1,
-      selectedRegion: null,
-      selectedRoom: null,
-      name: null,
-      device: null,
-      error: false,
-      errorMessages: []
+      data: {}
     };
   },
   computed: {
+    defaultData() {
+      return {
+        stepper: 1,
+        selectedRegion: null,
+        selectedRoom: null,
+        name: null,
+        device: null,
+        error: false,
+        errorMessages: [],
+        loading: false
+      };
+    },
+    roomStep() {
+      if (this.region == null) return 2;
+      return 1;
+    },
+    deviceStep() {
+      if (this.region == null) return 3;
+      if (this.room == null) return 2;
+      return 1;
+    },
+    nameStep() {
+      return this.deviceStep + 1;
+    },
+
     regions() {
       return [
         {
@@ -340,25 +371,40 @@ export default {
       ];
     }
   },
-  methods: {
-    backOneStep() {
-      if (this.stepper === 4) {
-        this.stepper--;
-        this.name = null;
-      } else if (this.stepper === 3) {
-        if (this.room == null) {
-          this.stepper--;
-          this.device = null;
+  watch: {
+    value: {
+      handler: function(val) {
+        if (!val) {
+          this.resetData();
         }
-      } else if (this.stepper === 2) {
+      }
+    }
+  },
+  created() {
+    this.resetData();
+  },
+  methods: {
+    resetData() {
+      this.data = Object.assign({}, this.defaultData);
+    },
+    backOneStep() {
+      if (this.data.stepper === 4) {
+        this.data.stepper--;
+        this.data.name = null;
+      } else if (this.data.stepper === 3) {
+        if (this.room == null) {
+          this.data.stepper--;
+          this.data.device = null;
+        }
+      } else if (this.data.stepper === 2) {
         if (this.region == null) {
-          this.stepper--;
-          this.room = null;
+          this.data.stepper--;
+          this.selectedRoom = null;
         }
       }
 
-      this.error = false;
-      this.errorMessages = [];
+      this.data.error = false;
+      this.data.errorMessages = [];
     },
 
     getRegionName(regionId) {
@@ -375,28 +421,30 @@ export default {
 
     validateRegion() {
       let messages = [];
-      if (this.selectedRegion == null) messages.push("Please, select a Region");
-      this.errorMessages = messages;
-      this.error = messages.length > 0;
+      if (this.data.selectedRegion == null)
+        messages.push("Please, select a Region");
+      this.data.errorMessages = messages;
+      this.data.error = messages.length > 0;
     },
     validateRoom() {
       let messages = [];
-      if (this.selectedRoom == null) messages.push("Please, select a Room");
-      this.errorMessages = messages;
-      this.error = messages.length > 0;
+      if (this.data.selectedRoom == null)
+        messages.push("Please, select a Room");
+      this.data.errorMessages = messages;
+      this.data.error = messages.length > 0;
     },
     validateDevice() {
       let messages = [];
-      if (this.device == null) messages.push("Please, select a Device");
-      this.errorMessages = messages;
-      this.error = messages.length > 0;
+      if (this.data.device == null) messages.push("Please, select a Device");
+      this.data.errorMessages = messages;
+      this.data.error = messages.length > 0;
     },
     validateName(name) {
       let messages = [];
       if (typeof name !== "string" || name.trim().length === 0)
         messages.push("Please, enter a Name");
-      this.errorMessages = messages;
-      this.error = messages.length > 0;
+      this.data.errorMessages = messages;
+      this.data.error = messages.length > 0;
     },
 
     onCancel() {
@@ -404,11 +452,12 @@ export default {
     },
     onSave() {
       let newDevice = {
-        region: this.region != null ? this.region : this.selectedRegion,
-        room: this.room != null ? this.room : this.selectedRoom,
-        device: this.device,
-        name: this.name
+        region: this.region != null ? this.region : this.data.selectedRegion,
+        room: this.room != null ? this.room : this.data.selectedRoom,
+        device: this.data.device,
+        name: this.data.name
       };
+      this.data.loading = true;
       this.$emit("save", newDevice);
     }
   }
