@@ -1,11 +1,11 @@
 <template>
   <v-container grid-list-md fluid>
-    <v-dialog v-model="dialogs.routines.new" max-width="800px">
-      <NewRoutine
-        :value="dialogs.routines.new"
-        @cancel="newRoutineClose"
-      ></NewRoutine>
-    </v-dialog>
+<!--    <v-dialog v-model="dialogs.routines.new" max-width="800px">-->
+<!--      <NewRoutine-->
+<!--        :value="dialogs.routines.new"-->
+<!--        @cancel="newRoutineClose"-->
+<!--      ></NewRoutine>-->
+<!--    </v-dialog>-->
     <v-row>
       <v-col>
         <v-toolbar flat color="transparent">
@@ -48,11 +48,10 @@
 
 <script>
 import RoutineContainer from "@/components/containers/RoutineContainer";
-import NewRoutine from "@/components/Menus/NewRoutine";
 
 export default {
   name: "Home",
-  components: { RoutineContainer, NewRoutine },
+  components: { RoutineContainer },
   data() {
     return {
       routines: this.$store.state.routines.items,
@@ -66,11 +65,7 @@ export default {
   },
   methods: {
     newRoutineOpen() {
-      this.openDialog(this.dialogs.routines, "new");
-    },
-    newRoutineClose() {
-      // Save to DB
-      this.closeDialog(this.dialogs.routines, "new");
+      this.$router.push(this.$router.currentRoute.path + "/new");
     },
 
     openDialog(item, type) {
