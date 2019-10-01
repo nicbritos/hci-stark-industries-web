@@ -1,6 +1,6 @@
 <template>
   <v-card hover style="cursor: default" width="200">
-    <v-card-text v-ripple style="cursor: pointer">
+    <v-card-text @click="onClick" v-ripple style="cursor: pointer">
       <div class="text--secondary">
         {{ device.name + (room ? " from " + device.room.name : "") }}
       </div>
@@ -14,7 +14,7 @@
         </v-row>
       </v-container>
     </v-card-text>
-    <v-card-actions>
+    <v-card-actions v-if="selectable || editable">
       <v-checkbox
         v-if="selectable"
         color="primary"
@@ -52,7 +52,7 @@
 export default {
   name: "Routine",
   model: {
-    events: ["selectUpdate"]
+    events: ["selectUpdate", "click"]
   },
   props: {
     device: {
@@ -83,6 +83,9 @@ export default {
   methods: {
     onSelectUpdate(value) {
       this.$emit("selectUpdate", value);
+    },
+    onClick() {
+      this.$emit("click");
     }
   }
 };
