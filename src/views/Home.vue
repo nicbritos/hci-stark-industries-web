@@ -14,7 +14,7 @@
         <v-divider></v-divider>
       </v-col>
     </v-row>
-      <DoorMenu Name="hola"/>
+      <DoorMenu name="hola"/>
 
     <v-row>
       <v-col>

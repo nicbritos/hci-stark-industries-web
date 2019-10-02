@@ -1,12 +1,12 @@
 <template>
-  <v-dialog v-model="DoorMenu" persistent max-width="500px">
+  <v-dialog v-model="DoorMenu" persistent max-width="400px">
     <template v-slot:activator="{ on }">
       <v-btn color="primary" dark v-on="on">Open Door</v-btn>
     </template>
 
     <v-card dark raised>
       <v-card-title>
-        <span class="headline">{{ Name }}</span>
+        <span class="headline">{{ name }}</span>
 
         <v-btn icon absolute right @click="DoorMenu = false">
           <v-avatar color="red">
@@ -14,46 +14,53 @@
           </v-avatar>
         </v-btn>
       </v-card-title>
-      <v-card-text>
-        <v-container>
-          <v-row class="justify-center">
-            <v-col>
-              <v-img max-width="200" :src="CurrentDoorImage" />
-            </v-col>
-              <v-col cols="4">
+      <v-card-text clas="text-center">
+<!--        <v-container>-->
+          <v-row>
+              <v-col>
 
-                  <v-row>
-                      <v-btn icon  @click="ChangeSecurityState()">
-                          <v-avatar color="green">
-                              <v-img :src="currentSecurityImage" />
-                          </v-avatar>
-                      </v-btn>
-
-                  </v-row>
-
-
-                <v-row>
-
-                  <div class="text-center ">
-                    <v-btn
-                      color="blue"
-                      :disabled="!enableOpenCloseButton"
-                      @click="ChangeDoorState()"
-                    >
-                      {{ this.currentOpenCloseButtonString }}
-                    </v-btn>
-                    <v-btn
-                      color="blue"
-                      :disabled="!enableLockUnlockButton"
-                      @click="ChangeSecurityState()"
-                    >
-                      {{ this.currentLockUnlockButtonString }}
-                    </v-btn>
-                  </div>
+                <v-row class=" mb-6 " justify="center"  no-gutters>
+<!--                  <v-btn icon @click="ChangeSecurityState()">-->
+                    <v-avatar color="green" size="50">
+                      <v-img :src="currentSecurityImage" />
+                    </v-avatar>
+<!--                  </v-btn>-->
                 </v-row>
+
+                <v-row class=" mb-6 " justify="center" no-gutters>
+                  <v-img
+                    max-width="100"
+                    max-height="300"
+                    :src="CurrentDoorImage"
+                  />
+                </v-row>
+
               </v-col>
+            <v-col class="text-center">
+              <br/>
+              <br/>
+                  <v-btn
+                    color="blue"
+                    class="text-center"
+                    :disabled="!enableOpenCloseButton"
+                    @click="ChangeDoorState()"
+                  >
+                    {{ this.currentOpenCloseButtonString }}
+                  </v-btn>
+              <br/>
+              <br/>
+              <br/>
+                  <v-btn
+                    color="blue"
+                    class="text-center"
+                    :disabled="!enableLockUnlockButton"
+                    @click="ChangeSecurityState()"
+                  >
+                    {{ this.currentLockUnlockButtonString }}
+                  </v-btn>
+            </v-col>
           </v-row>
-        </v-container>
+<!--        </v-container>-->
       </v-card-text>
       <v-card-actions class="justify-center">
         <div class="text-center">
@@ -69,7 +76,7 @@
 export default {
   name: "DoorMenu",
 
-  props: ["Name"],
+  props: ["name"],
 
   data: () => ({
     DoorMenu: false,
@@ -79,7 +86,7 @@ export default {
     lockDoorImage: "img/devices/DoorLock.svg",
     unlockDoorImage: "img/devices/DoorUnlock.svg",
 
-      currentSecurityImage:"img/devices/DoorUnlock.svg",
+    currentSecurityImage: "img/devices/DoorUnlock.svg",
     CurrentDoorImage: "img/devices/OpenDoor.svg",
 
     OpenButtonString: "Open Door",
@@ -93,7 +100,7 @@ export default {
     enableOpenCloseButton: true,
     enableLockUnlockButton: false,
 
-    currentLockUnlockButtonString: "Unlock Door"
+    currentLockUnlockButtonString: "Lock Door"
   }),
   methods: {
     ChangeDoorState() {
@@ -105,33 +112,38 @@ export default {
     },
     SetOpenState() {
       this.CurrentDoorImage = this.openDoorImage;
-      this.currentOpenCloseButtonString = this.OpenButtonString;
+      this.currentOpenCloseButtonString = this.CloseButtonString;
       this.enableLockUnlockButton = false;
     },
     SetCloseState() {
       this.CurrentDoorImage = this.closedDoorImage;
-      this.currentOpenCloseButtonString = this.CloseButtonString;
+      this.currentOpenCloseButtonString = this.OpenButtonString;
       this.enableLockUnlockButton = true;
     },
     ChangeSecurityState() {
       if (this.currentLockUnlockButtonString === this.LockButtonString) {
-        this.SetUnlockState();
+        this.SetLockState();
       } else if (
         this.currentLockUnlockButtonString === this.UnlockButtonString
       ) {
-        this.SetLockState();
+        this.SetUnlockState();
       }
     },
     SetUnlockState() {
       this.enableOpenCloseButton = true;
-      this.currentLockUnlockButtonString = this.UnlockButtonString;
+      this.currentLockUnlockButtonString = this.LockButtonString;
+      this.currentSecurityImage = this.unlockDoorImage;
     },
     SetLockState() {
       this.enableOpenCloseButton = false;
-      this.currentLockUnlockButtonString = this.LockButtonString;
+      this.currentLockUnlockButtonString = this.UnlockButtonString;
+      this.currentSecurityImage = this.lockDoorImage;
+
     }
   }
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+
+</style>
