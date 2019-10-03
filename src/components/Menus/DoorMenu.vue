@@ -15,16 +15,14 @@
         </v-btn>
       </v-card-title>
       <v-card-text clas="text-center">
-<!--        <v-container>-->
+        <v-container>
           <v-row>
               <v-col>
 
                 <v-row class=" mb-6 " justify="center"  no-gutters>
-<!--                  <v-btn icon @click="ChangeSecurityState()">-->
                     <v-avatar color="green" size="50">
                       <v-img :src="currentSecurityImage" />
                     </v-avatar>
-<!--                  </v-btn>-->
                 </v-row>
 
                 <v-row class=" mb-6 " justify="center" no-gutters>
@@ -36,9 +34,8 @@
                 </v-row>
 
               </v-col>
-            <v-col class="text-center">
-              <br/>
-              <br/>
+            <v-col >
+                <div class="buttonsContainer">
                   <v-btn
                     color="blue"
                     class="text-center"
@@ -47,9 +44,7 @@
                   >
                     {{ this.currentOpenCloseButtonString }}
                   </v-btn>
-              <br/>
-              <br/>
-              <br/>
+
                   <v-btn
                     color="blue"
                     class="text-center"
@@ -58,9 +53,10 @@
                   >
                     {{ this.currentLockUnlockButtonString }}
                   </v-btn>
+                </div>
             </v-col>
           </v-row>
-<!--        </v-container>-->
+        </v-container>
       </v-card-text>
       <v-card-actions class="justify-center">
         <div class="text-center">
@@ -145,5 +141,12 @@ export default {
 </script>
 
 <style scoped>
+
+    .buttonsContainer{
+        display: flex;
+        justify-content: space-between;
+        text-align: center;
+        align-content: space-between;
+    }
 
 </style>

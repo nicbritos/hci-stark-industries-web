@@ -36,7 +36,7 @@
                 class=""
                 color="light-blue"
                 rounded
-                :value="SongProgress"
+                :value="100 *(this.CurrentSong.Duration / this.CurrentSong.TimeMark)"
                 buffer-value="100"
               />
               <span class="lastTimeMark">
@@ -58,13 +58,13 @@
                 width="80"
                 height="80"
                 icon
-                @click="PlaySongState = !CurrentSong.PlayState"
+                @click="CurrentSong.PlayState = !CurrentSong.PlayState"
               >
                 <v-avatar size="80" color="blue">
-                  <v-icon size="50" v-show="CurrentSong.PlayState">
+                  <v-icon size="50" v-show="!CurrentSong.PlayState">
                     play_arrow
                   </v-icon>
-                  <v-icon size="50" v-show="!CurrentSong.PlayState">
+                  <v-icon size="50" v-show="CurrentSong.PlayState">
                     pause
                   </v-icon>
                 </v-avatar>
@@ -78,7 +78,7 @@
                 </v-avatar>
               </v-btn>
             </div>
-            <v-btn icon class="stopButton">
+            <v-btn icon class="stopButton" @click="stopMusic()">
               <v-avatar color="blue">
                 <v-icon>
                   stop
@@ -122,11 +122,13 @@
                       :items="GenresList"
                       item-text="Genre"
                       label="Genres"
+                      item-value="id"
+                      v-model="SelectedDDL"
               >
 
               </v-overflow-btn>
 
-                  <v-avatar color="blue" class="">
+                  <v-avatar color="blue" @click="LoadGenre()">
                       <v-icon>
                           play_arrow
                       </v-icon>
@@ -151,6 +153,7 @@ export default {
   props: ["name"],
   data: () => ({
     SpeakerMenu: false,
+      SelectedDDL:0,
       CurrentSong: {
           Name: "",
           Artist: "",
@@ -166,25 +169,25 @@ export default {
       CurrentSongID:3,
       CurrentGenre:0,
       GenresList:[
-          {Genre:"Rock", Songs:[
+          {id:0,Genre:"Rock", Songs:[
                   {Name:"Rock song 1",Artist:"Rock band 1",Duration:200},
                   {Name:"Rock song 2",Artist:"Rock band 1",Duration:100},
                   {Name:"Rock song 3",Artist:"Rock band 2",Duration:300},
                   {Name:"Rock song 4",Artist:"Rock band 2",Duration:250}
               ]},
-          {Genre:"Pop", Songs:[
+          {id:1,Genre:"Pop", Songs:[
                   {Name:"Pop Song 1",Artist:"Pop band 1",Duration:200},
                   {Name:"Pop Song 2",Artist:"Pop band 1",Duration:200},
                   {Name:"Pop Song 3",Artist:"Pop band 2",Duration:200},
                   {Name:"Pop Song 4",Artist:"Pop band 2",Duration:200}
               ]},
-          {Genre:"Soul", Songs:[
+          {id:2,Genre:"Soul", Songs:[
                   {Name:"Soul song 1",Artist:"Soul band 1",Duration:200},
                   {Name:"Soul song 2",Artist:"Soul band 1",Duration:200},
                   {Name:"Soul song 3",Artist:"Soul band 2",Duration:200},
                   {Name:"Soul song 4",Artist:"Soul band 2",Duration:200}
               ]},
-          {Genre:"Alternative", Songs:[
+          {id:3,Genre:"Alternative", Songs:[
                   {Name:"Alternative song 1",Artist:"Altenative band 1",Duration:200},
                   {Name:"Alternative song 2",Artist:"Altenative band 1",Duration:200},
                   {Name:"Alternative song 3",Artist:"Altenative band 2",Duration:200},
@@ -195,6 +198,27 @@ export default {
 
   }),
     methods:{
+        stopMusic() {
+
+            this.CurrentSongID=undefined;
+            this.CurrentSong.PlayState = false;
+            this.CurrentSong.Duration=0;
+            this.CurrentSong.TimeMark=0;
+            this.CurrentSong.Name="";
+            this.CurrentSong.Artist="";
+
+            this.isSongLoaded=false;
+
+        },
+        LoadGenre(){
+
+            this.CurrentGenre = this.SelectedDDL;
+            this.CurrentSongID=0;
+            this.LoadSong();
+            this.isSongLoaded=true;
+
+
+        },
       LoadSong(){
           var song = this.GenresList[this.CurrentGenre].Songs[this.CurrentSongID];
           this.CurrentSong.Artist = song.Artist;
@@ -223,8 +247,18 @@ export default {
         },
         decrementVolume(){
             this.Volume--;
+        },
+        setUp(){
+            this.Volume= 5;
+            this.CurrentSongID=2
+            this.CurrentGenre=0;
+
+            this.LoadSong();
         }
     },
+    mounted() {
+        this.setUp();
+    }
 
 };
 </script>
