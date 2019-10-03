@@ -10,7 +10,7 @@
           </v-toolbar-title>
         </v-toolbar>
 
-        <BoxContainer :items="favouriteRoutines">
+        <BoxContainer :items="routines">
           <template v-slot:item="{ item }">
             <Routine :routine="item"></Routine>
           </template>
