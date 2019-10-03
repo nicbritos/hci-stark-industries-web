@@ -6,7 +6,7 @@
 
     <v-card dark raised>
       <v-card-title>
-        <span class="headline">{{ Name }}</span>
+        <span class="headline">{{ name }}</span>
 
         <v-btn icon absolute right @click="FridgeMenu = false">
 
@@ -80,8 +80,8 @@
 
 <script>
 export default {
-  name: "FridgeMenu",
-  props: ["Name"],
+  name: "fridgeMenu",
+  props: ["name"],
   data() {
     return {
       dropdownFridgeMode: ["Normal", "Vacation", "Party"],

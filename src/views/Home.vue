@@ -19,7 +19,11 @@
         <v-divider></v-divider>
       </v-col>
     </v-row>
+      <DoorMenu name="hola"/>
+      <SpeakerMenu name="La alarma de abajo"/>
     <AlarmMenu name="La alarma de abajo" menu-mode="create" />
+    <CurtainsMenu name="fsads"/>
+
 
     <v-row>
       <v-col>
@@ -39,15 +43,19 @@
 import BoxContainer from "@/components/containers/BoxContainer";
 import Routine from "@/components/individuals/Routine";
 import DeviceContainer from "@/components/containers/DeviceContainer";
-import AlarmMenu from "../components/AlarmMenu";
+import SpeakerMenu from "../components/Menus/SpeakerMenu";
+import DoorMenu from "../components/Menus/DoorMenu";
+import AlarmMenu from "../components/Menus/AlarmMenu";
 import CurtainsMenu from "../components/Menus/CurtainsMenu";
 
 export default {
   name: "Home",
   components: {
+  DoorMenu,
     AlarmMenu,
     CurtainsMenu,
     Routine,
+    SpeakerMenu,
     BoxContainer,
     DeviceContainer
   },
