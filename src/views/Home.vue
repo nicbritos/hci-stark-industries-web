@@ -14,6 +14,7 @@
         <v-divider></v-divider>
       </v-col>
     </v-row>
+      <DoorMenu name="hola"/>
       <SpeakerMenu name="La alarma de abajo"/>
 
     <v-row>
@@ -37,7 +38,7 @@ import SpeakerMenu from "../components/Menus/SpeakerMenu";
 
 export default {
   name: "Home",
-  components: { SpeakerMenu, RoutineContainer, DeviceContainer },
+  components: {DoorMenu, SpeakerMenu, RoutineContainer, DeviceContainer },
   data() {
     return {
       devices: this.$store.state.devices.favourites,
