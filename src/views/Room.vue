@@ -1,13 +1,13 @@
 <template>
   <v-container grid-list-md fluid>
-<!--    <v-dialog persistent v-model="dialogs.devices.new" max-width="700px">-->
-      <v-dialog v-model="dialogs.devices.new" max-width="700px">
-    <NewDevice
-            region="ABC1"
-            room="ABC2"
-            :value="dialogs.devices.new"
-            @cancel="newDeviceClose"
-    ></NewDevice>
+    <!--    <v-dialog persistent v-model="dialogs.devices.new" max-width="700px">-->
+    <v-dialog v-model="dialogs.devices.new" max-width="700px">
+      <NewDevice
+        region="ABC1"
+        room="ABC2"
+        :value="dialogs.devices.new"
+        @cancel="newDeviceClose"
+      ></NewDevice>
     </v-dialog>
     <v-toolbar class="ml-n6" flat color="transparent">
       <Breadcrumbs
@@ -50,7 +50,13 @@
           </v-toolbar-title>
           <v-spacer></v-spacer>
 
-          <v-btn @click="newDeviceOpen" outlined text color="primary" v-on="on" v-blur
+          <v-btn
+            @click="newDeviceOpen"
+            outlined
+            text
+            color="primary"
+            v-on="on"
+            v-blur
             >NEW DEVICE</v-btn
           >
         </v-toolbar>
