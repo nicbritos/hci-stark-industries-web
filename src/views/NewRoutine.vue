@@ -1,13 +1,85 @@
 <template>
-  <!--    <v-img-->
-  <!--      class="white&#45;&#45;text"-->
-  <!--      src="@/assets/response_blue.png"-->
-  <!--      position="top center"-->
-  <!--      max-height="300"-->
-  <!--    >-->
-  <!--    </v-img>-->
-
   <v-container grid-list-md fluid>
+    <v-dialog v-model="dialogs.devices.add" max-width="800px">
+      <v-card>
+        <!--        <v-img-->
+        <!--          class="white&#45;&#45;text"-->
+        <!--          src="@/assets/question_blue.png"-->
+        <!--          position="top center"-->
+        <!--          max-height="300"-->
+        <!--        >-->
+        <!--        </v-img>-->
+        <v-card-text>
+          <v-container fluid>
+            <v-row>
+              <v-col>
+                <h1 style="color: black">Add Device</h1>
+              </v-col>
+            </v-row>
+
+            <v-row dense>
+              <v-col>
+                <DeviceContainer
+                  :room="true"
+                  :editable="false"
+                  :pick="true"
+                  :items="devices"
+                  @pick="addDeviceClose"
+                >
+                </DeviceContainer>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" text @click="addDeviceClose(null)" v-blur
+            >Cancel</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="dialogs.devices.configure" max-width="800px">
+      <v-card>
+        <!--        <v-img-->
+        <!--          class="white&#45;&#45;text"-->
+        <!--          src="@/assets/question_blue.png"-->
+        <!--          position="top center"-->
+        <!--          max-height="300"-->
+        <!--        >-->
+        <!--        </v-img>-->
+        <v-card-text>
+          <v-container fluid>
+            <v-row>
+              <v-col>
+                <h1 style="color: black">
+                  Configure Device: {{ selectedDevice.name }}
+                </h1>
+              </v-col>
+            </v-row>
+
+            <v-row dense>
+              <v-col>
+                CONFIGURAR
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" text @click="configureDeviceClose(false)" v-blur
+            >Cancel</v-btn
+          >
+          <v-btn color="blue darken-1" text @click="configureDeviceClose(true)" v-blur
+            >Save</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <v-row>
       <v-col>
         <v-toolbar flat color="transparent">
@@ -132,21 +204,35 @@
                 </v-col>
               </v-row>
               <v-row dense>
+                <v-col> </v-col>
+                <v-col cols="auto">
+                  <v-btn
+                    text
+                    outlined
+                    color="primary"
+                    class="ml-3 mb-2"
+                    v-on="on"
+                    v-blur
+                    @click="addDeviceOpen"
+                    >ADD DEVICE</v-btn
+                  >
+                </v-col>
+              </v-row>
+
+              <v-row dense>
                 <v-col>
-                  <DevicePicker
-                    :items="devices"
-                    :room="true"
-                    @pick="onDevicePick">
-                  </DevicePicker>
-<!--                  <DeviceContainer-->
-<!--                    :items="devices"-->
-<!--                    :selectable="true"-->
-<!--                    :editable="false"-->
-<!--                    :selectedItems="data.selectedDevices"-->
-<!--                    :room="true"-->
-<!--                  ></DeviceContainer>-->
-                </v-col> </v-row
-              ><v-row>
+                  <OrderedBoxContainer :items="selectedDevices">
+                    <template v-slot:item="{ item }">
+                      <Device
+                        :room="true"
+                        :editable="false"
+                        :device="item"
+                      ></Device>
+                    </template>
+                  </OrderedBoxContainer>
+                </v-col>
+              </v-row>
+              <v-row>
                 <v-col>
                   <v-spacer> </v-spacer>
                 </v-col>
@@ -196,20 +282,30 @@
 </template>
 
 <script>
-import DevicePicker from "@/components/containers/DevicePicker";
+import OrderedBoxContainer from "@/components/containers/OrderedBoxContainer";
+import DeviceContainer from "@/components/containers/DeviceContainer";
+import Device from "@/components/individuals/Device";
 
 export default {
   name: "NewRoutine",
-  components: { DevicePicker },
+  components: { OrderedBoxContainer, DeviceContainer, Device },
   model: {
     events: ["cancel", "save"]
   },
   data() {
     return {
       data: {},
-      favouriteDevices: this.$store.state.devices.favourites,
+      dialogs: {
+        devices: {
+          add: true,
+          configure: false
+        }
+      },
       devices: this.$store.state.devices.items,
-      selectedDevices: []
+      selectedDevice: {},
+      selectedDeviceConfiguration: {},
+      selectedDevices: [],
+      favouriteDevices: this.$store.state.devices.favourites
     };
   },
   computed: {
@@ -258,6 +354,42 @@ export default {
     this.resetData();
   },
   methods: {
+    addDeviceOpen() {
+      this.openDialog(this.dialogs.devices, "add");
+    },
+    addDeviceClose(item) {
+      // Save to DB
+      if (item != null) {
+        this.configureDeviceOpen();
+        this.selectedDevice = item;
+      } else {
+        this.closeDialog(this.dialogs.devices, "add");
+      }
+    },
+    configureDeviceOpen() {
+      this.openDialog(this.dialogs.devices, "configure");
+      this.openDialog(this.dialogs.devices, "add");
+    },
+    configureDeviceClose(result) {
+      // Save to DB
+      if (result) {
+        this.selectedDevices.push(this.selectedDevice);
+        this.closeDialog(this.dialogs.devices, "configure");
+        this.closeDialog(this.dialogs.devices, "add");
+      } else {
+        this.closeDialog(this.dialogs.devices, "configure");
+      }
+    },
+
+    openDialog(item, type) {
+      if (item == null || type == null || item[type] == null) return;
+      if (!item[type]) item[type] = true;
+    },
+    closeDialog(item, type) {
+      if (item == null || type == null || item[type] == null) return;
+      if (item[type]) item[type] = false;
+    },
+
     resetData() {
       this.data = Object.assign({}, this.defaultData);
     },
@@ -321,10 +453,6 @@ export default {
       };
       this.data.loading = true;
       this.$emit("save", newDevice);
-    },
-
-    onDevicePick(item) {
-      console.log(item)
     }
   }
 };
