@@ -15,6 +15,7 @@
       </v-col>
     </v-row>
       <DoorMenu name="hola"/>
+      <SpeakerMenu name="La alarma de abajo"/>
 
     <v-row>
       <v-col>
@@ -33,12 +34,11 @@
 <script>
 import RoutineContainer from "@/components/containers/RoutineContainer";
 import DeviceContainer from "@/components/containers/DeviceContainer";
-import AlarmMenu from "../components/Menus/AlarmMenu";
-import CurtainsMenu from "../components/Menus/CurtainsMenu";
+import SpeakerMenu from "../components/Menus/SpeakerMenu";
 
 export default {
   name: "Home",
-  components: { DoorMenu , RoutineContainer, DeviceContainer },
+  components: {DoorMenu, SpeakerMenu, RoutineContainer, DeviceContainer },
   data() {
     return {
       devices: this.$store.state.devices.favourites,
