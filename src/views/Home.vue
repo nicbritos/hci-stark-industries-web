@@ -9,12 +9,17 @@
             </h2>
           </v-toolbar-title>
         </v-toolbar>
-        <RoutineContainer :items="routines"></RoutineContainer>
+
+        <BoxContainer :items="favouriteRoutines">
+          <template v-slot:item="{ item }">
+            <Routine :routine="item"></Routine>
+          </template>
+        </BoxContainer>
 
         <v-divider></v-divider>
       </v-col>
     </v-row>
-      <AlarmMenu name="La alarma de abajo" menu-mode="create"/>
+    <AlarmMenu name="La alarma de abajo" menu-mode="create" />
 
     <v-row>
       <v-col>
@@ -31,14 +36,21 @@
 ></template>
 
 <script>
-import RoutineContainer from "@/components/containers/RoutineContainer";
+import BoxContainer from "@/components/containers/BoxContainer";
+import Routine from "@/components/individuals/Routine";
 import DeviceContainer from "@/components/containers/DeviceContainer";
 import AlarmMenu from "../components/AlarmMenu";
 import CurtainsMenu from "../components/Menus/CurtainsMenu";
 
 export default {
   name: "Home",
-  components: { AlarmMenu, CurtainsMenu, RoutineContainer, DeviceContainer },
+  components: {
+    AlarmMenu,
+    CurtainsMenu,
+    Routine,
+    BoxContainer,
+    DeviceContainer
+  },
   data() {
     return {
       devices: this.$store.state.devices.favourites,
