@@ -61,6 +61,13 @@ export default class CommonDeviceSchema {
     return result.result;
   }
 
+  async updateInformation() {
+    let result = await apiWrapper.getDevice(this.id);
+    this.name = result.device.name;
+    this.meta = JSON.parse(result.device.meta);
+    return true;
+  }
+
   async updateState() {
     throw new Error("This method should be overwritten");
   }
