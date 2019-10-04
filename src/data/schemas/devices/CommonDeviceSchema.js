@@ -10,10 +10,13 @@ export default class CommonDeviceSchema {
     return JSON.stringify(meta);
   }
 
-  static async create(name, deviceId) {
+  static async create(name, deviceId, customMetadata) {
     let meta = {
       favourite: false
     };
+    if (customMetadata != null) {
+      meta = Object.assign(meta, customMetadata);
+    }
 
     let result = await apiWrapper._createDevice({
       typeId: deviceId,
