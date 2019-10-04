@@ -1,10 +1,11 @@
 import apiWrapper from "@/data/apiWrapper";
 
-export default class CommonDeviceSchema {
-  static deviceId() {
-    throw new Error("This function needs to be overwritten");
-  }
+// Data extracted from API Docs
+const ACTION_NAMES = {
+  getState: "getState"
+};
 
+export default class CommonDeviceSchema {
   static _formatMeta(meta) {
     return JSON.stringify(meta);
   }
@@ -23,11 +24,41 @@ export default class CommonDeviceSchema {
     return { id: result.device.id, name: name, meta: meta };
   }
 
-  constructor() {
-    this.id = null;
+  constructor(id, name, meta, deviceId) {
+    this.id = id;
+    this.name = name;
+    this.meta = meta;
+    this.deviceId = deviceId;
   }
 
-  delete() {
-    apiWrapper._deleteDevice(this.id);
+  async setFavourite(value) {
+    let nextValue = !!value;
+    if (this.meta.favourite === nextValue) return false;
+
+    let metaCopy = Object.assign({}, this.meta);
+    metaCopy.favourite = nextValue;
+    let result = await apiWrapper._updateDevice(this.id, {
+      name: name,
+      typeId: this.deviceId,
+      id: this.id,
+      meta: CommonDeviceSchema._formatMeta(metaCopy)
+    });
+
+    // eslint-disable-next-line require-atomic-updates
+    if (result.result) this.meta.favourite = nextValue;
+    return result.result;
+  }
+
+  async getState() {
+    let result = await apiWrapper._performActionOnDevice(
+      this.id,
+      ACTION_NAMES.getState
+    );
+
+    return result.result;
+  }
+
+  async delete() {
+    return (await apiWrapper._deleteDevice(this.id)).result;
   }
 }

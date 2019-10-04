@@ -2,47 +2,23 @@ import CommonDeviceSchema from "./CommonDeviceSchema";
 import apiWrapper from "@/data/apiWrapper";
 
 // Data extracted from API Docs
-
 const ACTION_NAMES = {
   open: "open",
-  close: "close",
-  getState: "getState"
+  close: "close"
 };
 
-export default class Blinds extends CommonDeviceSchema {
-  static deviceId() {
-    return "eu0v2xgprrhhg41g";
-  }
+const DEVICE_ID = "eu0v2xgprrhhg41g";
 
+export default class Blinds extends CommonDeviceSchema {
   static async create(name) {
     let data = await CommonDeviceSchema.create(name, this.deviceId());
     return new Blinds(data.id, data.name, data.meta);
   }
 
-  constructor(name, id, meta) {
-    super();
+  constructor(id, name, meta) {
+    super(id, name, meta, DEVICE_ID);
 
-    this.id = id;
     this.isOpen = false;
-    this.name = name;
-    this.meta = meta;
-  }
-
-  async setFavourite(value) {
-    let nextValue = !!value;
-    if (this.meta.favourite === nextValue) return false;
-
-    let metaCopy = Object.assign({}, this.meta);
-    metaCopy.favourite = nextValue;
-    let result = await apiWrapper._updateDevice(this.id, {
-      name: this.name,
-      typeId: Blinds.deviceId(),
-      id: this.id,
-      meta: Blinds._formatMeta(metaCopy)
-    });
-
-    if (result.result) this.meta.favourite = nextValue;
-    return result.result;
   }
 
   async open() {
@@ -66,15 +42,6 @@ export default class Blinds extends CommonDeviceSchema {
     );
 
     if (result.result) this.isOpen = false;
-    return result.result;
-  }
-
-  async getState() {
-    let result = await apiWrapper._performActionOnDevice(
-      this.id,
-      ACTION_NAMES.getState
-    );
-
     return result.result;
   }
 }
