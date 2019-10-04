@@ -179,10 +179,11 @@ export default {
       data
     );
   },
-  async _performActionOnDevice(deviceId, actionName) {
+  async _performActionOnDevice(deviceId, actionName, params) {
     return await requestQuery(
       composeURL(URLS.devices.performAction.url, deviceId, actionName),
-      URLS.devices.performAction.method
+      URLS.devices.performAction.method,
+      params
     );
   },
   async _addDeviceToRoom(deviceId, roomId) {
