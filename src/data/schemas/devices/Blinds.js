@@ -19,6 +19,10 @@ export default class Blinds extends CommonDeviceSchema {
     super(id, name, meta, DEVICE_ID);
 
     this.isOpen = false;
+    this.level = 0;
+    this.status = "closed";
+
+    this.updateState();
   }
 
   async open() {
@@ -43,5 +47,11 @@ export default class Blinds extends CommonDeviceSchema {
 
     if (result.result) this.isOpen = false;
     return result.result;
+  }
+
+  async updateState() {
+    let state = await this._getState();
+    this.status = state.status;
+    this.level = Number.parseInt(state.level);
   }
 }

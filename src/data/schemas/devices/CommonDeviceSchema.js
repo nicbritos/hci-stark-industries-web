@@ -49,13 +49,17 @@ export default class CommonDeviceSchema {
     return result.result;
   }
 
-  async getState() {
+  async _getState() {
     let result = await apiWrapper._performActionOnDevice(
       this.id,
       ACTION_NAMES.getState
     );
 
     return result.result;
+  }
+
+  async updateState() {
+    throw new Error("This method should be overwritten");
   }
 
   async delete() {
