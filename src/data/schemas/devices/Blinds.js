@@ -15,17 +15,8 @@ export default class Blinds extends CommonDeviceSchema {
   }
 
   static async create(name) {
-    let meta = {
-      favourite: false
-    };
-
-    let result = await apiWrapper._createDevice({
-      typeId: this.deviceId(),
-      name: name,
-      meta: this._formatMeta(meta)
-    });
-
-    return new Blinds(result.device.id, name, meta);
+    let data = await CommonDeviceSchema.create(name, this.deviceId());
+    return new Blinds(data.id, data.name, data.meta);
   }
 
   constructor(name, id, meta) {
