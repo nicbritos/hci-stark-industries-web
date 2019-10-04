@@ -21,8 +21,6 @@ export default class Blinds extends CommonDeviceSchema {
     this.isOpen = false;
     this.level = 0;
     this.status = "closed";
-
-    this.updateState();
   }
 
   async open() {
