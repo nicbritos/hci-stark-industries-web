@@ -50,6 +50,7 @@ export default class Blinds extends CommonDeviceSchema {
   async updateState() {
     let state = await this._getState();
     this.status = state.status;
+    if (this.status === "closed") this.isOpen = false;
     this.level = Number.parseInt(state.level);
   }
 }
