@@ -48,7 +48,7 @@ export default class AC extends CommonDeviceSchema {
   }
 
   static async create(name) {
-    let data = await CommonDeviceSchema.create(name, DEVICE_ID);
+    let data = await CommonDeviceSchema._create(name, DEVICE_ID);
     return new AC(data.id, data.name, data.meta);
   }
 

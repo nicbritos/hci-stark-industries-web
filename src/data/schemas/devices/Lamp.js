@@ -35,7 +35,7 @@ function formatColor(colors) {
 
 export default class Lamp extends CommonDeviceSchema {
   static async create(name, supportsColors) {
-    let data = await CommonDeviceSchema.create(name, DEVICE_ID, {
+    let data = await CommonDeviceSchema._create(name, DEVICE_ID, {
       supportsColors: !!supportsColors
     });
     return new Lamp(data.id, data.name, data.meta);

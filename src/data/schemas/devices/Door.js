@@ -13,7 +13,7 @@ const DEVICE_ID = "lsf78ly0eqrjbz91";
 
 export default class Door extends CommonDeviceSchema {
   static async create(name) {
-    let data = await CommonDeviceSchema.create(name, DEVICE_ID);
+    let data = await CommonDeviceSchema._create(name, DEVICE_ID);
     return new Door(data.id, data.name, data.meta);
   }
 

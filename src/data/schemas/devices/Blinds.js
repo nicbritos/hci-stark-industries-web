@@ -11,7 +11,7 @@ const DEVICE_ID = "eu0v2xgprrhhg41g";
 
 export default class Blinds extends CommonDeviceSchema {
   static async create(name) {
-    let data = await CommonDeviceSchema.create(name, DEVICE_ID);
+    let data = await CommonDeviceSchema._create(name, DEVICE_ID);
     return new Blinds(data.id, data.name, data.meta);
   }
 

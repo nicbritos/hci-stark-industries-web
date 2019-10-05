@@ -7,7 +7,7 @@ const ACTION_NAMES = {
 };
 
 export default class CommonDeviceSchema extends CommonSchema {
-  static async create(name, deviceId, customMetadata) {
+  static async _create(name, deviceId, customMetadata) {
     let meta = {
       favourite: false
     };
@@ -15,17 +15,19 @@ export default class CommonDeviceSchema extends CommonSchema {
       meta = Object.assign(meta, customMetadata);
     }
 
-    let result = await apiWrapper.devices.create({
-      typeId: deviceId,
-      name: name,
-      meta: this._formatMeta(meta)
-    });
+    let result = await CommonSchema._create(
+      name,
+      meta,
+      { typeId: deviceId },
+      "devices",
+      "device"
+    );
 
     return { id: result.device.id, name: name, meta: meta };
   }
 
   constructor(id, name, meta, deviceId) {
-    super(id, name, meta);
+    super(id, name, meta, "devices", "device");
 
     this.deviceId = deviceId;
   }
@@ -49,15 +51,9 @@ export default class CommonDeviceSchema extends CommonSchema {
   }
 
   async changeName(newName) {
-    if (typeof newName !== "string") return false;
-    newName = newName.trim();
-    let result = await apiWrapper.devices.update(this.id, {
-      name: newName,
-      meta: this.meta,
+    return CommonSchema._changeName(newName, {
       typeId: this.deviceId
     });
-    if (result.result) this.name = newName;
-    return !!result.result;
   }
 
   async addToRoom(roomId) {
@@ -79,18 +75,7 @@ export default class CommonDeviceSchema extends CommonSchema {
     return !!result.result;
   }
 
-  async refreshInformation() {
-    let result = await apiWrapper.getDevice(this.id);
-    this.name = result.device.name;
-    this.meta = JSON.parse(result.device.meta);
-    return true;
-  }
-
   async refreshState() {
     throw new Error("This method should be overwritten");
-  }
-
-  async delete() {
-    return (await apiWrapper.devices.delete(this.id)).result;
   }
 }
