@@ -56,7 +56,7 @@ export default class Lamp extends CommonDeviceSchema {
   async turnOn() {
     if (this.isOn) return false;
 
-    let result = await apiWrapper._performActionOnDevice(
+    let result = await apiWrapper.devices.performAction(
       this.id,
       ACTION_NAMES.on
     );
@@ -68,7 +68,7 @@ export default class Lamp extends CommonDeviceSchema {
   async turnOff() {
     if (!this.isOn) return false;
 
-    let result = await apiWrapper._performActionOnDevice(
+    let result = await apiWrapper.devices.performAction(
       this.id,
       ACTION_NAMES.off
     );
@@ -98,7 +98,7 @@ export default class Lamp extends CommonDeviceSchema {
     )
       return false;
 
-    let result = await apiWrapper._performActionOnDevice(
+    let result = await apiWrapper.devices.performAction(
       this.id,
       ACTION_NAMES.setBrightness,
       {
@@ -126,7 +126,7 @@ export default class Lamp extends CommonDeviceSchema {
 
     if (this.brightness === value) return false;
 
-    let result = await apiWrapper._performActionOnDevice(
+    let result = await apiWrapper.devices.performAction(
       this.id,
       ACTION_NAMES.setColor,
       {

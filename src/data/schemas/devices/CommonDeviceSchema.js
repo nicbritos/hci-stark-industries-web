@@ -15,7 +15,7 @@ export default class CommonDeviceSchema extends CommonSchema {
       meta = Object.assign(meta, customMetadata);
     }
 
-    let result = await apiWrapper._createDevice({
+    let result = await apiWrapper.devices.create({
       typeId: deviceId,
       name: name,
       meta: this._formatMeta(meta)
@@ -36,7 +36,7 @@ export default class CommonDeviceSchema extends CommonSchema {
 
     let metaCopy = Object.assign({}, this.meta);
     metaCopy.favourite = nextValue;
-    let result = await apiWrapper._updateDevice(this.id, {
+    let result = await apiWrapper.devices.update(this.id, {
       name: name,
       typeId: this.deviceId,
       id: this.id,
@@ -51,7 +51,7 @@ export default class CommonDeviceSchema extends CommonSchema {
   async changeName(newName) {
     if (typeof newName !== "string") return false;
     newName = newName.trim();
-    let result = await apiWrapper._updateDevice(this.id, {
+    let result = await apiWrapper.devices.update(this.id, {
       name: newName,
       meta: this.meta,
       typeId: this.deviceId
@@ -61,17 +61,17 @@ export default class CommonDeviceSchema extends CommonSchema {
   }
 
   async addToRoom(roomId) {
-    let result = await apiWrapper._addDeviceToRoom(this.id, roomId);
+    let result = await apiWrapper.devices.addToRoom(this.id, roomId);
     return !!result.result;
   }
 
   async deleteFromRooms() {
-    let result = await apiWrapper._deleteDeviceFromRooms(this.id);
+    let result = await apiWrapper.devices.deleteFromRooms(this.id);
     return !!result.result;
   }
 
   async _getState() {
-    let result = await apiWrapper._performActionOnDevice(
+    let result = await apiWrapper.devices.performAction(
       this.id,
       ACTION_NAMES.getState
     );
@@ -91,6 +91,6 @@ export default class CommonDeviceSchema extends CommonSchema {
   }
 
   async delete() {
-    return (await apiWrapper._deleteDevice(this.id)).result;
+    return (await apiWrapper.devices.delete(this.id)).result;
   }
 }

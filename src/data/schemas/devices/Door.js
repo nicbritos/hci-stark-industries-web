@@ -28,7 +28,7 @@ export default class Door extends CommonDeviceSchema {
   async open() {
     if (this.isOpen) return false;
 
-    let result = await apiWrapper._performActionOnDevice(
+    let result = await apiWrapper.devices.performAction(
       this.id,
       ACTION_NAMES.open
     );
@@ -40,7 +40,7 @@ export default class Door extends CommonDeviceSchema {
   async close() {
     if (!this.isOpen) return false;
 
-    let result = await apiWrapper._performActionOnDevice(
+    let result = await apiWrapper.devices.performAction(
       this.id,
       ACTION_NAMES.close
     );
@@ -52,7 +52,7 @@ export default class Door extends CommonDeviceSchema {
   async lock() {
     if (this.isLocked) return false;
 
-    let result = await apiWrapper._performActionOnDevice(
+    let result = await apiWrapper.devices.performAction(
       this.id,
       ACTION_NAMES.lock
     );
@@ -64,7 +64,7 @@ export default class Door extends CommonDeviceSchema {
   async unlock() {
     if (!this.isLocked) return false;
 
-    let result = await apiWrapper._performActionOnDevice(
+    let result = await apiWrapper.devices.performAction(
       this.id,
       ACTION_NAMES.unlock
     );

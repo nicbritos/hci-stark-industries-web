@@ -68,7 +68,7 @@ export default class AC extends CommonDeviceSchema {
   async turnOn() {
     if (this.isOn) return false;
 
-    let result = await apiWrapper._performActionOnDevice(
+    let result = await apiWrapper.devices.performAction(
       this.id,
       ACTION_NAMES.on
     );
@@ -80,7 +80,7 @@ export default class AC extends CommonDeviceSchema {
   async turnOff() {
     if (!this.isOn) return false;
 
-    let result = await apiWrapper._performActionOnDevice(
+    let result = await apiWrapper.devices.performAction(
       this.id,
       ACTION_NAMES.off
     );
@@ -97,7 +97,7 @@ export default class AC extends CommonDeviceSchema {
 
     if (this.temperature === value) return false;
 
-    let result = await apiWrapper._performActionOnDevice(
+    let result = await apiWrapper.devices.performAction(
       this.id,
       ACTION_NAMES.setTemperature,
       {
@@ -113,7 +113,7 @@ export default class AC extends CommonDeviceSchema {
     if (!(value in AC.supportedModes())) return false;
     if (this.mode === value) return false;
 
-    let result = await apiWrapper._performActionOnDevice(
+    let result = await apiWrapper.devices.performAction(
       this.id,
       ACTION_NAMES.setMode,
       {
@@ -129,7 +129,7 @@ export default class AC extends CommonDeviceSchema {
     if (!(value in AC.supportedVerticalSwings())) return false;
     if (this.swing.vertical === value) return false;
 
-    let result = await apiWrapper._performActionOnDevice(
+    let result = await apiWrapper.devices.performAction(
       this.id,
       ACTION_NAMES.setVerticalSwing,
       {
@@ -145,7 +145,7 @@ export default class AC extends CommonDeviceSchema {
     if (!(value in AC.supportedHorizontalSwings())) return false;
     if (this.swing.horizontal === value) return false;
 
-    let result = await apiWrapper._performActionOnDevice(
+    let result = await apiWrapper.devices.performAction(
       this.id,
       ACTION_NAMES.setHorizontalSwing,
       {
@@ -161,7 +161,7 @@ export default class AC extends CommonDeviceSchema {
     if (!(value in AC.supportedFanSpeeds())) return false;
     if (this.fanSpeed === value) return false;
 
-    let result = await apiWrapper._performActionOnDevice(
+    let result = await apiWrapper.devices.performAction(
       this.id,
       ACTION_NAMES.setFanSpeed,
       {

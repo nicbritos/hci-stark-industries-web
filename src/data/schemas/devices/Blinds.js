@@ -26,7 +26,7 @@ export default class Blinds extends CommonDeviceSchema {
   async open() {
     if (this.isOpen) return false;
 
-    let result = await apiWrapper._performActionOnDevice(
+    let result = await apiWrapper.devices.performAction(
       this.id,
       ACTION_NAMES.open
     );
@@ -38,7 +38,7 @@ export default class Blinds extends CommonDeviceSchema {
   async close() {
     if (!this.isOpen) return false;
 
-    let result = await apiWrapper._performActionOnDevice(
+    let result = await apiWrapper.devices.performAction(
       this.id,
       ACTION_NAMES.close
     );
