@@ -1,3 +1,4 @@
+import CommonSchema from "@/data/schemas/CommonSchema";
 import apiWrapper from "@/data/apiWrapper";
 
 // Data extracted from API Docs
@@ -5,11 +6,7 @@ const ACTION_NAMES = {
   getState: "getState"
 };
 
-export default class CommonDeviceSchema {
-  static _formatMeta(meta) {
-    return JSON.stringify(meta);
-  }
-
+export default class CommonDeviceSchema extends CommonSchema {
   static async create(name, deviceId, customMetadata) {
     let meta = {
       favourite: false
@@ -28,9 +25,8 @@ export default class CommonDeviceSchema {
   }
 
   constructor(id, name, meta, deviceId) {
-    this.id = id;
-    this.name = name;
-    this.meta = meta;
+    super(id, name, meta);
+
     this.deviceId = deviceId;
   }
 
