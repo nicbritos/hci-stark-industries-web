@@ -7,7 +7,7 @@
 
     <v-card dark raised>
         <v-card-title>
-            <span class="headline">{{Name}}</span>
+            <span class="headline">{{name}}</span>
 
 
             <v-btn icon absolute right @click="CurtainsMenu = false">
@@ -20,22 +20,26 @@
         </v-card-title>
         <v-card-text>
             <v-container >
-                <v-row justify="span">
+                <v-row justify="space-between">
                     <v-col>
-                        <img id="image" src="../../assets/CurtainOpen.svg"/>
+                        <img id="image" :src="ImageCurrent"/>
                     </v-col>
                     <v-col cols="4">
                         <v-row>
-                            <v-btn width="50" height="60"  color="blue">
-                                <v-img  src="../../assets/arrowUp.svg"/>
+                            <v-btn :disabled="this.ButtonUp.disabled" width="50" height="60"  color="blue" @click="OpenCurtain()">
+                                <v-icon>
+                                    keyboard_arrow_up
+                                </v-icon>
                             </v-btn>
                         </v-row>
                         <v-row>
                             <br/>
                         </v-row>
                         <v-row>
-                            <v-btn width="50" height="60" color="blue">
-                                <v-img  style="rotation:180deg " src="../../assets/arrowDown.svg"/>
+                            <v-btn :disabled="this.ButtonDown.disabled" width="50" height="60" color="blue" @click="CloseCurtain()">
+                                <v-icon>
+                                    keyboard_arrow_down
+                                </v-icon>
                             </v-btn>
                         </v-row>
                     </v-col>
@@ -55,15 +59,44 @@
 
 <script>
     export default {
-        name: "CurtainsMenu",
+        name: "curtainsMenu",
         props:[
-            'Name'
+            'name'
         ],
         data: () => ({
+
+            ButtonUp:{
+                disabled:true,ImageToSet:"img/devices/CurtainOpen.svg"
+            },
+
+            ButtonDown:{
+                disabled:false,ImageToSet:"img/devices/CurtainClosed.svg"
+            },
+
             CurtainsMenu: false,
+            ImageCurrent:"",
         }),
         methods:{
-        }
+            OpenCurtain(){
+
+                this.ButtonUp.disabled=true;
+                this.ButtonDown.disabled=false;
+                this.ImageCurrent= this.ButtonUp.ImageToSet;
+
+            },
+            CloseCurtain(){
+                this.ButtonUp.disabled=false;
+                this.ButtonDown.disabled=true;
+                this.ImageCurrent= this.ButtonDown.ImageToSet;
+
+            },
+            SetUp(){
+                this.ImageCurrent=this.ButtonUp.ImageToSet;
+            }
+        },
+        mounted(){
+            this.SetUp()
+        },
     }
 
 

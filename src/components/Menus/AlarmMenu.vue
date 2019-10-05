@@ -7,7 +7,7 @@
 
       <v-card dark raised>
         <v-card-title>
-          <span class="headline">{{Name}}</span>
+          <span class="headline">{{name}}</span>
           <v-btn icon absolute right @click="AlarmMenu = false">
             <v-avatar color="red">
               <v-icon>delete</v-icon>
@@ -33,10 +33,10 @@
               <br/>
             <v-row class="justify-center">
               <v-btn color="blue" rounded @click="changePass = !changePass">
-                  <div v-if="MenuMode === 'create'">
+                  <div v-if="menuMode === 'create'">
                         Set Up Password
                   </div>
-                  <div v-else-if="MenuMode === 'edit'">
+                  <div v-else-if="menuMode === 'edit'">
                       Change Password
                   </div>
               </v-btn>
@@ -55,10 +55,10 @@
     <v-dialog v-model="changePass" dark max-width="400px">
       <v-card>
         <v-card-title>
-            <span v-if="MenuMode === 'create'">
+            <span v-if="menuMode === 'create'">
                 Set Up Password
             </span>
-            <span v-else-if="MenuMode === 'edit'">
+            <span v-else-if="menuMode === 'edit'">
                 Change Password
             </span>
         </v-card-title>
@@ -112,9 +112,9 @@ export default {
       }
   },
     props:[
-        'MenuMode',
+        'menuMode',
         // Puede tener valor create o edit
-        'Name'
+        'name'
         // Nombre de la Alarma
     ],
 

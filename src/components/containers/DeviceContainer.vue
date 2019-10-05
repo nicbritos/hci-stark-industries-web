@@ -1,18 +1,28 @@
 <template>
-  <v-container fluid>
-    <v-row justify="start">
-      <v-col cols="auto" v-for="item in items" :key="item.id">
-        <Device :room="room" :device="item"></Device>
-      </v-col>
-    </v-row>
-  </v-container>
+  <BoxContainer :items="items">
+    <template v-slot:item="{ item }">
+      <Device
+        :editable="editable"
+        :selectable="selectable"
+        :room="room"
+        :device="item"
+        @update="processSelection(item, $event)"
+        @click="processClick(item)"
+      ></Device>
+    </template>
+  </BoxContainer>
 </template>
 
 <script>
+import BoxContainer from "@/components/containers/BoxContainer";
 import Device from "@/components/individuals/Device";
+
 export default {
   name: "DeviceContainer",
-  components: { Device },
+  components: { Device, BoxContainer },
+  model: {
+    events: ["pick"]
+  },
   props: {
     items: {
       type: Array,
@@ -20,7 +30,38 @@ export default {
     },
     room: {
       type: Boolean,
-      required: false
+      required: false,
+      default: false
+    },
+    selectable: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
+    editable: {
+      type: Boolean,
+      required: false,
+      default: true
+    },
+    pick: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
+    selectedItems: {
+      type: Array,
+      required: false,
+      default: () => []
+    }
+  },
+  methods: {
+    processSelection(item, isSelected) {
+      if (isSelected) this.selectedItems.push(item);
+      else this.selectedItems = this.selectedItems.filter(i => i !== item);
+    },
+    processClick(item) {
+      if (this.pick) this.$emit("pick", item);
+      else console.log("Open its menu");
     }
   }
 };

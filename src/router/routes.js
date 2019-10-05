@@ -7,6 +7,7 @@ import Regions from "@/views/Regions.vue";
 import Register from "@/views/Register.vue";
 import Routines from "@/views/Routines.vue";
 import Recovery from "@/views/Recovery.vue";
+import NewRoutine from "@/views/NewRoutine.vue";
 import PageNotFound from "@/views/PageNotFound.vue";
 
 const routes = {
@@ -43,6 +44,14 @@ const routes = {
       },
       component: Routines
     },
+    newRoutine: {
+      path: "/routines/new",
+      name: "newRoutine",
+      meta: {
+        requiresAuth: false
+      },
+      component: NewRoutine
+    },
     users: {
       path: "/users",
       name: "users",
@@ -78,9 +87,6 @@ const routes = {
     about: {
       path: "/about",
       name: "about",
-      meta: {
-        requiresUnAuth: true
-      },
       component: About
     },
     "page-not-found": {

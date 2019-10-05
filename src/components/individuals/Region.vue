@@ -27,38 +27,43 @@
       <v-row>
         <v-spacer></v-spacer>
         <v-btn color="primary" outlined text class="mb-2 mr-4" v-on="on" v-blur
-        >EDIT</v-btn
+          >EDIT</v-btn
         >
         <v-btn text outlined color="error" class="mb-2 mr-4" v-on="on" v-blur
-        >DELETE</v-btn
+          >DELETE</v-btn
         >
       </v-row>
       <v-divider></v-divider>
 
       <v-row>
         <v-toolbar flat color="transparent">
-        <v-toolbar-title>
-          <h4 class="text-no-bold">
-            Rooms
-          </h4>
-        </v-toolbar-title>
-      </v-toolbar>
+          <v-toolbar-title>
+            <h4 class="text-no-bold">
+              Rooms
+            </h4>
+          </v-toolbar-title>
+        </v-toolbar>
         <v-spacer></v-spacer>
         <v-btn text color="primary" class="ma-2 mr-4" outlined v-on="on" v-blur
           >NEW ROOM</v-btn
         >
       </v-row>
 
-      <RoomContainer :items="region.rooms"></RoomContainer>
+      <BoxContainer :items="region.rooms">
+        <template v-slot:item="{ item }">
+          <Room :room="item"></Room>
+        </template>
+      </BoxContainer>
     </v-expansion-panel-content>
   </v-expansion-panel>
 </template>
 
 <script>
-import RoomContainer from "@/components/containers/RoomContainer";
+import BoxContainer from "@/components/containers/BoxContainer";
+import Room from "@/components/individuals/Room";
 export default {
   name: "Region",
-  components: { RoomContainer },
+  components: { BoxContainer, Room },
   props: {
     region: {
       type: Object,
