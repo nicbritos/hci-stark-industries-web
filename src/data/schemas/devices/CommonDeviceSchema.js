@@ -1,5 +1,5 @@
-import CommonSchema from "@/data/schemas/CommonSchema";
 import apiWrapper from "@/data/apiWrapper";
+import CommonSchema from "../CommonSchema";
 
 // Data extracted from API Docs
 const ACTION_NAMES = {

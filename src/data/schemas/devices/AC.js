@@ -1,5 +1,6 @@
-import CommonDeviceSchema from "CommonDeviceSchema";
+import CommonDeviceSchema from "@/data/schemas/CommonDeviceSchema";
 import apiWrapper from "@/data/apiWrapper";
+import DeviceIds from "./DeviceIds";
 
 // Data extracted from API Docs
 const ACTION_NAMES = {
@@ -12,8 +13,6 @@ const ACTION_NAMES = {
   setVerticalSwing: "setVerticalSwing",
   setHorizontalSwing: "setHorizontalSwing"
 };
-
-const DEVICE_ID = "li6cbv5sdlatti0j";
 
 function adjustNumberRange(value, min, max) {
   value = Math.floor(value);
@@ -48,12 +47,12 @@ export default class AC extends CommonDeviceSchema {
   }
 
   static async create(name) {
-    let data = await CommonDeviceSchema._create(name, DEVICE_ID);
+    let data = await CommonDeviceSchema._create(name, DeviceIds.byType.AC);
     return new AC(data.id, data.name, data.meta);
   }
 
   constructor(id, name, meta) {
-    super(id, name, meta, DEVICE_ID);
+    super(id, name, meta, DeviceIds.byType.AC);
 
     this.isOn = false;
     this.mode = AC.supportedModes()[0];

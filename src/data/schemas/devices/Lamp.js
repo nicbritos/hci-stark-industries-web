@@ -1,5 +1,6 @@
-import CommonDeviceSchema from "CommonDeviceSchema";
+import CommonDeviceSchema from "@/data/schemas/CommonDeviceSchema";
 import apiWrapper from "@/data/apiWrapper";
+import DeviceIds from "./DeviceIds";
 
 // Data extracted from API Docs
 const ACTION_NAMES = {
@@ -15,8 +16,6 @@ const MAX_BRIGHTNESS = 100;
 
 const MIN_COLOR = 0x0;
 const MAX_COLOR = 0xff;
-
-const DEVICE_ID = "go46xmbqeomjrsjr";
 
 function adjustNumberRange(value, min, max) {
   value = Math.floor(value);
@@ -35,14 +34,14 @@ function formatColor(colors) {
 
 export default class Lamp extends CommonDeviceSchema {
   static async create(name, supportsColors) {
-    let data = await CommonDeviceSchema._create(name, DEVICE_ID, {
+    let data = await CommonDeviceSchema._create(name, DeviceIds.byType.Lamp, {
       supportsColors: !!supportsColors
     });
     return new Lamp(data.id, data.name, data.meta);
   }
 
   constructor(id, name, meta) {
-    super(id, name, meta, DEVICE_ID);
+    super(id, name, meta, DeviceIds.byType.Lamp);
 
     this.isOn = false;
     this.brightness = 100;

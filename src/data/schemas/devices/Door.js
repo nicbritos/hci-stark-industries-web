@@ -1,5 +1,6 @@
-import CommonDeviceSchema from "./CommonDeviceSchema";
+import CommonDeviceSchema from "@/data/schemas/CommonDeviceSchema";
 import apiWrapper from "@/data/apiWrapper";
+import DeviceIds from "./DeviceIds";
 
 // Data extracted from API Docs
 const ACTION_NAMES = {
@@ -9,16 +10,14 @@ const ACTION_NAMES = {
   unlock: "unlock"
 };
 
-const DEVICE_ID = "lsf78ly0eqrjbz91";
-
 export default class Door extends CommonDeviceSchema {
   static async create(name) {
-    let data = await CommonDeviceSchema._create(name, DEVICE_ID);
+    let data = await CommonDeviceSchema._create(name, DeviceIds.byType.Door);
     return new Door(data.id, data.name, data.meta);
   }
 
   constructor(id, name, meta) {
-    super(id, name, meta, DEVICE_ID);
+    super(id, name, meta, DeviceIds.byType.Door);
 
     this.isOpen = true;
     this.isLocked = true;

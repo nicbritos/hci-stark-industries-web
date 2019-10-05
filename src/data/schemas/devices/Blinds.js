@@ -1,5 +1,6 @@
-import CommonDeviceSchema from "./CommonDeviceSchema";
+import CommonDeviceSchema from "@/data/schemas/CommonDeviceSchema";
 import apiWrapper from "@/data/apiWrapper";
+import DeviceIds from "./DeviceIds";
 
 // Data extracted from API Docs
 const ACTION_NAMES = {
@@ -7,16 +8,14 @@ const ACTION_NAMES = {
   close: "close"
 };
 
-const DEVICE_ID = "eu0v2xgprrhhg41g";
-
 export default class Blinds extends CommonDeviceSchema {
   static async create(name) {
-    let data = await CommonDeviceSchema._create(name, DEVICE_ID);
+    let data = await CommonDeviceSchema._create(name, DeviceIds.byType.Blinds);
     return new Blinds(data.id, data.name, data.meta);
   }
 
   constructor(id, name, meta) {
-    super(id, name, meta, DEVICE_ID);
+    super(id, name, meta, DeviceIds.byType.Blinds);
 
     this.isOpen = false;
     this.level = 0;
