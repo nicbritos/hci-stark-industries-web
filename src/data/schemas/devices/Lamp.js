@@ -138,7 +138,7 @@ export default class Lamp extends CommonDeviceSchema {
     return result.result;
   }
 
-  async updateState() {
+  async refreshState() {
     let state = await this._getState();
     this.isOn = state.status === "on";
     this.brightness = Number.parseInt(state.brightness);

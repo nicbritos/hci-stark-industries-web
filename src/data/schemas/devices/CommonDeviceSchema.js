@@ -52,6 +52,28 @@ export default class CommonDeviceSchema {
     return result.result;
   }
 
+  async changeName(newName) {
+    if (typeof newName !== "string") return false;
+    newName = newName.trim();
+    let result = await apiWrapper._updateDevice(this.id, {
+      name: newName,
+      meta: this.meta,
+      typeId: this.deviceId
+    });
+    if (result.result) this.name = newName;
+    return result.result;
+  }
+
+  async addToRoom(roomId) {
+    let result = await apiWrapper._addDeviceToRoom(this.id, roomId);
+    return result.result;
+  }
+
+  async deleteFromRooms() {
+    let result = await apiWrapper._deleteDeviceFromRooms(this.id);
+    return result.result;
+  }
+
   async _getState() {
     let result = await apiWrapper._performActionOnDevice(
       this.id,
@@ -61,14 +83,14 @@ export default class CommonDeviceSchema {
     return result.result;
   }
 
-  async updateInformation() {
+  async refreshInformation() {
     let result = await apiWrapper.getDevice(this.id);
     this.name = result.device.name;
     this.meta = JSON.parse(result.device.meta);
     return true;
   }
 
-  async updateState() {
+  async refreshState() {
     throw new Error("This method should be overwritten");
   }
 
