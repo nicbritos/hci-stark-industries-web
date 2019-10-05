@@ -18,42 +18,48 @@
       <v-card-text>
         <v-container>
             <span> Freezer Temperature</span>
-          <v-row justify="space-around" class="text-center" >
-              <v-btn icon class="justify-center col-md-1" @click="FreezerTemperature=FreezerTemperature-1">
+          <v-row  >
+              <div class="buttonsContainer">
+              <v-btn icon height="50" width="50" class="buttonLeft" @click="Fridge.freezerTemperature--">
                 <v-avatar color="blue">
                   <v-icon>remove</v-icon>
                 </v-avatar>
               </v-btn>
 
               <v-avatar color="blue" size="80">
-                  <span class="white--text headline">{{FreezerTemperature}}</span>
+                  <span class="white--text headline">{{Fridge.freezerTemperature}}</span>
               </v-avatar>
 
-              <v-btn icon class="justify-center col-md-1" @click="FreezerTemperature=1+FreezerTemperature">
+              <v-btn icon height="50" width="50" class="buttonRight" @click="Fridge.freezerTemperature++">
                 <v-avatar color="blue">
                   <v-icon>add</v-icon>
                 </v-avatar>
               </v-btn>
+              </div>
           </v-row>
-            <br/>
 
-            <span> Fridge Temperature</span>
-            <v-row justify="space-around" class="text-center" >
-                <v-btn icon class="justify-center col-md-1" @click="FridgeTemperature=FridgeTemperature-1">
+
+            <span > Fridge Temperature</span>
+            <v-row  >
+                <div class="buttonsContainer">
+
+                <v-btn icon height="50" width="50" class="buttonLeft" @click="Fridge.temperature--">
                     <v-avatar color="blue">
                         <v-icon>remove</v-icon>
                     </v-avatar>
                 </v-btn>
 
                 <v-avatar color="blue" size="80">
-                    <span class="white--text headline">{{FridgeTemperature}}</span>
+                    <span class="white--text headline">{{Fridge.temperature}}</span>
                 </v-avatar>
 
-                <v-btn icon class="justify-center col-md-1" @click="FridgeTemperature=1+FridgeTemperature">
+                <v-btn height="50" width="50" icon class="buttonRight" @click="Fridge.temperature++">
                     <v-avatar color="blue">
                         <v-icon>add</v-icon>
                     </v-avatar>
                 </v-btn>
+                </div>
+
             </v-row>
 
             <br/>
@@ -63,6 +69,7 @@
               label="Mode"
               :items="dropdownFridgeMode"
               target="#dropdownFridgeMode"
+              v-model="Fridge.mode"
             />
           </v-row>
         </v-container>
@@ -81,16 +88,88 @@
 <script>
 export default {
   name: "fridgeMenu",
-  props: ["name"],
-  data() {
-    return {
-      dropdownFridgeMode: ["Normal", "Vacation", "Party"],
-        FreezerTemperature:4,
-        FridgeTemperature:18,
+  props: {
+      name:{
+          type: String,
+          required: true
+      },
+      deviceId:{
+          type: String,
+          required: true
+      }
+  },
+  data:()=> ({
+      dropdownFridgeMode: ["default", "vacation", "party"],
+      Fridge:{temperature:8,freezerTemperature:0,mode:""},
+
         FridgeMenu:false
-    };
-  }
+      
+  }),
+    methods:{
+        LoadModel(model){
+            this.Fridge = model;
+        },
+      SetUpForEdit(){
+          var myInit = {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" }
+          };
+          fetch(`http://localhost:8080/api/devices/${this.deviceId}/getState`, myInit)
+                  .then(response => {
+                      console.log("Request recibido");
+                      return response.json();
+                  })
+                  .then(data => this.LoadModel(data.result))
+                  .catch(error => {
+                      console.log(error);
+                  });
+      },
+        SaveAndExit(){
+            var myInit = {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" }
+            };
+            fetch(`http://localhost:8080/api/devices/${this.deviceId}/getState`, myInit)
+                    .then(response => {
+                        console.log("Request recibido");
+                        return response.json();
+                    })
+                    .then(data => this.LoadModel(data.result))
+                    .catch(error => {
+                        console.log(error);
+                    });
+
+        }
+    },
+    
+    watch:{
+      FridgeMenu:function (val) {
+          if(val){
+              this.SetUpForEdit();
+
+          }
+      }
+    }
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+    .buttonsContainer{
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        width: 100%;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    .buttonLeft {
+        left: 12%;
+        top: -10px;
+    }
+    .buttonRight {
+        right: 12%;
+        top: -10px;
+    }
+
+</style>

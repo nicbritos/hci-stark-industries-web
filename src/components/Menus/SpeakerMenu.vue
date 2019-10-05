@@ -36,7 +36,7 @@
                 class=""
                 color="light-blue"
                 rounded
-                :value="100 *(this.CurrentSong.Duration / this.CurrentSong.TimeMark)"
+                :value="100 *(this.CurrentSong.TimeMark / this.CurrentSong.Duration)"
                 buffer-value="100"
               />
               <span class="lastTimeMark">
@@ -150,7 +150,18 @@
 <script>
 export default {
   name: "SpeakerMenu",
-  props: ["name"],
+  props: {
+      deviceID:{
+          type: String,
+          required: false
+      },
+      mode:{
+          type: String,
+          required: true
+      }
+
+
+  },
   data: () => ({
     SpeakerMenu: false,
       SelectedDDL:0,
@@ -159,12 +170,11 @@ export default {
           Artist: "",
           TimeMark: 0,
           Duration: 0,
-          PlayState: true,
+          PlayState: false,
 
       },
-      isSongLoaded: true,
+      isSongLoaded: false,
 
-    SongProgress: 50,
       Volume: 5,
       CurrentSongID:3,
       CurrentGenre:0,
@@ -206,6 +216,8 @@ export default {
             this.CurrentSong.TimeMark=0;
             this.CurrentSong.Name="";
             this.CurrentSong.Artist="";
+            window.clearInterval();
+
 
             this.isSongLoaded=false;
 
@@ -227,6 +239,7 @@ export default {
           this.CurrentSong.Duration = song.Duration
           this.CurrentSong.TimeMark=0;
           this.SongProgress=0
+
       },
         previusSong(){
           if(this.CurrentSongID >0){
@@ -252,12 +265,37 @@ export default {
             this.Volume= 5;
             this.CurrentSongID=2
             this.CurrentGenre=0;
+        },
+        LoadModel(model){
+            console.log(model);
 
-            this.LoadSong();
+        },
+        SetUpForEdit(id){
+            fetch(`http://localhost:8080/api/devices/${id}`)
+                .then((response)=>{
+                    this.LoadModel(response.json());
+                })
+                .catch((error)=>{
+                    console.log(error);
+                })
         }
     },
     mounted() {
         this.setUp();
+        window.setInterval(() => {
+            if(this.CurrentSong.PlayState === true && this.isSongLoaded === true){
+                console.log(this.CurrentSong.TimeMark);
+                 this.CurrentSong.TimeMark++;
+            }
+
+            if(this.CurrentSong.TimeMark >= this.CurrentSong.Duration){
+                this.nextSong();
+            }
+        }, 1000);
+
+
+
+
     }
 
 };
