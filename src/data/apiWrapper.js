@@ -37,6 +37,10 @@ const URLS = {
       url: composeURL(URL, "devices"),
       method: METHODS.GET
     },
+    listByType: {
+      url: composeURL(URL, "devices", "devicetypes"),
+      method: METHODS.GET
+    },
     get: {
       url: composeURL(URL, "devices"),
       method: METHODS.GET
@@ -149,136 +153,140 @@ async function requestQuery(url, method, data) {
 export default {
   ERRORS: ERRORS,
 
-  // Devices
-  async getDevices() {
-    return await requestQuery(URLS.devices.list.url, URLS.devices.list.method);
+  devices: {
+    getAll: async () => {
+      return await requestQuery(
+        URLS.devices.list.url,
+        URLS.devices.list.method
+      );
+    },
+    getByType: async typeId => {
+      return await requestQuery(
+        composeURL(URLS.devices.listByType.url, typeId),
+        URLS.devices.listByType.method
+      );
+    },
+    get: async deviceId => {
+      return await requestQuery(
+        composeURL(URLS.devices.list.url, deviceId),
+        URLS.devices.list.method
+      );
+    },
+    create: async data => {
+      return await requestQuery(
+        URLS.devices.create.url,
+        URLS.devices.create.method,
+        data
+      );
+    },
+    update: async (deviceId, data) => {
+      return await requestQuery(
+        composeURL(URLS.devices.update.url, deviceId),
+        URLS.devices.update.method,
+        data
+      );
+    },
+    performAction: async (deviceId, actionName, params) => {
+      return await requestQuery(
+        composeURL(URLS.devices.performAction.url, deviceId, actionName),
+        URLS.devices.performAction.method,
+        params
+      );
+    },
+    addToRoom: async (deviceId, roomId) => {
+      return await requestQuery(
+        composeURL(URLS.devices.addToRoom.url, deviceId, "rooms", roomId),
+        URLS.devices.addToRoom.method
+      );
+    },
+    deleteFromRooms: async deviceId => {
+      return await requestQuery(
+        composeURL(URLS.devices.deleteFromRoom.url, deviceId),
+        URLS.devices.deleteFromRoom.method
+      );
+    },
+    delete: async deviceId => {
+      return await requestQuery(
+        composeURL(URLS.devices.delete.url, deviceId),
+        URLS.devices.delete.method
+      );
+    }
   },
-  async getDevicesByType(typeId) {
-    return await requestQuery(
-      composeURL(URLS.devices.listByType.url, typeId),
-      URLS.devices.listByType.method
-    );
+  rooms: {
+    getAll: async () => {
+      return await requestQuery(URLS.rooms.list.url, URLS.rooms.list.method);
+    },
+    get: async roomId => {
+      return await requestQuery(
+        composeURL(URLS.rooms.get.url, roomId),
+        URLS.rooms.get.method
+      );
+    },
+    getDevices: async roomId => {
+      return await requestQuery(
+        composeURL(URLS.rooms.getDevices.url, roomId, "devices"),
+        URLS.rooms.getDevices.method
+      );
+    },
+    create: async data => {
+      return await requestQuery(
+        URLS.rooms.create.url,
+        URLS.rooms.create.method,
+        data
+      );
+    },
+    update: async (roomId, data) => {
+      return await requestQuery(
+        composeURL(URLS.rooms.update.url, roomId),
+        URLS.rooms.update.method,
+        data
+      );
+    },
+    delete: async roomId => {
+      return await requestQuery(
+        composeURL(URLS.rooms.delete.url, roomId),
+        URLS.rooms.delete.method
+      );
+    }
   },
-  async getDevice(deviceId) {
-    return await requestQuery(
-      composeURL(URLS.devices.list.url, deviceId),
-      URLS.devices.list.method
-    );
-  },
-  async _createDevice(data) {
-    return await requestQuery(
-      URLS.devices.create.url,
-      URLS.devices.create.method,
-      data
-    );
-  },
-  async _updateDevice(deviceId, data) {
-    return await requestQuery(
-      composeURL(URLS.devices.update.url, deviceId),
-      URLS.devices.update.method,
-      data
-    );
-  },
-  async _performActionOnDevice(deviceId, actionName, params) {
-    return await requestQuery(
-      composeURL(URLS.devices.performAction.url, deviceId, actionName),
-      URLS.devices.performAction.method,
-      params
-    );
-  },
-  async _addDeviceToRoom(deviceId, roomId) {
-    return await requestQuery(
-      composeURL(URLS.devices.addToRoom.url, deviceId, "rooms", roomId),
-      URLS.devices.addToRoom.method
-    );
-  },
-  async _deleteDeviceFromRooms(deviceId) {
-    return await requestQuery(
-      composeURL(URLS.devices.deleteFromRoom.url, deviceId),
-      URLS.devices.deleteFromRoom.method
-    );
-  },
-  async _deleteDevice(deviceId) {
-    return await requestQuery(
-      composeURL(URLS.devices.delete.url, deviceId),
-      URLS.devices.delete.method
-    );
-  },
-
-  // Rooms
-  async getRooms() {
-    return await requestQuery(URLS.rooms.list.url, URLS.rooms.list.method);
-  },
-  async getRoom(roomId) {
-    return await requestQuery(
-      composeURL(URLS.rooms.get.url, roomId),
-      URLS.rooms.get.method
-    );
-  },
-  async getRoomDevices(roomId) {
-    return await requestQuery(
-      composeURL(URLS.rooms.getDevices.url, roomId, "devices"),
-      URLS.rooms.getDevices.method
-    );
-  },
-  async createRoom(data) {
-    return await requestQuery(
-      URLS.rooms.create.url,
-      URLS.rooms.create.method,
-      data
-    );
-  },
-  async updateRoom(roomId, data) {
-    return await requestQuery(
-      composeURL(URLS.rooms.update.url, roomId),
-      URLS.rooms.update.method,
-      data
-    );
-  },
-  async deleteRoom(roomId) {
-    return await requestQuery(
-      composeURL(URLS.rooms.delete.url, roomId),
-      URLS.rooms.delete.method
-    );
-  },
-
-  // Routines
-  async getRoutines() {
-    return await requestQuery(
-      URLS.routines.list.url,
-      URLS.routines.list.method
-    );
-  },
-  async getRoutine(routineId) {
-    return await requestQuery(
-      composeURL(URLS.routines.get.url, routineId),
-      URLS.routines.get.method
-    );
-  },
-  async createRoutine(data) {
-    return await requestQuery(
-      URLS.routines.create.url,
-      URLS.routines.create.method,
-      data
-    );
-  },
-  async updateRoutine(routineId, data) {
-    return await requestQuery(
-      composeURL(URLS.routines.update.url, routineId),
-      URLS.routines.update.method,
-      data
-    );
-  },
-  async executeRoutine(routineId) {
-    return await requestQuery(
-      composeURL(URLS.routines.execute.url, routineId, "execute"),
-      URLS.routines.update.method
-    );
-  },
-  async deleteRoutine(routineId) {
-    return await requestQuery(
-      composeURL(URLS.routines.delete.url, routineId),
-      URLS.routines.delete.method
-    );
+  routines: {
+    getAll: async () => {
+      return await requestQuery(
+        URLS.routines.list.url,
+        URLS.routines.list.method
+      );
+    },
+    get: async routineId => {
+      return await requestQuery(
+        composeURL(URLS.routines.get.url, routineId),
+        URLS.routines.get.method
+      );
+    },
+    create: async data => {
+      return await requestQuery(
+        URLS.routines.create.url,
+        URLS.routines.create.method,
+        data
+      );
+    },
+    update: async (routineId, data) => {
+      return await requestQuery(
+        composeURL(URLS.routines.update.url, routineId),
+        URLS.routines.update.method,
+        data
+      );
+    },
+    execute: async routineId => {
+      return await requestQuery(
+        composeURL(URLS.routines.execute.url, routineId, "execute"),
+        URLS.routines.update.method
+      );
+    },
+    delete: async routineId => {
+      return await requestQuery(
+        composeURL(URLS.routines.delete.url, routineId),
+        URLS.routines.delete.method
+      );
+    }
   }
 };
