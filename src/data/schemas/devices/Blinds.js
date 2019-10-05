@@ -32,7 +32,7 @@ export default class Blinds extends CommonDeviceSchema {
     );
 
     if (result.result) this.isOpen = true;
-    return result.result;
+    return !!result.result;
   }
 
   async close() {
@@ -44,7 +44,7 @@ export default class Blinds extends CommonDeviceSchema {
     );
 
     if (result.result) this.isOpen = false;
-    return result.result;
+    return !!result.result;
   }
 
   async refreshState() {

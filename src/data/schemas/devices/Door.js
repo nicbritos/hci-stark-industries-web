@@ -34,7 +34,7 @@ export default class Door extends CommonDeviceSchema {
     );
 
     if (result.result) this.isOpen = true;
-    return result.result;
+    return !!result.result;
   }
 
   async close() {
@@ -46,7 +46,7 @@ export default class Door extends CommonDeviceSchema {
     );
 
     if (result.result) this.isOpen = false;
-    return result.result;
+    return !!result.result;
   }
 
   async lock() {
@@ -58,7 +58,7 @@ export default class Door extends CommonDeviceSchema {
     );
 
     if (result.result) this.isLocked = true;
-    return result.result;
+    return !!result.result;
   }
 
   async unlock() {
@@ -70,7 +70,7 @@ export default class Door extends CommonDeviceSchema {
     );
 
     if (result.result) this.isLocked = false;
-    return result.result;
+    return !!result.result;
   }
 
   async refreshState() {

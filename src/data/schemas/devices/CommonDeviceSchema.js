@@ -49,7 +49,7 @@ export default class CommonDeviceSchema {
 
     // eslint-disable-next-line require-atomic-updates
     if (result.result) this.meta.favourite = nextValue;
-    return result.result;
+    return !!result.result;
   }
 
   async changeName(newName) {
@@ -61,17 +61,17 @@ export default class CommonDeviceSchema {
       typeId: this.deviceId
     });
     if (result.result) this.name = newName;
-    return result.result;
+    return !!result.result;
   }
 
   async addToRoom(roomId) {
     let result = await apiWrapper._addDeviceToRoom(this.id, roomId);
-    return result.result;
+    return !!result.result;
   }
 
   async deleteFromRooms() {
     let result = await apiWrapper._deleteDeviceFromRooms(this.id);
-    return result.result;
+    return !!result.result;
   }
 
   async _getState() {
@@ -80,7 +80,7 @@ export default class CommonDeviceSchema {
       ACTION_NAMES.getState
     );
 
-    return result.result;
+    return !!result.result;
   }
 
   async refreshInformation() {

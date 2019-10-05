@@ -62,7 +62,7 @@ export default class Lamp extends CommonDeviceSchema {
     );
 
     if (result.result) this.isOn = true;
-    return result.result;
+    return !!result.result;
   }
 
   async turnOff() {
@@ -74,7 +74,7 @@ export default class Lamp extends CommonDeviceSchema {
     );
 
     if (result.result) this.isOn = false;
-    return result.result;
+    return !!result.result;
   }
 
   async setColor(red, green, blue) {
@@ -115,7 +115,7 @@ export default class Lamp extends CommonDeviceSchema {
       this.colors.blue = blue;
       this.colors.green = green;
     }
-    return result.result;
+    return !!result.result;
   }
 
   async setBrightness(value) {
@@ -135,7 +135,7 @@ export default class Lamp extends CommonDeviceSchema {
     );
 
     if (result.result) this.brightness = value;
-    return result.result;
+    return !!result.result;
   }
 
   async refreshState() {
