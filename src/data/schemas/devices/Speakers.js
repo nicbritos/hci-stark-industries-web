@@ -139,7 +139,7 @@ export default  class Speakers extends  CommonDeviceSchema{
 
         let result = await apiWrapper.devices.performAction(
             this.id,
-            ACTION_NAMES.stop
+            ACTION_NAMES.pause
         );
 
         if(result.result)
@@ -200,6 +200,14 @@ export default  class Speakers extends  CommonDeviceSchema{
         );
 
         return result.result;
+    }
+
+    async refreshState() {
+        let state = await this._getState();
+        this.status = state.status;
+        this.volume = Number.parseInt(state.volume);
+        this.genre = state.genre;
+       this.song = state.song;
     }
 }
 

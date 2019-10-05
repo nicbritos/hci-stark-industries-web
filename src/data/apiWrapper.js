@@ -196,7 +196,7 @@ export default {
       );
     },
     performAction: async (deviceId, actionName, params) => {
-      console.log(`en perform action. URL: ${URLS.devices.action.url}`);
+      console.log(`en perform action. URL: ${URLS.devices.action.url+"/"+actionName}`);
       return await requestQuery(
         composeURL(URLS.devices.action.url, deviceId, actionName),
         URLS.devices.action.method,
