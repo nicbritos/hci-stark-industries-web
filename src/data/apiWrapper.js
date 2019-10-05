@@ -147,6 +147,7 @@ async function requestQuery(url, method, data) {
   return response.json();
 }
 
+// TODO: Manejo de errores aca y en cada clase
 // Every method returns a (processed) Promise
 // A successful query returns an Object as specified by the API documentation
 // An unsuccessful query throws an according Error (see error list)
