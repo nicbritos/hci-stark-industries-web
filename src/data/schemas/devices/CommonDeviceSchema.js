@@ -23,7 +23,7 @@ export default class CommonDeviceSchema extends CommonSchema {
       "device"
     );
 
-    return { id: result.device.id, name: name, meta: meta };
+    return { id: result.id, name: name, meta: meta };
   }
 
   constructor(id, name, meta, deviceId) {
