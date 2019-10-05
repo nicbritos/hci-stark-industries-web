@@ -20,17 +20,17 @@
             <span> Freezer Temperature</span>
           <v-row  >
               <div class="buttonsContainer">
-              <v-btn icon height="50" width="50" class="buttonLeft" @click="Fridge.freezerTemperature--">
+              <v-btn icon height="50" width="50" class="buttonLeft" @click="FridgeModel.freezerTemperature--">
                 <v-avatar color="blue">
                   <v-icon>remove</v-icon>
                 </v-avatar>
               </v-btn>
 
               <v-avatar color="blue" size="80">
-                  <span class="white--text headline">{{Fridge.freezerTemperature}}</span>
+                  <span class="white--text headline">{{FridgeModel.freezerTemperature}}</span>
               </v-avatar>
 
-              <v-btn icon height="50" width="50" class="buttonRight" @click="Fridge.freezerTemperature++">
+              <v-btn icon height="50" width="50" class="buttonRight" @click="FridgeModel.freezerTemperature++">
                 <v-avatar color="blue">
                   <v-icon>add</v-icon>
                 </v-avatar>
@@ -43,17 +43,17 @@
             <v-row  >
                 <div class="buttonsContainer">
 
-                <v-btn icon height="50" width="50" class="buttonLeft" @click="Fridge.temperature--">
+                <v-btn icon height="50" width="50" class="buttonLeft" @click="FridgeModel.temperature--">
                     <v-avatar color="blue">
                         <v-icon>remove</v-icon>
                     </v-avatar>
                 </v-btn>
 
                 <v-avatar color="blue" size="80">
-                    <span class="white--text headline">{{Fridge.temperature}}</span>
+                    <span class="white--text headline">{{FridgeModel.temperature}}</span>
                 </v-avatar>
 
-                <v-btn height="50" width="50" icon class="buttonRight" @click="Fridge.temperature++">
+                <v-btn height="50" width="50" icon class="buttonRight" @click="FridgeModel.temperature++">
                     <v-avatar color="blue">
                         <v-icon>add</v-icon>
                     </v-avatar>
@@ -69,15 +69,15 @@
               label="Mode"
               :items="dropdownFridgeMode"
               target="#dropdownFridgeMode"
-              v-model="Fridge.mode"
+              v-model="FridgeModel.mode"
             />
           </v-row>
         </v-container>
       </v-card-text>
       <v-card-actions class="justify-center">
         <div class="text-center">
-          <v-btn color="red" @click="FridgeMenu = false">Cancel</v-btn>
-          <v-btn color="blue" @click="FridgeMenu = false">Confirm</v-btn>
+          <v-btn color="red" @click="Exit()">Cancel</v-btn>
+          <v-btn color="blue" @click="SaveAndExit()">Confirm</v-btn>
 
         </div>
       </v-card-actions>
@@ -86,6 +86,7 @@
 </template>
 
 <script>
+    import Fridge from "../../data/schemas/devices/Fridge";
 export default {
   name: "fridgeMenu",
   props: {
@@ -99,56 +100,56 @@ export default {
       }
   },
   data:()=> ({
-      dropdownFridgeMode: ["default", "vacation", "party"],
-      Fridge:{temperature:8,freezerTemperature:0,mode:""},
+      dropdownFridgeMode: ["default", "vacation", "aaaaa"],
+      FridgeModel:{
+          temperature:8,
+          freezerTemperature:0,
+          mode:""},
 
         FridgeMenu:false
       
   }),
     methods:{
-        LoadModel(model){
-            this.Fridge = model;
-        },
-      SetUpForEdit(){
-          var myInit = {
-              method: "PUT",
-              headers: { "Content-Type": "application/json" }
-          };
-          fetch(`http://localhost:8080/api/devices/${this.deviceId}/getState`, myInit)
-                  .then(response => {
-                      console.log("Request recibido");
-                      return response.json();
-                  })
-                  .then(data => this.LoadModel(data.result))
-                  .catch(error => {
-                      console.log(error);
-                  });
-      },
-        SaveAndExit(){
-            var myInit = {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" }
-            };
-            fetch(`http://localhost:8080/api/devices/${this.deviceId}/getState`, myInit)
-                    .then(response => {
-                        console.log("Request recibido");
-                        return response.json();
-                    })
-                    .then(data => this.LoadModel(data.result))
-                    .catch(error => {
-                        console.log(error);
-                    });
+        async LoadModel(){
+            let APIFridge = new Fridge(this.deviceId,this.name);
+            await APIFridge.refreshState();
 
+
+            this.FridgeModel.freezerTemperature = APIFridge.freezerTemperature;
+            this.FridgeModel.temperature = APIFridge.temperature;
+            this.FridgeModel.mode = APIFridge.mode;
+        },
+        async SaveAndExit(){
+
+            let APIFridge = new Fridge(this.deviceId,this.name);
+            await APIFridge.refreshState();
+
+            console.log(this.FridgeModel);
+
+            console.log("Ento a SetFreezerTemp");
+            APIFridge.setFreezerTemperature(this.FridgeModel.freezerTemperature);
+            APIFridge.setMode(this.FridgeModel.mode);
+            APIFridge.setTemperature(this.FridgeModel.temperature);
+
+            this.Exit();
+
+        },
+        Exit(){
+            this.FridgeMenu = false;
         }
+
+    },
+    mounted(){
+        this.dropdownFridgeMode = Fridge.supportedModes();
     },
     
     watch:{
       FridgeMenu:function (val) {
           if(val){
-              this.SetUpForEdit();
-
+              this.LoadModel();
           }
-      }
+      },
+
     }
 };
 </script>
