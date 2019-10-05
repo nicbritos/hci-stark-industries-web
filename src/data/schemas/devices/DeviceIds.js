@@ -2,7 +2,8 @@ const byType = {
   AC: "li6cbv5sdlatti0j",
   Blinds: "eu0v2xgprrhhg41g",
   Door: "lsf78ly0eqrjbz91",
-  Lamp: "go46xmbqeomjrsjr"
+  Lamp: "go46xmbqeomjrsjr",
+  Frige: "rnizejqr2di0okho"
 };
 
 let byId = {};
