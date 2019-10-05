@@ -67,6 +67,7 @@
 </template>
 
 <script>
+  import Door from "../../data/schemas/devices/Door";
 export default {
   name: "DoorMenu",
 
@@ -90,15 +91,15 @@ export default {
     },
 
     SecurityRepresentation: {
-      btnString: "asda",
+      btnString: "",
       btnEnabled: false,
-      image: "asdasd"
+      image: ""
     },
 
     StatusRepresentation: {
-      btnString: "asdasd",
+      btnString: "",
       btnEnabled: true,
-      image: "dasd"
+      image: ""
     },
 
     closedDoorImage: "img/devices/ClosedDoor.svg",
@@ -152,96 +153,44 @@ export default {
       this.SecurityRepresentation.image = this.lockDoorImage;
       this.State.locked = true;
     },
-    LoadModel(model) {
-      if (model.status === "opened") {
+    async LoadModel() {
+
+      var APIDoor = new Door(this.deviceId,this.name);
+
+      console.log("Model");
+
+      await APIDoor.refreshState();
+      console.log(APIDoor);
+
+
+      if (APIDoor.isOpen) {
         this.SetOpenState();
       } else {
         this.SetCloseState();
       }
 
-      if (model.lock === "locked") {
+      if (APIDoor.isLocked) {
         this.SetLockState();
       } else {
         this.SetUnlockState();
       }
     },
-    SetUpForEdit(id) {
-      var myInit = {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" }
-      };
-      fetch(`http://localhost:8080/api/devices/${id}/getState`, myInit)
-        .then(response => {
-          console.log("Request recibido");
-          return response.json();
-        })
-        .then(data => this.LoadModel(data.result))
-        .catch(error => {
-          console.log(error);
-        });
-    },
-    SaveAndExit() {
-      var myInit = {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" }
-      };
-      if (this.State.open) {
-        fetch(
-          `http://localhost:8080/api/devices/${this.deviceId}/unlock`,
-          myInit
-        )
-          .then(response => {
-            console.log("Request recibido");
-            return response.json();
-          })
-          .catch(error => {
-            console.log(error);
-          });
+    async SaveAndExit() {
+      var APIDoor = new Door(this.deviceId,this.name);
+      await  APIDoor.refreshState();
+      console.log(APIDoor);
 
-        fetch(`http://localhost:8080/api/devices/${this.deviceId}/open`, myInit)
-          .then(response => {
-            console.log("Request recibido");
-            return response.json();
-          })
-          .catch(error => {
-            console.log(error);
-          });
+      if (this.State.open) {
+        console.log("Open Door");
+        APIDoor.open();
+        APIDoor.unlock();
+
       } else {
-        fetch(
-          `http://localhost:8080/api/devices/${this.deviceId}/close`,
-          myInit
-        )
-          .then(response => {
-            console.log("Request recibido");
-            return response.json();
-          })
-          .catch(error => {
-            console.log(error);
-          });
+        APIDoor.close();
         if (this.State.locked) {
-          fetch(
-            `http://localhost:8080/api/devices/${this.deviceId}/lock`,
-            myInit
-          )
-            .then(response => {
-              console.log("Request recibido");
-              return response.json();
-            })
-            .catch(error => {
-              console.log(error);
-            });
+          APIDoor.lock();
         } else {
-          fetch(
-            `http://localhost:8080/api/devices/${this.deviceId}/unlock`,
-            myInit
-          )
-            .then(response => {
-              console.log("Request recibido");
-              return response.json();
-            })
-            .catch(error => {
-              console.log(error);
-            });
+          APIDoor.unlock();
         }
       }
 
@@ -251,19 +200,10 @@ export default {
       this.DoorMenu = false;
     },
     DeleteAndExit() {
-      var myInit = {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" }
-      };
-      fetch(`http://localhost:8080/api/devices/${this.deviceId}`, myInit)
-        .then(response => {
-          console.log("Request recibido");
-          return response.json();
-        })
-        .then(data => this.LoadModel(data.result))
-        .catch(error => {
-          console.log(error);
-        });
+
+      var APIDoor = new Door(this.deviceId,this.name);
+
+      APIDoor.delete();
 
       this.Exit();
     }
@@ -271,7 +211,7 @@ export default {
   watch: {
     DoorMenu: function(val) {
       if (val) {
-        this.SetUpForEdit(this.deviceId);
+        this.LoadModel();
       }
     }
   },

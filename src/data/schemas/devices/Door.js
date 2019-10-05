@@ -1,4 +1,4 @@
-import CommonDeviceSchema from "@/data/schemas/CommonDeviceSchema";
+import CommonDeviceSchema from "@/data/schemas/devices/CommonDeviceSchema";
 import apiWrapper from "@/data/apiWrapper";
 import DeviceIds from "./DeviceIds";
 
@@ -25,13 +25,16 @@ export default class Door extends CommonDeviceSchema {
   }
 
   async open() {
+    console.log("Is Open?: " + this.isOpen);
     if (this.isOpen) return false;
 
+    console.log("Performin action");
     let result = await apiWrapper.devices.performAction(
       this.id,
       ACTION_NAMES.open
     );
 
+    console.log("result: " +result.result);
     if (result.result) this.isOpen = true;
     return !!result.result;
   }
@@ -74,8 +77,15 @@ export default class Door extends CommonDeviceSchema {
 
   async refreshState() {
     let state = await this._getState();
+    console.log(state);
     this.status = state.status;
-    if (this.status === "closed") this.isOpen = false;
-    if (state.lock === "locked") this.isLocked = true;
+    if (this.status === "closed")
+      this.isOpen = false;
+    else
+      this.isOpen = true;
+    if (state.lock === "locked")
+      this.isLocked = true;
+    else
+      this.isLocked = false;
   }
 }
