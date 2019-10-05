@@ -65,6 +65,7 @@
 </template>
 
 <script>
+  import Blinds from "../../data/schemas/devices/Blinds";
 export default {
   name: "curtainsMenu",
   props: {
@@ -97,55 +98,26 @@ export default {
   }),
   methods: {
       Delete(){
-          var myInit = {
-              method: "DELETE",
-              headers: { "Content-Type": "application/json" }
-          };
-          fetch(
-              `http://localhost:8080/api/devices/${this.deviceId}`,
-              myInit
-          )
-              .then(response => {
-                  console.log("Request recibido");
-                  return response.json();
-              })
-              .catch(error => {
-                  console.log(error);
-              });
+        console.log("Entrando a DELETE");
+        var APIBlinds = new Blinds(this.deviceId,this.name);
 
-          this.Exit();
+
+        APIBlinds.delete();
+
+        this.Exit();
       },
-    SaveAndExit() {
-      var myInit = {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" }
-      };
+    async SaveAndExit() {
 
+      console.log("Saving");
+      var APIBlinds = new Blinds(this.deviceId,this.name);
+      await APIBlinds.refreshState();
       if (this.ButtonDown.disabled === true) {
-        fetch(
-          `http://localhost:8080/api/devices/${this.deviceId}/close`,
-          myInit
-        )
-          .then(response => {
-            console.log("Request recibido");
-            return response.json();
-          })
-          .catch(error => {
-            console.log(error);
-          });
+        console.log("Closing blind")
+        APIBlinds.close();
       }
       else if(this.ButtonUp.disabled === true) {
-        fetch(
-          `http://localhost:8080/api/devices/${this.deviceId}/open`,
-          myInit
-        )
-          .then(response => {
-            console.log("Request recibido");
-            return response.json();
-          })
-          .catch(error => {
-            console.log(error);
-          });
+        console.log("Opening blind")
+        APIBlinds.open();
       }
 
       this.Exit();
@@ -167,39 +139,25 @@ export default {
     SetUp() {
       this.ImageCurrent = this.ButtonUp.ImageToSet;
     },
-    LoadModel(model) {
-      console.log(model);
-      if (model.status === "opened" || model.status === "opening") {
+    async LoadModel() {
+
+      var APIBlinds = new Blinds(this.deviceId,this.name);
+      await APIBlinds.refreshState();
+      console.log("Sali de refreshState");
+      console.log(APIBlinds);
+      if (APIBlinds.isOpen) {
         this.OpenCurtain();
-      } else if (model.status === "closed" || model.status === "closing") {
+      } else {
         this.CloseCurtain();
       }
-    },
-    SetUpForEdit(id) {
-      console.log("Haciendo el request");
-      var myInit = {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" }
-      };
-
-      fetch(`http://localhost:8080/api/devices/${id}/getState`, myInit)
-        .then(response => {
-          console.log("Request recibido");
-          return response.json();
-        })
-        .then(data => {
-          this.LoadModel(data.result);
-        })
-        .catch(error => {
-          console.log(error);
-        });
     }
+
   },
   watch: {
     CurtainsMenu: function(val) {
       if (this.mode === "edit" && val) {
         console.log("entrando al modo editar");
-        this.SetUpForEdit(this.deviceId);
+        this.LoadModel();
       }
     }
   }
