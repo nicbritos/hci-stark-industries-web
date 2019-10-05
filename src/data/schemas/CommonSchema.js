@@ -1,5 +1,3 @@
-import apiWrapper from "@/data/apiWrapper";
-
 export default class CommonSchema {
   static _formatMeta(meta) {
     return JSON.stringify(meta);
