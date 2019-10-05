@@ -100,7 +100,7 @@ export default class Lamp extends CommonDeviceSchema {
 
     let result = await apiWrapper._performActionOnDevice(
       this.id,
-      ACTION_NAMES.setColor,
+      ACTION_NAMES.setBrightness,
       {
         color: formatColor({
           red: red,
