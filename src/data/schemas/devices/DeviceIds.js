@@ -3,7 +3,9 @@ const byType = {
   Blinds: "eu0v2xgprrhhg41g",
   Door: "lsf78ly0eqrjbz91",
   Lamp: "go46xmbqeomjrsjr",
-  Frige: "rnizejqr2di0okho"
+  Fridge: "rnizejqr2di0okho",
+  Speakers: "c89b94e8581855bc",
+  Oven: "im77xxyulpegfmv8"
 };
 
 let byId = {};

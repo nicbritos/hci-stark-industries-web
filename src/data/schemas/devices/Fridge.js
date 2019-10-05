@@ -34,12 +34,12 @@ export default  class Fridge extends  CommonDeviceSchema{
     }
 
     static async create(name){
-        let data = await CommonDeviceSchema._create(name,DeviceIds.byType.Frige);
+        let data = await CommonDeviceSchema._create(name,DeviceIds.byType.Fridge);
         return new Fridge(data.id,data.name,data.meta);
     }
 
     constructor(id, name, meta){
-        super(id,name,meta,DeviceIds.byType.Frige);
+        super(id,name,meta,DeviceIds.byType.Fridge);
         this.temperature = Fridge.maxFridgeTemperature();
         this.freezerTemperature = Fridge.maxFreezerTemperature();
         this.mode = Fridge.supportedModes()[0];
@@ -125,7 +125,6 @@ export default  class Fridge extends  CommonDeviceSchema{
         this.temperature = Number.parseInt(state.temperature);
         this.freezerTemperature = Number.parseInt(state.freezerTemperature);
         this.mode = state.mode;
-
     }
 
 }
