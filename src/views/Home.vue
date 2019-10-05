@@ -9,12 +9,21 @@
             </h2>
           </v-toolbar-title>
         </v-toolbar>
-        <RoutineContainer :items="routines"></RoutineContainer>
+
+        <BoxContainer :items="routines">
+          <template v-slot:item="{ item }">
+            <Routine :routine="item"></Routine>
+          </template>
+        </BoxContainer>
 
         <v-divider></v-divider>
       </v-col>
     </v-row>
-      <AlarmMenu name="La alarma de abajo" menu-mode="create"/>
+      <DoorMenu name="hola"/>
+      <SpeakerMenu name="La alarma de abajo"/>
+    <AlarmMenu name="La alarma de abajo" menu-mode="create" />
+    <CurtainsMenu name="fsads"/>
+
 
     <v-row>
       <v-col>
@@ -31,14 +40,25 @@
 ></template>
 
 <script>
-import RoutineContainer from "@/components/containers/RoutineContainer";
+import BoxContainer from "@/components/containers/BoxContainer";
+import Routine from "@/components/individuals/Routine";
 import DeviceContainer from "@/components/containers/DeviceContainer";
+import SpeakerMenu from "../components/Menus/SpeakerMenu";
+import DoorMenu from "../components/Menus/DoorMenu";
 import AlarmMenu from "../components/Menus/AlarmMenu";
 import CurtainsMenu from "../components/Menus/CurtainsMenu";
 
 export default {
   name: "Home",
-  components: { AlarmMenu, CurtainsMenu, RoutineContainer, DeviceContainer },
+  components: {
+  DoorMenu,
+    AlarmMenu,
+    CurtainsMenu,
+    Routine,
+    SpeakerMenu,
+    BoxContainer,
+    DeviceContainer
+  },
   data() {
     return {
       devices: this.$store.state.devices.favourites,

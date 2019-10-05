@@ -1,5 +1,11 @@
 <template>
   <v-container grid-list-md fluid>
+    <!--    <v-dialog v-model="dialogs.routines.new" max-width="800px">-->
+    <!--      <NewRoutine-->
+    <!--        :value="dialogs.routines.new"-->
+    <!--        @cancel="newRoutineClose"-->
+    <!--      ></NewRoutine>-->
+    <!--    </v-dialog>-->
     <v-row>
       <v-col>
         <v-toolbar flat color="transparent">
@@ -9,7 +15,11 @@
             </h2>
           </v-toolbar-title>
         </v-toolbar>
-        <RoutineContainer :items="favouriteRoutines"></RoutineContainer>
+        <BoxContainer :items="favouriteRoutines">
+          <template v-slot:item="{ item }">
+            <Routine :routine="item"></Routine>
+          </template>
+        </BoxContainer>
 
         <v-divider></v-divider>
       </v-col>
@@ -25,25 +35,56 @@
           </v-toolbar-title>
           <v-spacer></v-spacer>
 
-          <v-btn text outlined color="primary" v-on="on" v-blur>NEW ROUTINE</v-btn>
+          <v-btn
+            @click="newRoutineOpen"
+            text
+            outlined
+            color="primary"
+            v-on="on"
+            v-blur
+            >NEW ROUTINE</v-btn
+          >
         </v-toolbar>
-        <RoutineContainer :items="routines"></RoutineContainer>
-
+        <BoxContainer :items="favouriteRoutines">
+          <template v-slot:item="{ item }">
+            <Routine :routine="item"></Routine>
+          </template>
+        </BoxContainer>
       </v-col>
     </v-row> </v-container
 ></template>
 
 <script>
-import RoutineContainer from "@/components/containers/RoutineContainer";
+import BoxContainer from "@/components/containers/BoxContainer";
+import Routine from "@/components/individuals/Routine";
 
 export default {
   name: "Home",
-  components: { RoutineContainer },
+  components: { BoxContainer, Routine },
   data() {
     return {
       routines: this.$store.state.routines.items,
-      favouriteRoutines: this.$store.state.routines.favourites
+      favouriteRoutines: this.$store.state.routines.favourites,
+      dialogs: {
+        routines: {
+          new: false
+        }
+      }
     };
+  },
+  methods: {
+    newRoutineOpen() {
+      this.$router.push(this.$router.currentRoute.path + "/new");
+    },
+
+    openDialog(item, type) {
+      if (item == null || type == null || item[type] == null) return;
+      if (!item[type]) item[type] = true;
+    },
+    closeDialog(item, type) {
+      if (item == null || type == null || item[type] == null) return;
+      if (item[type]) item[type] = false;
+    }
   }
 };
 </script>

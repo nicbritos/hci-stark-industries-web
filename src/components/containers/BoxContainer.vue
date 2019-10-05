@@ -1,18 +1,16 @@
 <template>
   <v-container fluid>
-    <v-row>
+    <v-row justify="start">
       <v-col cols="auto" v-for="item in items" :key="item.id">
-        <Room :room="item"></Room>
+        <slot name="item" v-bind:item="item"></slot>
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
-import Room from "@/components/individuals/Room";
 export default {
-  name: "RoomContainer",
-  components: { Room },
+  name: "BoxContainer",
   props: {
     items: {
       type: Array,
