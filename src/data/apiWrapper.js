@@ -248,10 +248,11 @@ export default {
       return result.result;
     },
     get: async roomId => {
-      return await requestQuery(
+      let result = await requestQuery(
         composeURL(URLS.rooms.get.url, roomId),
         URLS.rooms.get.method
       );
+      return result.result;
     },
     getDevices: async roomId => {
       let result = await requestQuery(
@@ -261,11 +262,12 @@ export default {
       return result.result;
     },
     create: async data => {
-      return await requestQuery(
+      let result =  await requestQuery(
         URLS.rooms.create.url,
         URLS.rooms.create.method,
         data
       );
+      return result.result;
     },
     update: async (roomId, data) => {
       return await requestQuery(

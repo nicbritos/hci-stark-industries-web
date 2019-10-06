@@ -35,7 +35,7 @@ export default {
   },
   methods: {
     goToRoom() {
-      this.$router.push(this.$router.currentRoute.path + "/" + this.room.id);
+      this.$router.push(this.$router.currentRoute.path + "/room/" + this.room.id);
     },
     async refreshDevices(){
       console.log("Getting Devices for Room");

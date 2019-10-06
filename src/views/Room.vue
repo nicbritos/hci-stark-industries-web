@@ -10,10 +10,7 @@
     </v-dialog>
     <v-toolbar class="ml-n6" flat color="transparent">
       <Breadcrumbs
-        :items="[
-          { to: '/', text: 'First Floor' },
-          { to: '/', text: 'Comedor', disabled: true }
-        ]"
+        :items="breadcrumbsItems"
       ></Breadcrumbs>
       <v-spacer></v-spacer>
 
@@ -34,7 +31,7 @@
             </h2>
           </v-toolbar-title>
         </v-toolbar>
-        <DeviceContainer :items="favouriteDevices"></DeviceContainer>
+        <DeviceContainer :items="this.RoomModel.favoriteDevices"></DeviceContainer>
         <v-divider></v-divider>
       </v-col>
     </v-row>
@@ -59,7 +56,7 @@
             >NEW DEVICE</v-btn
           >
         </v-toolbar>
-        <DeviceContainer :items="devices"></DeviceContainer>
+        <DeviceContainer :items="this.RoomModel.devices"></DeviceContainer>
       </v-col>
     </v-row> </v-container
 ></template>
@@ -75,15 +72,24 @@ export default {
   components: { NewDevice, DeviceContainer, Breadcrumbs },
   data() {
     return {
-      favouriteDevices: this.$store.state.devices.favourites,
-      devices: this.$store.state.devices.items,
+      breadcrumbsItems:[],
+
       dialogs: {
         devices: {
           new: false
         }
       },
       newDevice: {},
-      on:false
+
+      on:false,
+
+      RoomModel:{
+        id:null,
+        name:null,
+        region:null,
+        devices:[],
+        favoriteDevices:[]
+      }
     };
   },
   computed: {
@@ -116,8 +122,27 @@ export default {
     }
   },
   async mounted() {
-    this.devices = await apiWrapper.devices.getAll();
-    console.log(this.devices);
+    let id = this.$route.params.rid;
+
+    let room = await apiWrapper.rooms.get(id);
+    console.log(room);
+    let devices = await apiWrapper.rooms.getDevices(id);
+    console.log(devices);
+
+    this.RoomModel = {
+      id:id,
+      name:room.name,
+      region:room.meta.region,
+      devices: devices,
+      favoriteDevices:devices.filter(el=>{return el.meta.favourited;})
+    };
+
+
+    this.breadcrumbsItems=[
+    { to: '/Regions', text: this.RoomModel.region.name },
+    { to: '/', text: this.RoomModel.name, disabled: true }
+  ];
+
   }
 };
 </script>
