@@ -34,18 +34,29 @@
           </v-icon>
         </v-btn>
         <v-spacer></v-spacer>
-        <v-btn v-if="editable" large icon v-blur text color="primary">
-          <v-icon large v-if="GetFavourite()" key="0">favorite</v-icon>
+        <v-btn v-if="editable " large icon v-blur text color="primary" @click="applyFavouriteSelection()">
+          <v-icon large v-if="fav" key="0">favorite</v-icon>
           <v-icon large v-else key="1">favorite_outline</v-icon>
         </v-btn>
-        <v-switch
-          v-if="editable"
+        <v-tooltip right >
+          <template v-slot:activator="{ on }">
+
+          <v-switch
+                v-if="editable&& hasAction"
           class="ml-4 mb-n6 pb-0 pa-0 mt-0"
-          v-model="device.on"
+          v-model="isOn"
           v-blur
+          @change="onSwitchUpdate()"
           color="primary"
         >
         </v-switch>
+          </template>
+
+          <span>
+            SDADASDAS
+<!--            {{this.quickAction.description}}-->
+          </span>
+        </v-tooltip>
       </v-card-actions>
     </v-card>
   </v-container>
@@ -54,6 +65,9 @@
 <script>
 import ImageRetriever from "../../data/ImageRetriever";
 import DeviceSelector from "../containers/DeviceSelector";
+import apiWrapper from "../../data/apiWrapper";
+import QuickActionHelper from "../../data/QuickActionHelper";
+
 export default {
   name: "Routine",
   components: { DeviceSelector },
@@ -89,8 +103,31 @@ export default {
   data: () => ({
     openMenu: false,
       image:"",
+    fav:false,
+    isOn:false,
+    hasAction:true,
+    quickAction:null
   }),
   methods: {
+    onSwitchUpdate(){
+      console.log(`About to do quick action. Curr state: ${this.isOn}`);
+      this.quickAction.action(this.device.id, !this.isOn);
+      this.isOn = !this.isOn
+
+    },
+    async applyFavouriteSelection(){
+      let data={
+        name: this.device.name,
+        meta:{
+          favourited: !this.device.meta.favourited
+        }
+      };
+      this.fav = data.meta.favourited;
+      await apiWrapper.devices.update(this.device.id,data);
+
+      this.$emit('reload');
+
+    },
     onSelectUpdate(value) {
       this.$emit("selectUpdate", value);
     },
@@ -194,8 +231,23 @@ export default {
       }
     }
   },
-  mounted() {
+  async mounted() {
       this.image = this.GetImage();
+      this.fav = this.GetFavourite();
+
+      this.hasAction = await QuickActionHelper.hasQuickAction(this.device.type.id);
+    console.log(`hasAction: ${this.hasAction}`);
+
+    if(this.hasAction){
+        this.quickAction = await QuickActionHelper.getQuickAction(this.device.type.id);
+      console.log("Getting quickAction");
+      console.log(this.quickAction);
+        this.isOn = this.quickAction.checkState(this.device);
+      console.log("Setting isOn:" + this.isOn);
+      }
+
+
+
   }
 };
 </script>

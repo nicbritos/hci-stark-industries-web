@@ -56,7 +56,7 @@
             >NEW DEVICE</v-btn
           >
         </v-toolbar>
-        <DeviceContainer :items="this.RoomModel.devices"></DeviceContainer>
+        <DeviceContainer :items="this.RoomModel.devices" v-on:reload="this.reload()"></DeviceContainer>
       </v-col>
     </v-row> </v-container
 ></template>
@@ -103,6 +103,10 @@ export default {
     }
   },
   methods: {
+    reload(){
+      console.log("'Bout to Update");
+      this.$forceUpdate();
+    },
     newDeviceOpen() {
       this.newDevice = Object.assign({}, this.defaultDevice);
       this.openDialog(this.dialogs.devices, "new");
