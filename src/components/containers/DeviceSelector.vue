@@ -21,7 +21,7 @@
 <!--		DONE-->
 		<ACMenu v-else-if="device.type.id === 'li6cbv5sdlatti0j'"
 					  v-on:CloseMenu="ResendEvent()" :openMenu="superOpen" :name="device.name" :device-id="device.id"/>
-<!--		-->
+<!--		DONE-->
 		<DoorMenu v-else-if="device.type.id === 'lsf78ly0eqrjbz91'"
 					  v-on:CloseMenu="ResendEvent()" :openMenu="superOpen" :name="device.name" :device-id="device.id"/>
 

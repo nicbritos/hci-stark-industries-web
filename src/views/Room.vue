@@ -1,6 +1,5 @@
 <template>
   <v-container grid-list-md fluid>
-    <!--    <v-dialog persistent v-model="dialogs.devices.new" max-width="700px">-->
     <v-dialog v-model="dialogs.devices.new" max-width="700px">
       <NewDevice
         region="ABC1"
@@ -83,7 +82,8 @@ export default {
           new: false
         }
       },
-      newDevice: {}
+      newDevice: {},
+      on:false
     };
   },
   computed: {

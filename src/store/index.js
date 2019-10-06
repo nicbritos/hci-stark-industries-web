@@ -46,46 +46,46 @@ let dormitorio = {
 };
 rooms.push(comedor);
 primerPiso.rooms.push(dormitorio);
-
-let luz1Comedor = {
-  id: "1",
-  type: deviceTypes.light,
-  name: "Luz 1",
-  color: "",
-  on: false,
-  favourited: true,
-  brightness: 100,
-  room: comedor
-};
-let luz2Comedor = {
-  id: "3",
-  type: deviceTypes.light,
-  name: "Luz 2",
-  color: "",
-  on: false,
-  favourited: false,
-  brightness: 100,
-  room: comedor
-};
-let ac = {
-  id: "2",
-  type: deviceTypes.ac,
-  name: "AC",
-  swing: {
-    vertical: 0,
-    horizontal: 0
-  },
-  mode: "cool",
-  favourited: true,
-  on: false,
-  room: comedor
-};
-devices.push(ac);
-devices.push(luz1Comedor);
-devices.push(luz2Comedor);
-comedor.devices.push(ac);
-comedor.devices.push(luz1Comedor);
-comedor.devices.push(luz2Comedor);
+//
+// let luz1Comedor = {
+//   id: "1",
+//   type: deviceTypes.light,
+//   name: "Luz 1",
+//   color: "",
+//   on: false,
+//   favourited: true,
+//   brightness: 100,
+//   room: comedor
+// };
+// let luz2Comedor = {
+//   id: "3",
+//   type: deviceTypes.light,
+//   name: "Luz 2",
+//   color: "",
+//   on: false,
+//   favourited: false,
+//   brightness: 100,
+//   room: comedor
+// };
+// let ac = {
+//   id: "2",
+//   type: deviceTypes.ac,
+//   name: "AC",
+//   swing: {
+//     vertical: 0,
+//     horizontal: 0
+//   },
+//   mode: "cool",
+//   favourited: true,
+//   on: false,
+//   room: comedor
+// };
+// devices.push(ac);
+// devices.push(luz1Comedor);
+// devices.push(luz2Comedor);
+// comedor.devices.push(ac);
+// comedor.devices.push(luz1Comedor);
+// comedor.devices.push(luz2Comedor);
 
 let routines = [
   {
