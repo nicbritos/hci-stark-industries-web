@@ -2,7 +2,7 @@
   <v-card hover style="cursor: default" width="350">
     <v-card-text v-ripple style="cursor: pointer" @click="goToRoom">
       <p class="display-1 text--primary">
-        {{ room.name }}
+        {{ room.name }}PUTAAAA
       </p>
       <div class="text--secondary">{{ roomQuantityString }}<br /></div>
     </v-card-text>

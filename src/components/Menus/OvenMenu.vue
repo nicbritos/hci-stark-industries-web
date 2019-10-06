@@ -1,12 +1,9 @@
 <template>
   <v-dialog v-model="OvenMenu" persistent max-width="400px">
-    <template v-slot:activator="{ on }">
-      <v-btn color="primary" dark v-on="on">Open Oven</v-btn>
-    </template>
     <v-card dark raised>
       <v-card-title>
-        <span class="headline">{{ Name }}</span>
-        <v-btn icon absolute right @click="OvenMenu = false">
+        <span class="headline">{{ name }}</span>
+        <v-btn icon absolute right @click="Exit()">
           <v-avatar color="red">
             <v-icon>delete</v-icon>
           </v-avatar>
@@ -75,8 +72,8 @@
       </v-card-text>
       <v-card-actions class="justify-center">
         <div class="text-center">
-          <v-btn color="red" @click="OvenMenu = false">Cancel</v-btn>
-          <v-btn color="blue" @click="OvenMenu = false">Confirm</v-btn>
+          <v-btn color="red" @click="Exit()">Cancel</v-btn>
+          <v-btn color="blue" @click="Exit()">Confirm</v-btn>
         </div>
       </v-card-actions>
     </v-card>
@@ -86,7 +83,20 @@
 <script>
 export default {
   name: "OvenMenu",
-  props: ["Name"],
+  props: {
+    name: {
+      type: String,
+      required: true
+    },
+    deviceId: {
+      type: String,
+      required: true
+    },
+    openMenu: {
+      type: Boolean,
+      required: true
+    },
+  },
   data() {
     return {
       enabled: false,
@@ -97,8 +107,22 @@ export default {
       labels: ["off", "saving", "on"],
       OvenMenu: false
     };
+  },
+  methods:{
+
+    Exit(){
+      console.log("Sending Close Event from Oven")
+      this.$emit('CloseMenu')
+    }
+
+  },
+  watch:{
+    openMenu:function (val) {
+      console.log("SADASDA")
+      this.OvenMenu= val;
+    }
   }
-};
+}
 </script>
 
 <style scoped></style>

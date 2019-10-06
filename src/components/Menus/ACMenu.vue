@@ -1,12 +1,9 @@
 <template>
   <v-dialog v-model="ACMenu" persistent max-width="600px">
-    <template v-slot:activator="{ on }">
-      <v-btn color="primary" dark v-on="on">Open AC</v-btn>
-    </template>
     <v-card dark raised>
       <v-card-title>
-        <span class="headline">{{ Name }}</span>
-        <v-btn icon absolute right @click="ACMenu = false">
+        <span class="headline">{{ name }}</span>
+        <v-btn icon absolute right @click="Exit()">
           <v-avatar color="red">
             <v-icon>delete</v-icon>
           </v-avatar>
@@ -87,8 +84,8 @@
       </v-card-text>
       <v-card-actions class="justify-center">
         <div class="text-center">
-          <v-btn color="red" @click="ACMenu = false">Cancel</v-btn>
-          <v-btn color="blue" @click="ACMenu = false">Confirm</v-btn>
+          <v-btn color="red" @click="Exit()">Cancel</v-btn>
+          <v-btn color="blue" @click="Exit()">Confirm</v-btn>
         </div>
       </v-card-actions>
     </v-card>
@@ -98,8 +95,20 @@
 <script>
 export default {
   name: "ACMenu",
-  props: ["Name"],
-  data() {
+  props: {
+    name: {
+      type: String,
+      required: true
+    },
+    deviceId: {
+      type: String,
+      required: true
+    },
+    openMenu: {
+      type: Boolean,
+      required: true
+    },
+  },  data() {
     return {
       enabled: false,
       temperature: 18,
@@ -110,6 +119,20 @@ export default {
       speed: 0,
       ACMenu: false
     };
+  },
+  methods:{
+
+    Exit(){
+      console.log("Sending Close Event from AC")
+      this.$emit('CloseMenu')
+    }
+
+  },
+  watch:{
+    openMenu:function (val) {
+      console.log("SADASDA")
+      this.ACMenu= val;
+    }
   }
 };
 </script>

@@ -164,10 +164,12 @@ export default {
 
   devices: {
     getAll: async () => {
-      return await requestQuery(
+      let result = await requestQuery(
         URLS.devices.list.url,
         URLS.devices.list.method
       );
+
+      return result.devices;
     },
     getByType: async typeId => {
       return await requestQuery(

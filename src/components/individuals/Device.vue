@@ -1,5 +1,13 @@
 <template>
-  <v-card hover style="cursor: default" width="200">
+  <v-container>
+<!--  // <v-dialog v-model="openMenu" max-width="700px">-->
+      <DeviceSelector
+              :device="device"
+              :openMenu="openMenu"
+              v-on:CloseMenu="CloseMenu()"
+      ></DeviceSelector>
+<!--    </v-dialog>  -->
+    <v-card hover style="cursor: default" width="200">
     <v-card-text @click="onClick" v-ripple style="cursor: pointer">
       <div class="text--secondary">
         {{ device.name + (room ? " from " + device.room.name : "") }}
@@ -26,7 +34,7 @@
         class="ml-2 mt-n1"
       >
       </v-checkbox>
-      <v-btn v-if="editable" icon v-blur text>
+      <v-btn v-if="editable" icon v-blur text @click="OpenMenu()">
         <v-icon>
           more_horiz
         </v-icon>
@@ -35,6 +43,7 @@
       <v-btn v-if="editable" large icon v-blur text color="primary">
         <v-icon large v-if="device.favourited" key="0">favorite</v-icon>
         <v-icon large v-else key="1">favorite_outline</v-icon>
+
       </v-btn>
       <v-switch
         v-if="editable"
@@ -46,11 +55,14 @@
       </v-switch>
     </v-card-actions>
   </v-card>
+  </v-container>
 </template>
 
 <script>
+  import DeviceSelector from "../containers/DeviceSelector";
 export default {
   name: "Routine",
+  components: {DeviceSelector},
   model: {
     events: ["selectUpdate", "click"]
   },
@@ -80,13 +92,30 @@ export default {
       default: false
     }
   },
+  data:()=>({
+    openMenu:false,
+  }),
   methods: {
     onSelectUpdate(value) {
       this.$emit("selectUpdate", value);
     },
     onClick() {
       this.$emit("click");
+    },
+    CloseMenu(){
+      console.log("Closing shit")
+      console.log("openMenu: "+ this.openMenu);
+      this.openMenu = false;
+      console.log("openMenu: "+ this.openMenu);
+
+    },
+    OpenMenu(){
+      this.openMenu = true;
+      console.log("Opening menu: " + this.device.name);
     }
+  },
+  mounted() {
+    console.log("ON DEVICE");
   }
 };
 </script>

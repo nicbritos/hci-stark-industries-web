@@ -63,6 +63,9 @@ export default {
       if (this.pick) this.$emit("pick", item);
       else console.log("Open its menu");
     }
+  },
+  mounted() {
+    console.log("En DEVICE CONTAINER")
   }
 };
 </script>

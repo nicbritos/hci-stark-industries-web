@@ -1,8 +1,8 @@
 <template>
   <v-dialog v-model="CurtainsMenu" persistent max-width="400px">
-    <template v-slot:activator="{ on }">
-      <v-btn color="primary" dark v-on="on">Open Curtain</v-btn>
-    </template>
+<!--    <template v-slot:activator="{ on }">-->
+<!--      <v-btn color="primary" dark v-on="on">Open Curtain</v-btn>-->
+<!--    </template>-->
 
     <v-card dark raised>
       <v-card-title>
@@ -80,7 +80,11 @@ export default {
       name:{
         type: String,
         required: true
-      }
+      },
+    openMenu:{
+      type:Boolean,
+      required:true
+    }
   },
   data: () => ({
     ButtonUp: {
@@ -124,7 +128,8 @@ export default {
 
     },
       Exit(){
-          this.CurtainsMenu = false;
+        console.log("Sending Close Event from Curtains")
+        this.$emit('CloseMenu')
       },
     OpenCurtain() {
       this.ButtonUp.disabled = true;
@@ -141,7 +146,7 @@ export default {
     },
     async LoadModel() {
 
-      var APIBlinds = new Blinds(this.deviceId,this.name);
+      let APIBlinds = new Blinds(this.deviceId,this.name);
       await APIBlinds.refreshState();
       console.log("Sali de refreshState");
       console.log(APIBlinds);
@@ -154,7 +159,8 @@ export default {
 
   },
   watch: {
-    CurtainsMenu: function(val) {
+    openMenu: function(val) {
+      this.CurtainsMenu = val;
       if (this.mode === "edit" && val) {
         console.log("entrando al modo editar");
         this.LoadModel();

@@ -1,12 +1,10 @@
 <template>
-  <v-dialog v-model="LampMenu" persistent max-width="400px">
-    <template v-slot:activator="{ on }">
-      <v-btn color="primary" dark v-on="on">Open Lamp</v-btn>
-    </template>
+  <v-dialog v-model="SuperMenuOpen" persistent max-width="400px">
+
     <v-card dark raised>
       <v-card-title>
-        <span class="headline">{{ Name }}</span>
-        <v-btn icon absolute right @click="LampMenu = false">
+        <span class="headline">{{ name }}</span>
+        <v-btn icon absolute right @click="Exit()">
           <v-avatar color="red">
             <v-icon>delete</v-icon>
           </v-avatar>
@@ -41,8 +39,8 @@
       </v-card-text>
       <v-card-actions class="justify-center">
         <div class="text-center">
-          <v-btn color="red" @click="LampMenu = false">Cancel</v-btn>
-          <v-btn color="blue" @click="LampMenu = false">Confirm</v-btn>
+          <v-btn color="red" @click="Exit()">Cancel</v-btn>
+          <v-btn color="blue" @click="Exit()">Confirm</v-btn>
         </div>
       </v-card-actions>
     </v-card>
@@ -52,14 +50,42 @@
 <script>
 export default {
   name: "LampMenu",
-  props: ["Name"],
+  props: {
+    name:{
+      type: String,
+      required: true
+    },
+    deviceId:{
+      type:String,
+      required:true
+    },
+    openMenu:{
+      type: Boolean,
+      required:true
+    }
+
+  },
   data() {
     return {
       color: "",
       enabled: false,
       intensity: 0,
-      LampMenu: false
+      SuperMenuOpen:false
     };
+  },
+  methods:{
+
+    Exit(){
+      console.log("Sending Close Event from Lamp")
+      this.$emit('CloseMenu')
+    }
+
+  },
+  watch:{
+    openMenu:function (val) {
+      console.log("SADASDA")
+      this.SuperMenuOpen= val;
+    }
   }
 };
 </script>

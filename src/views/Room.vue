@@ -66,6 +66,7 @@
 ></template>
 
 <script>
+  import apiWrapper from "../data/apiWrapper";
 import DeviceContainer from "@/components/containers/DeviceContainer";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import NewDevice from "@/components/Menus/NewDevice";
@@ -113,6 +114,10 @@ export default {
       if (item == null || type == null || item[type] == null) return;
       if (item[type]) item[type] = false;
     }
+  },
+  async mounted() {
+    this.devices = await apiWrapper.devices.getAll();
+    console.log(this.devices);
   }
 };
 </script>
