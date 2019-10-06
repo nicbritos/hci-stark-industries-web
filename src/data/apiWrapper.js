@@ -1,6 +1,6 @@
 const TRANSPORT = "http://";
 const BASE_URL = "127.0.0.1";
-const PORT = "9090";
+const PORT = "8080";
 
 const URL = TRANSPORT + BASE_URL + ":" + PORT + "/api";
 
@@ -64,6 +64,14 @@ const URLS = {
     delete: {
       url: composeURL(URL, "devices"),
       method: METHODS.DELETE
+    },
+    action:{
+      url: composeURL(URL,"devices"),
+      method:METHODS.PUT
+    },
+    state:{
+      url: composeURL(URL,"devices"),
+      method:METHODS.GET
     }
   },
   routines: {
@@ -188,10 +196,18 @@ export default {
       );
     },
     performAction: async (deviceId, actionName, params) => {
+      console.log(`en perform action. URL: ${URLS.devices.action.url+"/"+actionName}`);
       return await requestQuery(
-        composeURL(URLS.devices.performAction.url, deviceId, actionName),
-        URLS.devices.performAction.method,
+        composeURL(URLS.devices.action.url, deviceId, actionName),
+        URLS.devices.action.method,
         params
+      );
+    },
+    getState: async (deviceId) => {
+      console.log(`en getState URL: ${URLS.devices.state.url}`);
+      return await requestQuery(
+        composeURL(URLS.devices.state.url, deviceId, "state"),
+        URLS.devices.state.method
       );
     },
     addToRoom: async (deviceId, roomId) => {
@@ -211,7 +227,7 @@ export default {
         composeURL(URLS.devices.delete.url, deviceId),
         URLS.devices.delete.method
       );
-    }
+    },
   },
   rooms: {
     getAll: async () => {

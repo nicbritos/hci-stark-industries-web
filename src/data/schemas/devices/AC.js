@@ -90,7 +90,7 @@ export default class AC extends CommonDeviceSchema {
 
   async setTemperature(value) {
     if (typeof value != "number")
-      throw new Error("Invalid argument. Brightness should be of type numeric");
+      throw new Error("Invalid argument. Temperature should be of type numeric");
 
     value = adjustNumberRange(value, AC.minTemperature(), AC.maxTemperature());
 

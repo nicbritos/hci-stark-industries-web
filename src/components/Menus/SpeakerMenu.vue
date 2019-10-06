@@ -17,10 +17,10 @@
       <v-card-text>
         <v-container>
           <v-row>
-            <span v-show="isSongLoaded">
-              Playing <b>{{ CurrentSong.Name }}</b> by <b>{{ CurrentSong.Artist }}</b>
+            <span v-show="SpeakerModel.isSongLoaded">
+              Playing <b>{{ SpeakerModel.currentSong.name }}</b> by <b>{{ SpeakerModel.currentSong.artist }}</b>
             </span>
-            <span v-show="!isSongLoaded">
+            <span v-show="!SpeakerModel.isSongLoaded">
               No song
             </span>
           </v-row>
@@ -28,7 +28,7 @@
             <div class="progressContainer">
               <span class="firstTimeMark">
 
-                {{Math.floor(CurrentSong.TimeMark/60)}}:{{this.CurrentSong.TimeMark%60}}
+                {{Math.floor(SpeakerModel.currentSong.timemark/60)}}:{{this.SpeakerModel.currentSong.timemark%60}}
               </span>
 
               <v-progress-linear
@@ -36,11 +36,11 @@
                 class=""
                 color="light-blue"
                 rounded
-                :value="100 *(this.CurrentSong.Duration / this.CurrentSong.TimeMark)"
+                :value="SpeakerModel.currentSong.progress"
                 buffer-value="100"
               />
               <span class="lastTimeMark">
-                {{Math.floor(this.CurrentSong.Duration/60)}}:{{this.CurrentSong.Duration%60}}
+                {{Math.floor(this.SpeakerModel.currentSong.duration/60)}}:{{this.SpeakerModel.currentSong.duration%60}}
               </span>
             </div>
           </v-row>
@@ -58,13 +58,13 @@
                 width="80"
                 height="80"
                 icon
-                @click="CurrentSong.PlayState = !CurrentSong.PlayState"
+                @click="playPauseButtonPressed()"
               >
                 <v-avatar size="80" color="blue">
-                  <v-icon size="50" v-show="!CurrentSong.PlayState">
+                  <v-icon size="50" v-show="!this.SpeakerModel.currentSong.isPlaying">
                     play_arrow
                   </v-icon>
-                  <v-icon size="50" v-show="CurrentSong.PlayState">
+                  <v-icon size="50" v-show="this.SpeakerModel.currentSong.isPlaying">
                     pause
                   </v-icon>
                 </v-avatar>
@@ -89,7 +89,7 @@
             <v-row>
                     <v-slider
                             class="volumeContainer"
-                            v-model="Volume"
+                            v-model="SelectedVolume"
                             color="blue"
                             track-color="white"
                             always-dirty
@@ -120,9 +120,6 @@
               <v-overflow-btn
                       class=" ddl"
                       :items="GenresList"
-                      item-text="Genre"
-                      label="Genres"
-                      item-value="id"
                       v-model="SelectedDDL"
               >
 
@@ -148,116 +145,266 @@
 </template>
 
 <script>
+    import Speakers from "../../data/schemas/devices/Speakers";
 export default {
   name: "SpeakerMenu",
-  props: ["name"],
+  props: {
+      deviceId:{
+          type: String,
+          required: true
+      },
+      name:{
+          type: String,
+          required: true
+      },
+      mode:{
+          type: String,
+          required: false
+      }
+
+
+  },
   data: () => ({
     SpeakerMenu: false,
+
+      SpeakerModel:{
+        genre:"",
+          isSongLoaded:false,
+          currentSong:{name:"",artist:"",album:"",duration:0,timemark:0,isPlaying:false, progress:0},
+          volume:5,
+          playlist:[]
+          },
+
+      GenresList:[],
       SelectedDDL:0,
-      CurrentSong: {
-          Name: "",
-          Artist: "",
-          TimeMark: 0,
-          Duration: 0,
-          PlayState: true,
+      SelectedVolume:5,
 
-      },
-      isSongLoaded: true,
-
-    SongProgress: 50,
-      Volume: 5,
-      CurrentSongID:3,
-      CurrentGenre:0,
-      GenresList:[
-          {id:0,Genre:"Rock", Songs:[
-                  {Name:"Rock song 1",Artist:"Rock band 1",Duration:200},
-                  {Name:"Rock song 2",Artist:"Rock band 1",Duration:100},
-                  {Name:"Rock song 3",Artist:"Rock band 2",Duration:300},
-                  {Name:"Rock song 4",Artist:"Rock band 2",Duration:250}
-              ]},
-          {id:1,Genre:"Pop", Songs:[
-                  {Name:"Pop Song 1",Artist:"Pop band 1",Duration:200},
-                  {Name:"Pop Song 2",Artist:"Pop band 1",Duration:200},
-                  {Name:"Pop Song 3",Artist:"Pop band 2",Duration:200},
-                  {Name:"Pop Song 4",Artist:"Pop band 2",Duration:200}
-              ]},
-          {id:2,Genre:"Soul", Songs:[
-                  {Name:"Soul song 1",Artist:"Soul band 1",Duration:200},
-                  {Name:"Soul song 2",Artist:"Soul band 1",Duration:200},
-                  {Name:"Soul song 3",Artist:"Soul band 2",Duration:200},
-                  {Name:"Soul song 4",Artist:"Soul band 2",Duration:200}
-              ]},
-          {id:3,Genre:"Alternative", Songs:[
-                  {Name:"Alternative song 1",Artist:"Altenative band 1",Duration:200},
-                  {Name:"Alternative song 2",Artist:"Altenative band 1",Duration:200},
-                  {Name:"Alternative song 3",Artist:"Altenative band 2",Duration:200},
-                  {Name:"Alternative song 4",Artist:"Altenative band 2",Duration:200}
-              ]},
-
-      ]
+      PreviousModel:undefined
 
   }),
     methods:{
-        stopMusic() {
+      playPauseButtonPressed(){
+          if(!this.SpeakerModel.isSongLoaded)
+              return;
 
-            this.CurrentSongID=undefined;
-            this.CurrentSong.PlayState = false;
-            this.CurrentSong.Duration=0;
-            this.CurrentSong.TimeMark=0;
-            this.CurrentSong.Name="";
-            this.CurrentSong.Artist="";
+          console.log("Big Button pressed");
 
-            this.isSongLoaded=false;
+          this.SpeakerModel.currentSong.isPlaying = !this.SpeakerModel.currentSong.isPlaying;
+          console.log("is playing: " + this.SpeakerModel.currentSong.isPlaying );
 
-        },
-        LoadGenre(){
-
-            this.CurrentGenre = this.SelectedDDL;
-            this.CurrentSongID=0;
-            this.LoadSong();
-            this.isSongLoaded=true;
-
-
-        },
-      LoadSong(){
-          var song = this.GenresList[this.CurrentGenre].Songs[this.CurrentSongID];
-          this.CurrentSong.Artist = song.Artist;
-          this.CurrentSong.Name = song.Name;
-          this.CurrentSong.PlayState= true;
-          this.CurrentSong.Duration = song.Duration
-          this.CurrentSong.TimeMark=0;
-          this.SongProgress=0
+          if(this.SpeakerModel.currentSong.isPlaying)
+              this.resumeMusic();
+          else
+              this.pauseMusic();
       },
-        previusSong(){
-          if(this.CurrentSongID >0){
-              this.CurrentSongID--;
-          }
-          this.LoadSong();
-      },
-        nextSong(){
-          if(this.CurrentSongID < this.GenresList[this.CurrentGenre].Songs.length){
-              this.CurrentSongID++;
-          }
-            this.LoadSong();
+        async stopMusic() {
+            console.log("STOP Music");
+            let APISpeaker = new Speakers(this.deviceId,this.name);
+            console.log("Executing action");
+            await APISpeaker.stop();
+            console.log("Updating model")
+            await APISpeaker.refreshState();
+            console.log(APISpeaker);
+            console.log("Aplying model")
+            this.LoadModel(APISpeaker);
+            console.log("new Model:")
+            console.log(this.SpeakerModel);
 
+            window.clearInterval();
+        },
+        async resumeMusic(){
+            console.log("RESUME Music");
+            let APISpeaker = new Speakers(this.deviceId,this.name);
+            console.log("Executing action");
+            await APISpeaker.resume();
+            console.log("Updating model")
+            await APISpeaker.refreshState();
+            console.log(APISpeaker);
+            console.log("Aplying model")
+            this.LoadModel(APISpeaker);
+            console.log("new Model:")
+            console.log(this.SpeakerModel);
+            console.log("Starting Song Timer");
+            this.StartSongTimer();
+        },
+        async pauseMusic(){
+            console.log("PAUSE Music")
+            let APISpeaker = new Speakers(this.deviceId,this.name);
+            console.log("Executing Pause");
+            await APISpeaker.pause();
+            console.log("Updating Model");
+            await APISpeaker.refreshState();
+            console.log("Updated Model:")
+            console.log(APISpeaker);
+            console.log("Appliying Model")
+            this.LoadModel(APISpeaker);
+            console.log("Model Applied:");
+            console.log(this.SpeakerModel);
+            window.clearInterval();
+        },
+        async LoadGenre(){
+            console.log(this.SelectedDDL);
+            let APISpeaker = new Speakers(this.deviceId,this.name);
+            await APISpeaker.selectGenre(this.SelectedDDL);
+            await APISpeaker.play();
+            await APISpeaker.refreshState();
+            this.LoadModel(APISpeaker);
+            this.StartSongTimer();
+        },
+        async previusSong(){
+            let APISpeaker = new Speakers(this.deviceId,this.name);
+            await APISpeaker.previousSong();
+            await APISpeaker.refreshState();
+            this.LoadModel(APISpeaker);
+      },
+        async nextSong(){
+            let APISpeaker = new Speakers(this.deviceId,this.name);
+            await APISpeaker.nextSong();
+            await APISpeaker.refreshState();
+            this.LoadModel(APISpeaker);
       },
         incrementVolume(){
-            this.Volume++;
-
+          if(this.SpeakerModel.volume < Speakers.maxVolume()) {
+              this.SpeakerModel.volume++;
+          }
+        },
+        async acknowledgeVolumenChange(){
+            let APISpeaker = new Speakers(this.deviceId,this.name);
+            this.SpeakerModel.volume = this.SelectedVolume;
+            await APISpeaker.setVolume(this.SpeakerModel.volume);
         },
         decrementVolume(){
-            this.Volume--;
-        },
-        setUp(){
-            this.Volume= 5;
-            this.CurrentSongID=2
-            this.CurrentGenre=0;
+            if(this.SpeakerModel.volume > Speakers.minVolume()) {
+                this.SpeakerModel.volume--;
 
-            this.LoadSong();
+            }
+        },
+        async setUp(){
+            let APISpeaker = new Speakers(this.deviceId,this.name);
+            await APISpeaker.refreshState();
+            console.log(APISpeaker);
+
+            this.PreviousModel = APISpeaker;
+            this.LoadModel(APISpeaker);
+            console.log(this.SpeakerModel);
+        },
+        ConvertSongModel(APISong){
+            console.log("Creo SONG temporal");
+            var song = {
+                name:APISong.title,
+                artist:APISong.artist,
+                duration:0,
+                timemark: 0,
+                album: APISong.Album,
+                isPlaying:false,
+                progress: 0
+            };
+            console.log("duration: " + APISong.duration);
+            console.log("duration: " + APISong.duration);
+            song.duration = (Number.parseInt(APISong.duration.match('^(\\d+):.*$')[1]) * 60) + Number.parseInt(APISong.duration.match('^.*:(\\d+)$')[1]);
+            console.log("asigno duracion:" + song.duration);
+            console.log("progress: " + APISong.progress);
+
+            song.timemark = (Number.parseInt(APISong.progress.match('^(\\d+):.*$')[1]) * 60) + Number.parseInt(APISong.progress.match('^.*:(\\d+)$')[1]);
+            console.log("asigno progreso actual:" + song.timemark);
+
+            song.progress =100 *(this.SpeakerModel.currentSong.timemark / this.SpeakerModel.currentSong.duration);
+
+            return song;
+        },
+        LoadModel(model){
+            console.log("Again Model API: ");
+            console.log(model);
+            console.log("API Genre: " + model.genre);
+           this.SpeakerModel.genre = model.genre;
+            console.log(("DDL: "+ this.SpeakerModel.genre));
+
+            this.SelectedDDL = model.genre;
+            console.log(("DDL: "+ this.SelectedDDL));
+
+
+            this.SpeakerModel.volume =  model.volume;
+            this.SelectedVolume =  model.volume;
+
+            console.log("Loading model");
+            console.log(model);
+
+           switch(model.status){
+               case 'playing':
+                   console.log("Case Playing");
+                   this.SpeakerModel.isSongLoaded = true;
+                   this.SpeakerModel.currentSong = this.ConvertSongModel(model.song);
+                   this.SpeakerModel.currentSong.isPlaying = true;
+
+                   break;
+            case 'paused':
+                console.log("case Paused");
+                this.SpeakerModel.isSongLoaded = true;
+                this.SpeakerModel.currentSong = this.ConvertSongModel(model.song);
+                this.SpeakerModel.currentSong.isPlaying = false;
+                break;
+            case 'stopped':
+                console.log("case Stopped");
+                this.SpeakerModel.isSongLoaded = false;
+                this.SpeakerModel.currentSong={
+                    isPlaying: false,
+                    timemark: 0,
+                    duration: 0,
+                    progress: 0
+                }
+                break;
+            }
+        },
+        StartSongTimer(){
+            window.setInterval(() => {
+                if(this.SpeakerModel.isSongLoaded) {
+                    if (this.SpeakerModel.currentSong.isPlaying) {
+                        this.SpeakerModel.currentSong.timemark++;
+                        this.SpeakerModel.currentSong.progress =100 *(this.SpeakerModel.currentSong.timemark / this.SpeakerModel.currentSong.duration);
+
+                        if (this.SpeakerModel.currentSong.timemark >= this.SpeakerModel.currentSong.duration) {
+                            console.log("NOOOOOOOOO");
+                            this.nextSong();
+                        }
+
+
+                    }
+
+                }
+            }, 1000);
+        },
+        async Cancel(){ // CREO QUE NO ES NECESARIA
+          this.LoadModel(this.PreviousModel);
+          let APISpeaker = new Speakers(this.deviceId,this.name);
+          await APISpeaker.refreshState();
+
+          if(this.SpeakerModel.volume != APISpeaker.volume)
+              await this.acknowledgeVolumenChange();
+
+          if(this.SpeakerModel.currentSong != undefined){
+          }
         }
+
+
     },
-    mounted() {
-        this.setUp();
+    watch:{
+        SelectedVolume:function(val){
+          if(val === this.SpeakerModel.volume)
+              return;
+          console.log("Detecting new volume: "+ val );
+          this.acknowledgeVolumenChange();
+      },
+        SpeakerMenu:function (val) {
+            if(val){
+                this.GenresList = Speakers.supportedGenres();
+                this.setUp();
+                this.StartSongTimer();
+            }
+            else{
+                window.clearInterval();
+            }
+        },
+
     }
 
 };
