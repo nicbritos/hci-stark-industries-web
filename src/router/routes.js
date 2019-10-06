@@ -29,7 +29,7 @@ const routes = {
       component: Regions
     },
     rooms: {
-      path: "/regions/:rid",
+      path: "/regions/room/:rid",
       name: "rooms",
       meta: {
         requiresAuth: false

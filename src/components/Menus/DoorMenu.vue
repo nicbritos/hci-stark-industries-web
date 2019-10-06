@@ -1,9 +1,5 @@
 <template>
   <v-dialog v-model="DoorMenu" persistent max-width="400px">
-    <template v-slot:activator="{ on }">
-      <v-btn color="primary" dark v-on="on">Open Door</v-btn>
-    </template>
-
     <v-card dark raised>
       <v-card-title>
         <span class="headline">{{ name }}</span>
@@ -68,9 +64,9 @@
 
 <script>
   import Door from "../../data/schemas/devices/Door";
+  import ImageRetriever from "../../data/ImageRetriever";
 export default {
   name: "DoorMenu",
-
   props: {
     name: {
       type: String,
@@ -79,7 +75,11 @@ export default {
     deviceId: {
       type: String,
       required: true
-    }
+    },
+    openMenu: {
+      type: Boolean,
+      required: true
+    },
   },
 
   data: () => ({
@@ -102,11 +102,11 @@ export default {
       image: ""
     },
 
-    closedDoorImage: "img/devices/ClosedDoor.svg",
-    openDoorImage: "img/devices/OpenDoor.svg",
+    closedDoorImage: ImageRetriever.GetImages("lsf78ly0eqrjbz91",ImageRetriever.ACTIONS.CLOSE),
+    openDoorImage: ImageRetriever.GetImages("lsf78ly0eqrjbz91",ImageRetriever.ACTIONS.OPEN),
 
-    lockDoorImage: "img/devices/DoorLock.svg",
-    unlockDoorImage: "img/devices/DoorUnlock.svg",
+    lockDoorImage: ImageRetriever.GetImages("lsf78ly0eqrjbz91",ImageRetriever.ACTIONS.LOCK),
+    unlockDoorImage: ImageRetriever.GetImages("lsf78ly0eqrjbz91",ImageRetriever.ACTIONS.UNLOCK),
 
     OpenButtonString: "Open Door",
     CloseButtonString: "Close Door",
@@ -197,8 +197,8 @@ export default {
       this.Exit();
     },
     Exit() {
-      this.DoorMenu = false;
-    },
+      console.log("Sending Close Event from Door")
+      this.$emit('CloseMenu')    },
     DeleteAndExit() {
 
       var APIDoor = new Door(this.deviceId,this.name);
@@ -209,7 +209,8 @@ export default {
     }
   },
   watch: {
-    DoorMenu: function(val) {
+    openMenu: function(val) {
+      this.DoorMenu = val;
       if (val) {
         this.LoadModel();
       }
