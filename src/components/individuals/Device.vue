@@ -38,11 +38,8 @@
           <v-icon large v-if="fav" key="0">favorite</v-icon>
           <v-icon large v-else key="1">favorite_outline</v-icon>
         </v-btn>
-        <v-tooltip right >
-          <template v-slot:activator="{ on }">
-
           <v-switch
-                v-if="editable&& hasAction"
+                  v-if="editable&& hasAction"
           class="ml-4 mb-n6 pb-0 pa-0 mt-0"
           v-model="isOn"
           v-blur
@@ -50,13 +47,7 @@
           color="primary"
         >
         </v-switch>
-          </template>
 
-          <span>
-            SDADASDAS
-<!--            {{this.quickAction.description}}-->
-          </span>
-        </v-tooltip>
       </v-card-actions>
     </v-card>
   </v-container>
@@ -111,7 +102,7 @@ export default {
   methods: {
     onSwitchUpdate(){
       console.log(`About to do quick action. Curr state: ${this.isOn}`);
-      this.quickAction.action(this.device.id, !this.isOn);
+      this.quickAction.action(this.device.id, this.isOn);
       this.isOn = !this.isOn
 
     },
@@ -244,6 +235,8 @@ export default {
       console.log(this.quickAction);
         this.isOn = this.quickAction.checkState(this.device);
       console.log("Setting isOn:" + this.isOn);
+      console.log(this.device);
+
       }
 
 

@@ -44,13 +44,18 @@ const QUICK_ACTIONS=[
         quickAction:{
             description:"Locks or Unlocks the door",
             action:async function (deviceId,val) {
-                if(val)
-                    await apiWrapper.devices.performAction(deviceId,"lock");
-                else
-                    await apiWrapper.devices.performAction(deviceId,"unlock");
+                if(val) {
+                    console.log("Lock Door")
+                    await apiWrapper.devices.performAction(deviceId, "lock");
+                }
+                else {
+                    console.log("UnLock Door")
+                    await apiWrapper.devices.performAction(deviceId, "unlock");
+                }
             },
             checkState: function (device){
-                return device.state.status === "locked";
+                console.log(device.state.lock);
+                return device.state.lock === "locked";
             }
         },
     },
