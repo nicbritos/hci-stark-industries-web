@@ -64,6 +64,9 @@ import Room from "@/components/individuals/Room";
 export default {
   name: "Region",
   components: { BoxContainer, Room },
+  data:()=>({
+    on:false
+  }),
   props: {
     region: {
       type: Object,
@@ -72,6 +75,8 @@ export default {
   },
   computed: {
     roomQuantityString() {
+      console.log("In REgion");
+      console.log(this.region.rooms);
       return (
         (this.region.rooms.length === 0 ? "No" : this.region.rooms.length) +
         (this.region.rooms.length === 1 ? " room" : " rooms")

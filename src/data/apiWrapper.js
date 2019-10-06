@@ -230,10 +230,22 @@ export default {
         URLS.devices.delete.method
       );
     },
+    getSupportedDevices:()=>{
+      return [
+        {name:"Speaker", id:"c89b94e8581855bc"},
+        {name:"Blinds", id:"eu0v2xgprrhhg41g"},
+        {name:"Lamp", id:"go46xmbqeomjrsjr"},
+        {name:"Oven", id:"im77xxyulpegfmv8"},
+        {name:"Air Conditioner", id:"li6cbv5sdlatti0j"},
+        {name:"Door", id:"lsf78ly0eqrjbz91"},
+        {name:"Refrigerator", id:"rnizejqr2di0okho"},
+      ];
+    }
   },
   rooms: {
     getAll: async () => {
-      return await requestQuery(URLS.rooms.list.url, URLS.rooms.list.method);
+      let result = await requestQuery(URLS.rooms.list.url, URLS.rooms.list.method);
+      return result.result;
     },
     get: async roomId => {
       return await requestQuery(
@@ -242,10 +254,11 @@ export default {
       );
     },
     getDevices: async roomId => {
-      return await requestQuery(
+      let result = await requestQuery(
         composeURL(URLS.rooms.getDevices.url, roomId, "devices"),
         URLS.rooms.getDevices.method
       );
+      return result.result;
     },
     create: async data => {
       return await requestQuery(

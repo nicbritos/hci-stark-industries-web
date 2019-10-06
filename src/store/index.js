@@ -17,75 +17,36 @@ let regions = [],
   rooms = [],
   devices = [];
 
-let plantaBaja = {
-  id: "pbaja",
-  name: "First Floor",
-  rooms: []
-};
-
-let primerPiso = {
-  id: "primerpiso",
-  name: "Second Floor",
-  rooms: []
-};
-regions.push(plantaBaja);
-regions.push(primerPiso);
-
-let comedor = {
-  id: "cuarto1",
-  name: "Comedor",
-  devices: []
-};
-rooms.push(comedor);
-plantaBaja.rooms.push(comedor);
-
-let dormitorio = {
-  id: "dormitorio1",
-  name: "Dormitorio",
-  devices: []
-};
-rooms.push(comedor);
-primerPiso.rooms.push(dormitorio);
+// let plantaBaja = {
+//   id: "pbaja",
+//   name: "First Floor",
+//   rooms: []
+// };
 //
-// let luz1Comedor = {
-//   id: "1",
-//   type: deviceTypes.light,
-//   name: "Luz 1",
-//   color: "",
-//   on: false,
-//   favourited: true,
-//   brightness: 100,
-//   room: comedor
+// let primerPiso = {
+//   id: "primerpiso",
+//   name: "Second Floor",
+//   rooms: []
 // };
-// let luz2Comedor = {
-//   id: "3",
-//   type: deviceTypes.light,
-//   name: "Luz 2",
-//   color: "",
-//   on: false,
-//   favourited: false,
-//   brightness: 100,
-//   room: comedor
+// regions.push(plantaBaja);
+// regions.push(primerPiso);
+//
+// let comedor = {
+//   id: "cuarto1",
+//   name: "Comedor",
+//   devices: []
 // };
-// let ac = {
-//   id: "2",
-//   type: deviceTypes.ac,
-//   name: "AC",
-//   swing: {
-//     vertical: 0,
-//     horizontal: 0
-//   },
-//   mode: "cool",
-//   favourited: true,
-//   on: false,
-//   room: comedor
+// rooms.push(comedor);
+// plantaBaja.rooms.push(comedor);
+//
+// let dormitorio = {
+//   id: "dormitorio1",
+//   name: "Dormitorio",
+//   devices: []
 // };
-// devices.push(ac);
-// devices.push(luz1Comedor);
-// devices.push(luz2Comedor);
-// comedor.devices.push(ac);
-// comedor.devices.push(luz1Comedor);
-// comedor.devices.push(luz2Comedor);
+// rooms.push(comedor);
+// primerPiso.rooms.push(dormitorio);
+
 
 let routines = [
   {

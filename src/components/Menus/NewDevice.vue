@@ -166,13 +166,12 @@
           <v-row dense>
             <v-col>
               <v-select
-                v-model="data.device"
+                v-model="data.device.id"
                 :items="devices"
                 label="Select Device"
                 item-value="id"
                 item-text="name"
                 clearable
-                id="device-id"
                 menu-props="offsetY, offsetOverflow"
                 no-data-text="Room not found"
                 :error="data.error"
@@ -292,6 +291,7 @@
 </template>
 
 <script>
+  import apiWrapper from "../../data/apiWrapper";
 export default {
   name: "NewDevice",
   model: {
@@ -323,10 +323,10 @@ export default {
         selectedRegion: null,
         selectedRoom: null,
         name: null,
-        device: null,
+        device: {id:null,name:null},
         error: false,
         errorMessages: [],
-        loading: false
+        loading: false,
       };
     },
     roomStep() {
@@ -359,16 +359,7 @@ export default {
       ];
     },
     devices() {
-      return [
-        {
-          name: "Light",
-          id: "L"
-        },
-        {
-          name: "Air Conditioner",
-          id: "AC"
-        }
-      ];
+      return apiWrapper.devices.getSupportedDevices();
     }
   },
   watch: {
@@ -378,7 +369,7 @@ export default {
           this.resetData();
         }
       }
-    }
+    },
   },
   created() {
     this.resetData();
@@ -388,16 +379,19 @@ export default {
       this.data = Object.assign({}, this.defaultData);
     },
     backOneStep() {
+      console.log("Going back");
+      console.log(this.data.stepper)
       if (this.data.stepper === 4) {
         this.data.stepper--;
         this.data.name = null;
       } else if (this.data.stepper === 3) {
-        if (this.room == null) {
+        if (this.room === null) {
           this.data.stepper--;
           this.data.device = null;
         }
       } else if (this.data.stepper === 2) {
-        if (this.region == null) {
+        console.log(`region: ${this.region}`)
+        if (this.region === null) {
           this.data.stepper--;
           this.selectedRoom = null;
         }
@@ -413,10 +407,16 @@ export default {
     getRoomName(roomId) {
       return "Comedor";
     },
-    getDeviceName(deviceId) {
-      if (deviceId === "L") return "Light";
-      if (deviceId === "AC") return "Air Conditioner";
-      return "N/A";
+    getDeviceName() {
+
+      if(this.data.device.id != null) {
+        this.data.device.name = this.devices.find(el => {
+          return this.data.device.id === el.id;
+        }).name;
+      }
+
+      return this.data.device.name;
+
     },
 
     validateRegion() {
@@ -425,6 +425,7 @@ export default {
         messages.push("Please, select a Region");
       this.data.errorMessages = messages;
       this.data.error = messages.length > 0;
+
     },
     validateRoom() {
       let messages = [];
@@ -432,12 +433,16 @@ export default {
         messages.push("Please, select a Room");
       this.data.errorMessages = messages;
       this.data.error = messages.length > 0;
+
     },
     validateDevice() {
+
+      console.log(this.data.device)
       let messages = [];
       if (this.data.device == null) messages.push("Please, select a Device");
       this.data.errorMessages = messages;
       this.data.error = messages.length > 0;
+
     },
     validateName(name) {
       let messages = [];
@@ -460,7 +465,16 @@ export default {
       this.data.loading = true;
       this.$emit("save", newDevice);
     }
+  },
+  mounted() {
+
+    if(this.Region === null )
+      this.stepper++;
+
+    if(this.Room === null)
+      this.stepper ++;
   }
+
 };
 </script>
 

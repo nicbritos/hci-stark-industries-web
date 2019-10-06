@@ -19,11 +19,6 @@
         <v-divider></v-divider>
       </v-col>
     </v-row>
-      <DoorMenu  device-id="4d4bdf130956e782" name="hola"/>
-<!--      <SpeakerMenu name="La alarma de abajo"/>-->
-    <AlarmMenu name="La alarma de abajo" menu-mode="create" />
-    <CurtainsMenu device-id="b933e394f8999a16" name="pedazo de mierda" mode="edit"/>
-    <FridgeMenu device-id="0df2e1a54b341a05" name="Heladerita"/>
 
     <v-row>
       <v-col>
