@@ -65,6 +65,7 @@
 </template>
 
 <script>
+  import ImageRetriever from "../../data/ImageRetriever";
   import Blinds from "../../data/schemas/devices/Blinds";
 export default {
   name: "curtainsMenu",
@@ -89,12 +90,12 @@ export default {
   data: () => ({
     ButtonUp: {
       disabled: true,
-      ImageToSet: "img/devices/CurtainOpen.svg"
+      ImageToSet: ImageRetriever.GetImages("eu0v2xgprrhhg41g",ImageRetriever.ACTIONS.OPEN)
     },
 
     ButtonDown: {
       disabled: false,
-      ImageToSet: "img/devices/CurtainClosed.svg"
+      ImageToSet: ImageRetriever.GetImages("eu0v2xgprrhhg41g",ImageRetriever.ACTIONS.CLOSE)
     },
 
     CurtainsMenu: false,

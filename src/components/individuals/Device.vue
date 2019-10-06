@@ -6,7 +6,7 @@
       v-on:CloseMenu="CloseMenu()"
     ></DeviceSelector>
     <v-card hover style="cursor: default" width="200">
-      <v-card-text @click="onClick" v-ripple style="cursor: pointer">
+      <v-card-text @click="OpenMenu()" v-ripple style="cursor: pointer">
         <div class="text--secondary">
           {{ device.name + (room ? " from " + device.room.name : "") }}
         </div>

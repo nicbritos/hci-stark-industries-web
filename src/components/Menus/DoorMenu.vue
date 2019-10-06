@@ -64,6 +64,7 @@
 
 <script>
   import Door from "../../data/schemas/devices/Door";
+  import ImageRetriever from "../../data/ImageRetriever";
 export default {
   name: "DoorMenu",
   props: {
@@ -101,11 +102,11 @@ export default {
       image: ""
     },
 
-    closedDoorImage: "img/devices/ClosedDoor.svg",
-    openDoorImage: "img/devices/OpenDoor.svg",
+    closedDoorImage: ImageRetriever.GetImages("lsf78ly0eqrjbz91",ImageRetriever.ACTIONS.CLOSE),
+    openDoorImage: ImageRetriever.GetImages("lsf78ly0eqrjbz91",ImageRetriever.ACTIONS.OPEN),
 
-    lockDoorImage: "img/devices/DoorLock.svg",
-    unlockDoorImage: "img/devices/DoorUnlock.svg",
+    lockDoorImage: ImageRetriever.GetImages("lsf78ly0eqrjbz91",ImageRetriever.ACTIONS.LOCK),
+    unlockDoorImage: ImageRetriever.GetImages("lsf78ly0eqrjbz91",ImageRetriever.ACTIONS.UNLOCK),
 
     OpenButtonString: "Open Door",
     CloseButtonString: "Close Door",
