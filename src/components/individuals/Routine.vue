@@ -56,6 +56,8 @@ export default {
       this.routine.meta.favourited = data.meta.favourited
 
       await apiWrapper.routines.update(this.routine.id,data);
+      this.$emit('test');
+
 
 
     }

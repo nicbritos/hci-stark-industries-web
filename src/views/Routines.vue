@@ -11,7 +11,7 @@
         </v-toolbar>
         <BoxContainer :items="favouriteRoutines">
           <template v-slot:item="{ item }">
-            <Routine :routine="item"></Routine>
+            <Routine :routine="item" v-on:test="reloadFavorites"></Routine>
           </template>
         </BoxContainer>
 
@@ -39,11 +39,13 @@
             >NEW ROUTINE</v-btn
           >
         </v-toolbar>
-        <BoxContainer :items="routines">
+        <div >
+        <BoxContainer :items="routines" >
           <template v-slot:item="{ item }">
-            <Routine :routine="item"></Routine>
+            <Routine :routine="item" v-on:test="reloadFavorites"></Routine>
           </template>
         </BoxContainer>
+        </div>
       </v-col>
     </v-row> </v-container
 ></template>
@@ -79,15 +81,24 @@ export default {
     closeDialog(item, type) {
       if (item == null || type == null || item[type] == null) return;
       if (item[type]) item[type] = false;
+    },
+    async reloadFavorites(){
+      console.log("EVent Recieved");
+      let routines = await apiWrapper.routines.getAll();
+      console.log(routines);
+      this.routines = routines;
+
+
+      let favs = routines.filter(el=>{return el.meta.favourited;});
+      console.log(favs);
+      this.favouriteRoutines = favs ;
+      console.log(this.favouriteRoutines);
+
+
     }
   },
   async mounted() {
-    let routines = await apiWrapper.routines.getAll();
-    console.log(routines);
-    this.routines = routines;
-    console.log(this.routines);
-    this.favouriteRoutines = routines.filter(el=>{return el.meta.favourited;});
-    console.log(this.favouriteRoutines);
+    this.reloadFavorites();
   }
 };
 </script>
