@@ -74,9 +74,8 @@ export default  class Speakers extends  CommonDeviceSchema{
         let result = await apiWrapper.devices.performAction(
             this.id,
             ACTION_NAMES.setVolume,
-            {
-                volume: value
-            }
+            [value]
+
         );
 
         if (result.result)
@@ -182,9 +181,8 @@ export default  class Speakers extends  CommonDeviceSchema{
         let result = await apiWrapper.devices.performAction(
             this.id,
             ACTION_NAMES.setGenre,
-            {
-                genre: genre
-            }
+            [genre]
+
         );
 
         if(result.result != undefined)

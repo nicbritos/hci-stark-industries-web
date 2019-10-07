@@ -100,13 +100,7 @@ export default class Lamp extends CommonDeviceSchema {
     let result = await apiWrapper.devices.performAction(
       this.id,
       ACTION_NAMES.setBrightness,
-      {
-        color: formatColor({
-          red: red,
-          green: green,
-          blue: blue
-        })
-      }
+      [red,green,blue]
     );
 
     if (result.result) {
@@ -128,9 +122,7 @@ export default class Lamp extends CommonDeviceSchema {
     let result = await apiWrapper.devices.performAction(
       this.id,
       ACTION_NAMES.setColor,
-      {
-        brightness: value
-      }
+        [value]
     );
 
     if (result.result) this.brightness = value;
