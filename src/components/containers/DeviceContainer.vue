@@ -62,7 +62,14 @@ export default {
     processClick(item) {
       if (this.pick) this.$emit("pick", item);
       else console.log("Open its menu");
+    },
+    propagateReload(){
+      console.log("Propagating");
+      this.$emit('reload')
     }
+  },
+  mounted() {
+    console.log("En DEVICE CONTAINER")
   }
 };
 </script>

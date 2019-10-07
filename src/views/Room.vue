@@ -1,6 +1,5 @@
 <template>
   <v-container grid-list-md fluid>
-    <!--    <v-dialog persistent v-model="dialogs.devices.new" max-width="700px">-->
     <v-dialog v-model="dialogs.devices.new" max-width="700px">
       <NewDevice
         region="ABC1"
@@ -11,10 +10,7 @@
     </v-dialog>
     <v-toolbar class="ml-n6" flat color="transparent">
       <Breadcrumbs
-        :items="[
-          { to: '/', text: 'First Floor' },
-          { to: '/', text: 'Comedor', disabled: true }
-        ]"
+        :items="breadcrumbsItems"
       ></Breadcrumbs>
       <v-spacer></v-spacer>
 
@@ -35,7 +31,7 @@
             </h2>
           </v-toolbar-title>
         </v-toolbar>
-        <DeviceContainer :items="favouriteDevices"></DeviceContainer>
+        <DeviceContainer :items="this.RoomModel.favoriteDevices"></DeviceContainer>
         <v-divider></v-divider>
       </v-col>
     </v-row>
@@ -60,12 +56,13 @@
             >NEW DEVICE</v-btn
           >
         </v-toolbar>
-        <DeviceContainer :items="devices"></DeviceContainer>
+        <DeviceContainer :items="this.RoomModel.devices" v-on:reload="this.reload()"></DeviceContainer>
       </v-col>
     </v-row> </v-container
 ></template>
 
 <script>
+  import apiWrapper from "../data/apiWrapper";
 import DeviceContainer from "@/components/containers/DeviceContainer";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import NewDevice from "@/components/Menus/NewDevice";
@@ -75,14 +72,24 @@ export default {
   components: { NewDevice, DeviceContainer, Breadcrumbs },
   data() {
     return {
-      favouriteDevices: this.$store.state.devices.favourites,
-      devices: this.$store.state.devices.items,
+      breadcrumbsItems:[],
+
       dialogs: {
         devices: {
           new: false
         }
       },
-      newDevice: {}
+      newDevice: {},
+
+      on:false,
+
+      RoomModel:{
+        id:null,
+        name:null,
+        region:null,
+        devices:[],
+        favoriteDevices:[]
+      }
     };
   },
   computed: {
@@ -96,6 +103,10 @@ export default {
     }
   },
   methods: {
+    reload(){
+      console.log("'Bout to Update");
+      this.$forceUpdate();
+    },
     newDeviceOpen() {
       this.newDevice = Object.assign({}, this.defaultDevice);
       this.openDialog(this.dialogs.devices, "new");
@@ -113,6 +124,29 @@ export default {
       if (item == null || type == null || item[type] == null) return;
       if (item[type]) item[type] = false;
     }
+  },
+  async mounted() {
+    let id = this.$route.params.rid;
+
+    let room = await apiWrapper.rooms.get(id);
+    console.log(room);
+    let devices = await apiWrapper.rooms.getDevices(id);
+    console.log(devices);
+
+    this.RoomModel = {
+      id:id,
+      name:room.name,
+      region:room.meta.region,
+      devices: devices,
+      favoriteDevices:devices.filter(el=>{return el.meta.favourited;})
+    };
+
+
+    this.breadcrumbsItems=[
+    { to: '/Regions', text: this.RoomModel.region.name },
+    { to: '/', text: this.RoomModel.name, disabled: true }
+  ];
+
   }
 };
 </script>

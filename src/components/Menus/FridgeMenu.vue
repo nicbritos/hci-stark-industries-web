@@ -1,14 +1,11 @@
 <template>
-  <v-dialog v-model="FridgeMenu" persistent max-width="400px">
-    <template v-slot:activator="{ on }">
-      <v-btn color="primary" dark v-on="on">Open Fridge</v-btn>
-    </template>
+  <v-dialog v-model="SuperMenOpen" persistent max-width="400px">
 
     <v-card dark raised>
       <v-card-title>
         <span class="headline">{{ name }}</span>
 
-        <v-btn icon absolute right @click="FridgeMenu = false">
+        <v-btn icon absolute right @click="open = false">
 
           <v-avatar color="red">
             <v-icon>delete</v-icon>
@@ -97,17 +94,21 @@ export default {
       deviceId:{
           type: String,
           required: true
+      },
+      openMenu:{
+          type:Boolean,
+          required: true
       }
   },
   data:()=> ({
       dropdownFridgeMode: ["default", "vacation", "aaaaa"],
+      SuperMenOpen:false,
       FridgeModel:{
           temperature:8,
           freezerTemperature:0,
           mode:""},
 
-        FridgeMenu:false
-      
+
   }),
     methods:{
         async LoadModel(){
@@ -135,7 +136,8 @@ export default {
 
         },
         Exit(){
-            this.FridgeMenu = false;
+            console.log("Sending Close Event from Fridge")
+            this.$emit('CloseMenu')
         }
 
     },
@@ -144,8 +146,11 @@ export default {
     },
     
     watch:{
-      FridgeMenu:function (val) {
+
+        openMenu:function (val) {
+            this.SuperMenOpen= val;
           if(val){
+
               this.LoadModel();
           }
       },

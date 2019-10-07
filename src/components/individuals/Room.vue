@@ -6,19 +6,12 @@
       </p>
       <div class="text--secondary">{{ roomQuantityString }}<br /></div>
     </v-card-text>
-    <!--    <v-card-actions>-->
-    <!--      <v-spacer></v-spacer>-->
-    <!--      <v-btn text v-blur color="primary">-->
-    <!--        EDIT-->
-    <!--      </v-btn>-->
-    <!--      <v-btn text v-blur color="error">-->
-    <!--        REMOVE-->
-    <!--      </v-btn>-->
-    <!--    </v-card-actions>-->
+
   </v-card>
 </template>
 
 <script>
+  import apiWrapper from "../../data/apiWrapper";
 export default {
   name: "Room",
   props: {
@@ -27,18 +20,30 @@ export default {
       required: true
     }
   },
+  data:()=>({
+    devices:[],
+  }),
   computed: {
     roomQuantityString() {
+      console.log("IN ROOM");
+      console.log(this.devices);
       return (
-        (this.room.devices.length === 0 ? "No" : this.room.devices.length) +
-        (this.room.devices.length === 1 ? " device" : " devices")
+        (this.devices.length === 0 ? "No" : this.devices.length) +
+        (this.devices.length === 1 ? " device" : " devices")
       );
-    }
+    },
   },
   methods: {
     goToRoom() {
-      this.$router.push(this.$router.currentRoute.path + "/" + this.room.id);
+      this.$router.push(this.$router.currentRoute.path + "/room/" + this.room.id);
+    },
+    async refreshDevices(){
+      console.log("Getting Devices for Room");
+      this.devices = await apiWrapper.rooms.getDevices(this.room.id);
     }
+  },
+  async mounted() {
+    await this.refreshDevices();
   }
 };
 </script>
