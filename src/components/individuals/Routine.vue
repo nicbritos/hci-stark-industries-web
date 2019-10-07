@@ -6,8 +6,8 @@
       </p>
       <div class="text--secondary">
         {{
-          routine.description != null
-            ? routine.description
+          routine.meta.description != null
+            ? routine.meta.description
             : "No description set"
         }}<br />
       </div>
@@ -19,26 +19,19 @@
         </v-icon>
       </v-btn>
       <v-spacer></v-spacer>
-      <v-btn large icon v-blur text color="primary">
-        <v-icon large v-if="routine.favourited" key="0">favorite</v-icon>
+      <v-btn large icon v-blur text color="primary" @click="UpdateFavoriteState()">
+        <v-icon large v-if="routine.meta.favourited" key="0">favorite</v-icon>
         <v-icon large v-else key="1">favorite_outline</v-icon>
       </v-btn>
-      <v-btn large icon v-blur>
+      <v-btn large icon v-blur @click="Execute()">
         <v-icon large color="primary">play_circle_outline</v-icon>
       </v-btn>
     </v-card-actions>
-    <!--        <v-card-actions class="mt-n8 pb-0">-->
-    <!--            <v-spacer></v-spacer>-->
-    <!--            <v-btn icon v-blur text color="primary">-->
-    <!--                <v-icon>favorite</v-icon>-->
-    <!--            </v-btn>-->
-    <!--            <v-switch class="mt-5 ml-4" v-model="routine.on" v-blur color="primary">-->
-    <!--            </v-switch>-->
-    <!--        </v-card-actions>-->
   </v-card>
 </template>
 
 <script>
+  import apiWrapper from "../../data/apiWrapper";
 export default {
   name: "Routine",
   props: {
@@ -46,7 +39,32 @@ export default {
       type: Object,
       required: true
     }
+  },
+  methods:{
+    async Execute(){
+      console.log("Executing Routine: " + this.routine.name);
+      await apiWrapper.routines.execute(this.routine.id);
+    },
+    async UpdateFavoriteState(){
+      let data ={
+        name: this.routine.name,
+        actions: this.routine.actions,
+        meta: this.routine.meta
+      }
+
+      data.meta.favourited = !data.meta.favourited;
+      this.routine.meta.favourited = data.meta.favourited
+
+      await apiWrapper.routines.update(this.routine.id,data);
+
+
+    }
+  },
+  mounted(){
+    console.log("Cargando RUTINA");
+    console.log(this.routine);
   }
+
 };
 </script>
 
