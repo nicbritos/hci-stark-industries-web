@@ -11,7 +11,7 @@
         </v-toolbar>
         <BoxContainer :items="favouriteRoutines">
           <template v-slot:item="{ item }">
-            <Routine :routine="item" v-on:test="reloadFavorites"></Routine>
+            <Routine :routine="item" v-on:reload-site="reload"></Routine>
           </template>
         </BoxContainer>
 
@@ -42,7 +42,7 @@
         <div >
         <BoxContainer :items="routines" >
           <template v-slot:item="{ item }">
-            <Routine :routine="item" v-on:test="reloadFavorites"></Routine>
+            <Routine :routine="item" v-on:reload-site="reload"></Routine>
           </template>
         </BoxContainer>
         </div>
@@ -82,7 +82,7 @@ export default {
       if (item == null || type == null || item[type] == null) return;
       if (item[type]) item[type] = false;
     },
-    async reloadFavorites(){
+    async reload(){
       console.log("EVent Recieved");
       let routines = await apiWrapper.routines.getAll();
       console.log(routines);
@@ -98,7 +98,7 @@ export default {
     }
   },
   async mounted() {
-    this.reloadFavorites();
+    this.reload();
   }
 };
 </script>
