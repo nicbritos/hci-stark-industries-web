@@ -1,6 +1,7 @@
 
 
-const BASE_URL='http://127.0.0.1:8081/img/devices/';
+
+const BASE_URL = window.location.protocol + '//127.0.0.1:' + window.location.port +"/img/devices/";
 
 export default {
     ACTIONS:{

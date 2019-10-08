@@ -8,11 +8,11 @@
   - [ ] AC
   - [ ] Lampara
 - [ ] Rutinas
-  - [ ] Ver Rutinas
+  - [x] Ver Rutinas
   - [ ] Crear Rutinas
-  - [ ] Ejecutar Rutinas
+  - [x] Ejecutar Rutinas
   - [ ] Editar Rutinas
-  - [ ] Marcar/Desmarcar como favoritas a las rutinas
+  - [x] Marcar/Desmarcar como favoritas a las rutinas
   - [ ] Deshacer cambios
   - [ ] Confirmacion de eliminacion
 - [ ] Dispositivos
