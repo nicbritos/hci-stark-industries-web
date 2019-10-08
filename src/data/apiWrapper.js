@@ -136,7 +136,8 @@ async function requestQuery(url, method, data) {
   let response;
 
   let init = {
-    method: method
+    method: method,
+    mode: 'cors'
   };
   if (typeof data === "object") {
     init.body = JSON.stringify(data);
