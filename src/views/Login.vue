@@ -70,7 +70,6 @@
               CONECTARME
             </v-btn>
           </v-card-actions>
-          <SocialLogin />
         </v-card>
       </v-flex>
     </v-layout>
@@ -78,14 +77,10 @@
 </template>
 
 <script>
-import SocialLogin from "@/components/SocialLogin";
 import { required, email, minLength } from "vuelidate/lib/validators";
 import { mapGetters } from "vuex";
 
 export default {
-  components: {
-    SocialLogin
-  },
   data: () => ({
     show: false,
     email: "",

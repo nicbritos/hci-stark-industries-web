@@ -9,9 +9,7 @@
       ></NewDevice>
     </v-dialog>
     <v-toolbar class="ml-n6" flat color="transparent">
-      <Breadcrumbs
-        :items="breadcrumbsItems"
-      ></Breadcrumbs>
+      <Breadcrumbs :items="breadcrumbsItems"></Breadcrumbs>
       <v-spacer></v-spacer>
 
       <v-btn class="mt-4 mr-4" text outlined color="primary" v-on="on" v-blur
@@ -31,7 +29,10 @@
             </h2>
           </v-toolbar-title>
         </v-toolbar>
-        <DeviceContainer :items="this.RoomModel.favoriteDevices" v-on:reload="reload"></DeviceContainer>
+        <DeviceContainer
+          :items="this.RoomModel.favoriteDevices"
+          v-on:reload="reload"
+        ></DeviceContainer>
         <v-divider></v-divider>
       </v-col>
     </v-row>
@@ -56,23 +57,26 @@
             >NEW DEVICE</v-btn
           >
         </v-toolbar>
-        <DeviceContainer :items="this.RoomModel.devices" v-on:reload="reload"></DeviceContainer>
+        <DeviceContainer
+          :items="this.RoomModel.devices"
+          v-on:reload="reload"
+        ></DeviceContainer>
       </v-col>
     </v-row> </v-container
 ></template>
 
 <script>
-  import apiWrapper from "../data/apiWrapper";
+import apiWrapper from "../data/apiWrapper";
 import DeviceContainer from "@/components/containers/DeviceContainer";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import NewDevice from "@/components/Menus/NewDevice";
+import NewDevice from "@/components/action_menus/NewDevice";
 
 export default {
   name: "Rooms",
   components: { NewDevice, DeviceContainer, Breadcrumbs },
   data() {
     return {
-      breadcrumbsItems:[],
+      breadcrumbsItems: [],
 
       dialogs: {
         devices: {
@@ -81,14 +85,14 @@ export default {
       },
       newDevice: {},
 
-      on:false,
+      on: false,
 
-      RoomModel:{
-        id:null,
-        name:null,
-        region:null,
-        devices:[],
-        favoriteDevices:[]
+      RoomModel: {
+        id: null,
+        name: null,
+        region: null,
+        devices: [],
+        favoriteDevices: []
       }
     };
   },
@@ -103,10 +107,9 @@ export default {
     }
   },
   methods: {
-    reload(){
+    reload() {
       console.log("'Bout to Update");
       this.LoadModel();
-
     },
     newDeviceOpen() {
       this.newDevice = Object.assign({}, this.defaultDevice);
@@ -125,7 +128,7 @@ export default {
       if (item == null || type == null || item[type] == null) return;
       if (item[type]) item[type] = false;
     },
-    async LoadModel(){
+    async LoadModel() {
       console.log("LOADING");
       let id = this.$route.params.rid;
 
@@ -135,14 +138,16 @@ export default {
       console.log("DEVSSS");
       console.log(devices);
 
-      let favDevs = devices.filter(el=>{return el.meta.favourited;});
-      console.log("FAV DEVS")
+      let favDevs = devices.filter(el => {
+        return el.meta.favourited;
+      });
+      console.log("FAV DEVS");
       console.log(favDevs);
 
       this.RoomModel = {
-        id:id,
-        name:room.name,
-        region:room.meta.region,
+        id: id,
+        name: room.name,
+        region: room.meta.region,
         devices: devices,
         favoriteDevices: favDevs
       };
@@ -154,12 +159,10 @@ export default {
   async mounted() {
     await this.LoadModel();
 
-
-    this.breadcrumbsItems=[
-    { to: '/Regions', text: this.RoomModel.region.name },
-    { to: '/', text: this.RoomModel.name, disabled: true }
-  ];
-
+    this.breadcrumbsItems = [
+      { to: "/Regions", text: this.RoomModel.region.name },
+      { to: "/", text: this.RoomModel.name, disabled: true }
+    ];
   }
 };
 </script>
