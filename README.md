@@ -8,17 +8,17 @@
   - [ ] AC
   - [ ] Lampara
 - [ ] Rutinas
-  - [ ] Ver Rutinas
+  - [x] Ver Rutinas
   - [ ] Crear Rutinas
-  - [ ] Ejecutar Rutinas
+  - [x] Ejecutar Rutinas
   - [ ] Editar Rutinas
-  - [ ] Marcar/Desmarcar como favoritas a las rutinas
+  - [x] Marcar/Desmarcar como favoritas a las rutinas
   - [ ] Deshacer cambios
   - [ ] Confirmacion de eliminacion
 - [ ] Dispositivos
   - [ ] Crear Dispositivos
-  - [ ] Mostar dispositivos favoritos en home
-  - [ ] Mostrar rutinas favoritas en home
+  - [x] Mostar dispositivos favoritos en home
+  - [x] Mostrar rutinas favoritas en home
   - [ ] Deshacer cambios
   - [ ] Confirmacion de eliminacion
 - [ ] Implementar la barra de busqueda

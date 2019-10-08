@@ -99,9 +99,7 @@ export default class AC extends CommonDeviceSchema {
     let result = await apiWrapper.devices.performAction(
       this.id,
       ACTION_NAMES.setTemperature,
-      {
-        temperature: value
-      }
+      [value]
     );
 
     if (result.result) this.temperature = value;
@@ -115,9 +113,7 @@ export default class AC extends CommonDeviceSchema {
     let result = await apiWrapper.devices.performAction(
       this.id,
       ACTION_NAMES.setMode,
-      {
-        mode: value
-      }
+      [value]
     );
 
     if (result.result) this.mode = value;
@@ -131,9 +127,7 @@ export default class AC extends CommonDeviceSchema {
     let result = await apiWrapper.devices.performAction(
       this.id,
       ACTION_NAMES.setVerticalSwing,
-      {
-        verticalSwing: value
-      }
+      [value]
     );
 
     if (result.result) this.swing.vertical = value;
@@ -147,9 +141,8 @@ export default class AC extends CommonDeviceSchema {
     let result = await apiWrapper.devices.performAction(
       this.id,
       ACTION_NAMES.setHorizontalSwing,
-      {
-        horizontalSwing: value
-      }
+        [value]
+
     );
 
     if (result.result) this.swing.horizontal = value;
@@ -163,9 +156,8 @@ export default class AC extends CommonDeviceSchema {
     let result = await apiWrapper.devices.performAction(
       this.id,
       ACTION_NAMES.setFanSpeed,
-      {
-        fanSpeed: value
-      }
+        [value]
+
     );
 
     if (result.result) this.swing.horizontal = value;

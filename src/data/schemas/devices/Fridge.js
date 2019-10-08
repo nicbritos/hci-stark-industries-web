@@ -57,9 +57,7 @@ export default  class Fridge extends  CommonDeviceSchema{
         let result = await apiWrapper.devices.performAction(
             this.id,
             ACTION_NAMES.setTemperature,
-            {
-                temperature: value
-            }
+            [value]
         );
 
         if (result.result)
@@ -85,9 +83,7 @@ export default  class Fridge extends  CommonDeviceSchema{
         let result = await apiWrapper.devices.performAction(
             this.id,
             ACTION_NAMES.setFreezerTemperature,
-            {
-                temperature: value
-            }
+            [value]
         );
 
         console.log("la accion fue : " + result.result);
@@ -108,9 +104,7 @@ export default  class Fridge extends  CommonDeviceSchema{
         let result = await apiWrapper.devices.performAction(
             this.id,
             ACTION_NAMES.setMode,
-            {
-                mode: mode
-            }
+            [mode]
         );
 
         if(result.result)

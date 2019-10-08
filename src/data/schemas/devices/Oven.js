@@ -66,9 +66,7 @@ export default  class Oven extends  CommonDeviceSchema {
         let result = await apiWrapper.devices.performAction(
             this.id,
             ACTION_NAMES.setTemperature,
-            {
-                temperature: value
-            }
+            [value]
         );
 
         if (result.result)
@@ -87,9 +85,7 @@ export default  class Oven extends  CommonDeviceSchema {
         let result = await apiWrapper.devices.performAction(
             this.id,
             ACTION_NAMES.setGrill,
-            {
-                grill: state
-            }
+            [state]
         );
 
         if(result.result)
@@ -108,9 +104,7 @@ export default  class Oven extends  CommonDeviceSchema {
         let result = await apiWrapper.devices.performAction(
             this.id,
             ACTION_NAMES.setHeat,
-            {
-                heat: state
-            }
+            [state]
         );
 
         if(result.result)
@@ -129,9 +123,7 @@ export default  class Oven extends  CommonDeviceSchema {
         let result = await apiWrapper.devices.performAction(
             this.id,
             ACTION_NAMES.setConvection,
-            {
-                convection: state
-            }
+            [state]
         );
 
         if(result.result)

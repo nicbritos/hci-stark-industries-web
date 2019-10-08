@@ -12,7 +12,7 @@
 
         <BoxContainer :items="routines">
           <template v-slot:item="{ item }">
-            <Routine :routine="item"></Routine>
+            <Routine :routine="item" v-on:reload-site="reload" ></Routine>
           </template>
         </BoxContainer>
 
@@ -29,7 +29,7 @@
             </h2>
           </v-toolbar-title>
         </v-toolbar>
-        <DeviceContainer :room="true" :items="devices"></DeviceContainer>
+        <DeviceContainer :room="true" :items="devices" v-on:reload="reload"></DeviceContainer>
       </v-col>
     </v-row> </v-container
 ></template>
@@ -38,29 +38,36 @@
 import BoxContainer from "@/components/containers/BoxContainer";
 import Routine from "@/components/individuals/Routine";
 import DeviceContainer from "@/components/containers/DeviceContainer";
-import SpeakerMenu from "../components/Menus/SpeakerMenu";
-import DoorMenu from "../components/Menus/DoorMenu";
-import AlarmMenu from "../components/Menus/AlarmMenu";
-import CurtainsMenu from "../components/Menus/CurtainsMenu";
-import FridgeMenu from "../components/Menus/FridgeMenu";
+import apiWrapper from "../data/apiWrapper";
 
 export default {
   name: "Home",
   components: {
-  DoorMenu,
-    AlarmMenu,
-    CurtainsMenu,
     Routine,
-    SpeakerMenu,
-    FridgeMenu,
     BoxContainer,
     DeviceContainer
   },
   data() {
     return {
-      devices: this.$store.state.devices.favourites,
-      routines: this.$store.state.routines.favourites
+      devices: [],
+      routines: []
     };
+  },
+  methods:{
+    reload(){
+      console.log("'Bout to Update");
+      this.LoadModel();
+
+    },
+    async LoadModel(){
+      let devs = await apiWrapper.devices.getAll();
+      this.devices = devs.filter(el=>{return el.meta.favourited});
+      let routs = await apiWrapper.routines.getAll();
+      this.routines = routs.filter(el=>{return el.meta.favourited});
+    },
+  },
+  async mounted() {
+    this.LoadModel();
   }
 };
 </script>

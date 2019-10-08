@@ -285,42 +285,48 @@ export default {
   },
   routines: {
     getAll: async () => {
-      return await requestQuery(
+      let res = await requestQuery(
         URLS.routines.list.url,
         URLS.routines.list.method
       );
+      return res.result;
     },
     get: async routineId => {
-      return await requestQuery(
+      let res = await requestQuery(
         composeURL(URLS.routines.get.url, routineId),
         URLS.routines.get.method
       );
+      return res.result;
     },
     create: async data => {
-      return await requestQuery(
+      let res = await requestQuery(
         URLS.routines.create.url,
         URLS.routines.create.method,
         data
       );
+      return res.result;
     },
     update: async (routineId, data) => {
-      return await requestQuery(
+      let res = await requestQuery(
         composeURL(URLS.routines.update.url, routineId),
         URLS.routines.update.method,
         data
       );
+      return res.result;
     },
     execute: async routineId => {
-      return await requestQuery(
+      let res = await requestQuery(
         composeURL(URLS.routines.execute.url, routineId, "execute"),
         URLS.routines.update.method
       );
+      return res.result;
     },
     delete: async routineId => {
-      return await requestQuery(
+      let res = await requestQuery(
         composeURL(URLS.routines.delete.url, routineId),
         URLS.routines.delete.method
       );
+      return res.result;
     }
   }
 };
