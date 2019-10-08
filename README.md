@@ -7,6 +7,15 @@
   - [ ] Horno
   - [ ] AC
   - [ ] Lampara
+- [ ] Regiones
+  - [ ] Mostrar las regiones
+  - [ ] Crear region
+  - [ ] Editar region
+  - [ ] Eliminar region
+- [ ] Cuartos
+  - [ ] Crear cuarto
+  - [ ] Editar cuarto
+  - [ ] Eliminar cuarto
 - [ ] Rutinas
   - [x] Ver Rutinas
   - [ ] Crear Rutinas
@@ -21,6 +30,8 @@
   - [x] Mostrar rutinas favoritas en home
   - [ ] Deshacer cambios
   - [ ] Confirmacion de eliminacion
+  - [ ] Vista de todos los dispositivos
+  - [ ] Vista de dispositivos por categoria
 - [ ] Implementar la barra de busqueda
 - [ ] Login (select profile)
 - [ ] PIN code
