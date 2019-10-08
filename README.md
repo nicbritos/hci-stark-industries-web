@@ -38,3 +38,4 @@
 - [ ] Testing
 - [ ] About page
 - [ ] Auth/unauth router fix
+- [ ] INFORME
