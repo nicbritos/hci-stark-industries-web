@@ -8,6 +8,7 @@
         :device="item"
         @update="processSelection(item, $event)"
         @click="processClick(item)"
+        v-on:reload="propagateReload"
       ></Device>
     </template>
   </BoxContainer>

@@ -31,7 +31,7 @@
             </h2>
           </v-toolbar-title>
         </v-toolbar>
-        <DeviceContainer :items="this.RoomModel.favoriteDevices"></DeviceContainer>
+        <DeviceContainer :items="this.RoomModel.favoriteDevices" v-on:reload="reload"></DeviceContainer>
         <v-divider></v-divider>
       </v-col>
     </v-row>
@@ -56,7 +56,7 @@
             >NEW DEVICE</v-btn
           >
         </v-toolbar>
-        <DeviceContainer :items="this.RoomModel.devices" v-on:reload="this.reload()"></DeviceContainer>
+        <DeviceContainer :items="this.RoomModel.devices" v-on:reload="reload"></DeviceContainer>
       </v-col>
     </v-row> </v-container
 ></template>
@@ -105,7 +105,8 @@ export default {
   methods: {
     reload(){
       console.log("'Bout to Update");
-      this.$forceUpdate();
+      this.LoadModel();
+
     },
     newDeviceOpen() {
       this.newDevice = Object.assign({}, this.defaultDevice);
@@ -123,23 +124,35 @@ export default {
     closeDialog(item, type) {
       if (item == null || type == null || item[type] == null) return;
       if (item[type]) item[type] = false;
+    },
+    async LoadModel(){
+      console.log("LOADING");
+      let id = this.$route.params.rid;
+
+      let room = await apiWrapper.rooms.get(id);
+
+      let devices = await apiWrapper.rooms.getDevices(id);
+      console.log("DEVSSS");
+      console.log(devices);
+
+      let favDevs = devices.filter(el=>{return el.meta.favourited;});
+      console.log("FAV DEVS")
+      console.log(favDevs);
+
+      this.RoomModel = {
+        id:id,
+        name:room.name,
+        region:room.meta.region,
+        devices: devices,
+        favoriteDevices: favDevs
+      };
+
+      console.log("AAAAAAAAAAAA");
+      console.log(this.RoomModel);
     }
   },
   async mounted() {
-    let id = this.$route.params.rid;
-
-    let room = await apiWrapper.rooms.get(id);
-    console.log(room);
-    let devices = await apiWrapper.rooms.getDevices(id);
-    console.log(devices);
-
-    this.RoomModel = {
-      id:id,
-      name:room.name,
-      region:room.meta.region,
-      devices: devices,
-      favoriteDevices:devices.filter(el=>{return el.meta.favourited;})
-    };
+    await this.LoadModel();
 
 
     this.breadcrumbsItems=[

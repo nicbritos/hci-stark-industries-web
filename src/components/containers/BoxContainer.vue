@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-row justify="start">
       <v-col cols="auto" v-for="item in items" :key="item.id">
-        <slot name="item" v-bind:item="item"></slot>
+        <slot name="item" v-bind:item="item"         v-on:reload="propagateReload"></slot>
       </v-col>
     </v-row>
   </v-container>
@@ -17,6 +17,12 @@ export default {
       required: true
     }
   },
+  methods:{
+    propagateReload(){
+      console.log("Propagating");
+      this.$emit('reload')
+    }
+  }
 
 };
 </script>

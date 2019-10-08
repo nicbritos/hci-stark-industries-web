@@ -35,7 +35,7 @@
         </v-btn>
         <v-spacer></v-spacer>
         <v-btn v-if="editable " large icon v-blur text color="primary" @click="applyFavouriteSelection()">
-          <v-icon large v-if="fav" key="0">favorite</v-icon>
+          <v-icon large v-if="this.device.meta.favourited" key="0">favorite</v-icon>
           <v-icon large v-else key="1">favorite_outline</v-icon>
         </v-btn>
           <v-switch
@@ -100,22 +100,24 @@ export default {
     quickAction:null
   }),
   methods: {
-    onSwitchUpdate(){
+    async onSwitchUpdate(){
       console.log(`About to do quick action. Curr state: ${this.isOn}`);
-      this.quickAction.action(this.device.id, this.isOn);
+      await this.quickAction.action(this.device.id, this.isOn);
       this.isOn = !this.isOn
+
 
     },
     async applyFavouriteSelection(){
+      this.device.meta.favourited = !this.device.meta.favourited;
       let data={
         name: this.device.name,
         meta:{
-          favourited: !this.device.meta.favourited
+          favourited: this.device.meta.favourited
         }
       };
-      this.fav = data.meta.favourited;
+      this.fav = this.device.meta.favourited;
       await apiWrapper.devices.update(this.device.id,data);
-
+      console.log("Sending Reload Event");
       this.$emit('reload');
 
     },
@@ -126,24 +128,17 @@ export default {
       this.$emit("click");
     },
     CloseMenu() {
-      console.log("Closing shit");
-      console.log("openMenu: " + this.openMenu);
       this.openMenu = false;
-      console.log("openMenu: " + this.openMenu);
     },
     OpenMenu() {
       this.openMenu = true;
-      console.log("Opening menu: " + this.device.name);
     },
       GetFavourite(){
-          console.log("CHECK FAVORUTITE");
-          console.log(this.device);
+        console.log("BEFORE APPLYING")
+        console.log(`device: ${this.device.name} is fav: ${this.fav} and in DB is: ${this.device.meta.favourited}`)
         return this.device.meta.favourited;
       },
       GetImage() {
-          console.log(this.device);
-        console.log("Getting Image");
-          console.log(`sending ID: ${this.device.type.id}`)
       switch (this.device.type.id) {
         case "rnizejqr2di0okho": // FRIDGE
           return ImageRetriever.GetImages(
@@ -226,16 +221,13 @@ export default {
       this.image = this.GetImage();
       this.fav = this.GetFavourite();
 
+    console.log("AFTER APPLYING")
+    console.log(`device: ${this.device.name} is fav: ${this.fav} and in DB is: ${this.device.meta.favourited}`)
       this.hasAction = await QuickActionHelper.hasQuickAction(this.device.type.id);
-    console.log(`hasAction: ${this.hasAction}`);
 
     if(this.hasAction){
         this.quickAction = await QuickActionHelper.getQuickAction(this.device.type.id);
-      console.log("Getting quickAction");
-      console.log(this.quickAction);
         this.isOn = this.quickAction.checkState(this.device);
-      console.log("Setting isOn:" + this.isOn);
-      console.log(this.device);
 
       }
 
