@@ -37,11 +37,11 @@ export default class Lamp extends CommonDeviceSchema {
     let data = await CommonDeviceSchema._create(name, DeviceIds.byType.Lamp, {
       supportsColors: !!supportsColors
     });
-    return new Lamp(data.id, data.name, data.meta);
+    return new Lamp(data.id, data.name, data.meta, data.roomId);
   }
 
-  constructor(id, name, meta) {
-    super(id, name, meta, DeviceIds.byType.Lamp);
+  constructor(id, name, meta, roomId) {
+    super(id, name, meta, DeviceIds.byType.Lamp, roomId);
 
     this.isOn = false;
     this.brightness = 100;
