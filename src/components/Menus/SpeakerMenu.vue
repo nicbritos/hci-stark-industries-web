@@ -179,6 +179,7 @@ export default {
   },
   data: () => ({
     SuperMenuOpen: false,
+    interval:undefined,
 
     SpeakerModel: {
       genre: "",
@@ -232,7 +233,7 @@ export default {
       console.log("new Model:");
       console.log(this.SpeakerModel);
 
-      window.clearInterval();
+      window.clearInterval(this.interval);
     },
     async resumeMusic() {
       console.log("RESUME Music");
@@ -383,14 +384,14 @@ export default {
       }
     },
     StartSongTimer() {
-      window.setInterval(() => {
+        window.clearInterval(this.interval);
+      this.interval = window.setInterval(() => {
         if (this.SpeakerModel.isSongLoaded) {
           if (this.SpeakerModel.currentSong.isPlaying) {
             this.SpeakerModel.currentSong.timemark++;
-            this.SpeakerModel.currentSong.progress =
-              100 *
-              (this.SpeakerModel.currentSong.timemark /
-                this.SpeakerModel.currentSong.duration);
+            console.log("aumento el timer");
+
+            this.SpeakerModel.currentSong.progress = 100 * (this.SpeakerModel.currentSong.timemark / this.SpeakerModel.currentSong.duration);
 
             if (
               this.SpeakerModel.currentSong.timemark >=
@@ -429,7 +430,7 @@ export default {
         this.setUp();
         this.StartSongTimer();
       } else {
-        window.clearInterval();
+        window.clearInterval(this.interval);
       }
     }
   }
