@@ -1,4 +1,33 @@
 # Stark Industries
+## Requerimientos
+### Funcionales
+##### * son opcionales
+- [ ] Soportar 7 dispositivos
+- [ ] Crear dispositivos
+- [ ] Editar dispositivos
+- [ ] Eliminar dispositivos
+- [ ] Consultar estado de dispositivos
+- [ ] Ejecutar acciones sobre dispositivos
+- [ ] Crear rutinas
+- [ ] Ejecutar rutinas
+- [ ] * Crear habitaciones
+- [ ] * Asociar los dispositivos a las habitaciones
+- [ ] * Consultar dispositivos por habitaciones
+- [ ] * Restringir acceso a dispositivos / habitaciones / rutinas con PIN.
+- [ ] * Modificar info de las habitaciones
+- [ ] * Eliminar habitaciones
+- [ ] * Desasociar los dispositivos registrados de las habitaciones
+- [ ] * Consultar el registro de acciones realizadas JA
+- [ ] * Consultar el consumo electrico para un determinado periodo JA2
+
+### No Funcionales
+- [ ] Utilizar HTML, CSS, JS, AJAX
+- [ ] Funcionar en al menos 2: Edge 40+, Firefox 60+, Chrome 64+
+- [ ] * Superar validacion W3C
+- [ ] * Respetar estrategias de separacion entre estructura y presentacion (?)
+- [ ] * Respetar estrategias de separacion entre la estructura y el comportamiento (?)
+
+
 
 ## Falta
 
