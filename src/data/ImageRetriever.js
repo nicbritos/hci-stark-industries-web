@@ -1,7 +1,7 @@
 
 
 
-const BASE_URL = window.location.protocol + '//127.0.0.1:' + window.location.port +"/img/devices/";
+let BASE_URL = location.protocol + '//'+ location.hostname+':' + location.port +"/img/devices/";
 
 export default {
     ACTIONS:{
