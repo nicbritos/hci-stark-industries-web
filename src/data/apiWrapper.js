@@ -1,6 +1,6 @@
 const TRANSPORT = "http://";
 const BASE_URL = "127.0.0.1";
-const PORT = "8080";
+const PORT = "9090";
 
 const URL = TRANSPORT + BASE_URL + ":" + PORT + "/api";
 
@@ -65,13 +65,13 @@ const URLS = {
       url: composeURL(URL, "devices"),
       method: METHODS.DELETE
     },
-    action:{
-      url: composeURL(URL,"devices"),
-      method:METHODS.PUT
+    action: {
+      url: composeURL(URL, "devices"),
+      method: METHODS.PUT
     },
-    state:{
-      url: composeURL(URL,"devices"),
-      method:METHODS.GET
+    state: {
+      url: composeURL(URL, "devices"),
+      method: METHODS.GET
     }
   },
   routines: {
@@ -128,6 +128,9 @@ const URLS = {
   }
 };
 
+// method
+let undoOperation = null;
+
 function composeURL(...dirs) {
   return dirs.join("/");
 }
@@ -137,7 +140,7 @@ async function requestQuery(url, method, data) {
 
   let init = {
     method: method,
-    mode: 'cors'
+    mode: "cors"
   };
   if (typeof data === "object") {
     init.body = JSON.stringify(data);
@@ -185,28 +188,53 @@ export default {
       );
     },
     create: async data => {
-      return await requestQuery(
+      let response = await requestQuery(
         URLS.devices.create.url,
         URLS.devices.create.method,
         data
       );
+
+      if (typeof response.result === "object") {
+        undoOperation = async () => {
+          let response = await this.devices.delete(response.result.id);
+          undoOperation = null;
+          return response;
+        };
+      }
+
+      return response;
     },
     update: async (deviceId, data) => {
-      return await requestQuery(
+      let originalData = JSON.parse(JSON.stringify(data)); // Deep copy
+
+      let response = await requestQuery(
         composeURL(URLS.devices.update.url, deviceId),
         URLS.devices.update.method,
         data
       );
+
+      if (response.result) {
+        undoOperation = async () => {
+          let response = await this.devices.update(deviceId, originalData);
+          undoOperation = null;
+          return response;
+        };
+      }
+
+      return response;
     },
     performAction: async (deviceId, actionName, params) => {
-      console.log(`en perform action. URL: ${URLS.devices.action.url+"/"+actionName}`);
+      // TODO: UNDO
+      console.log(
+        `en perform action. URL: ${URLS.devices.action.url + "/" + actionName}`
+      );
       return await requestQuery(
         composeURL(URLS.devices.action.url, deviceId, actionName),
         URLS.devices.action.method,
         params
       );
     },
-    getState: async (deviceId) => {
+    getState: async deviceId => {
       console.log(`en getState URL: ${URLS.devices.state.url}`);
       return await requestQuery(
         composeURL(URLS.devices.state.url, deviceId, "state"),
@@ -214,16 +242,36 @@ export default {
       );
     },
     addToRoom: async (deviceId, roomId) => {
-      return await requestQuery(
+      let response = await requestQuery(
         composeURL(URLS.devices.addToRoom.url, deviceId, "rooms", roomId),
         URLS.devices.addToRoom.method
       );
+
+      if (response.result) {
+        undoOperation = async () => {
+          let response = await this.devices.deleteFromRoom(deviceId);
+          undoOperation = null;
+          return response;
+        };
+      }
+
+      return response;
     },
-    deleteFromRooms: async deviceId => {
-      return await requestQuery(
+    deleteFromRoom: async (deviceId, roomId) => {
+      let response = await requestQuery(
         composeURL(URLS.devices.deleteFromRoom.url, deviceId),
         URLS.devices.deleteFromRoom.method
       );
+
+      if (response.result) {
+        undoOperation = async () => {
+          let response = await this.devices.addToRoom(deviceId, roomId);
+          undoOperation = null;
+          return response;
+        };
+      }
+
+      return response;
     },
     delete: async deviceId => {
       return await requestQuery(
@@ -231,21 +279,24 @@ export default {
         URLS.devices.delete.method
       );
     },
-    getSupportedDevices:()=>{
+    getSupportedDevices: () => {
       return [
-        {name:"Speaker", id:"c89b94e8581855bc"},
-        {name:"Blinds", id:"eu0v2xgprrhhg41g"},
-        {name:"Lamp", id:"go46xmbqeomjrsjr"},
-        {name:"Oven", id:"im77xxyulpegfmv8"},
-        {name:"Air Conditioner", id:"li6cbv5sdlatti0j"},
-        {name:"Door", id:"lsf78ly0eqrjbz91"},
-        {name:"Refrigerator", id:"rnizejqr2di0okho"},
+        { name: "Speaker", id: "c89b94e8581855bc" },
+        { name: "Blinds", id: "eu0v2xgprrhhg41g" },
+        { name: "Lamp", id: "go46xmbqeomjrsjr" },
+        { name: "Oven", id: "im77xxyulpegfmv8" },
+        { name: "Air Conditioner", id: "li6cbv5sdlatti0j" },
+        { name: "Door", id: "lsf78ly0eqrjbz91" },
+        { name: "Refrigerator", id: "rnizejqr2di0okho" }
       ];
     }
   },
   rooms: {
     getAll: async () => {
-      let result = await requestQuery(URLS.rooms.list.url, URLS.rooms.list.method);
+      let result = await requestQuery(
+        URLS.rooms.list.url,
+        URLS.rooms.list.method
+      );
       return result.result;
     },
     get: async roomId => {
@@ -263,7 +314,7 @@ export default {
       return result.result;
     },
     create: async data => {
-      let result =  await requestQuery(
+      let result = await requestQuery(
         URLS.rooms.create.url,
         URLS.rooms.create.method,
         data
@@ -329,5 +380,14 @@ export default {
       );
       return res.result;
     }
+  },
+
+  async undoLastOperation() {
+    if (undoOperation != null) return await undoOperation();
+    return null;
+  },
+
+  clearLastOperation() {
+    undoOperation = null;
   }
 };
