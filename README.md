@@ -22,3 +22,8 @@
   - [ ] Deshacer cambios
   - [ ] Confirmacion de eliminacion
 - [ ] Implementar la barra de busqueda
+- [ ] Login (select profile)
+- [ ] PIN code
+- [ ] Testing
+- [ ] About page
+- [ ] Auth/unauth router fix
