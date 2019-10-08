@@ -48,11 +48,11 @@ export default class AC extends CommonDeviceSchema {
 
   static async create(name) {
     let data = await CommonDeviceSchema._create(name, DeviceIds.byType.AC);
-    return new AC(data.id, data.name, data.meta);
+    return new AC(data.id, data.name, data.meta, data.roomId);
   }
 
-  constructor(id, name, meta) {
-    super(id, name, meta, DeviceIds.byType.AC);
+  constructor(id, name, meta, roomId) {
+    super(id, name, meta, DeviceIds.byType.AC, roomId);
 
     this.isOn = false;
     this.mode = AC.supportedModes()[0];

@@ -47,7 +47,6 @@ let regions = [],
 // rooms.push(comedor);
 // primerPiso.rooms.push(dormitorio);
 
-
 let routines = [
   {
     id: "1",

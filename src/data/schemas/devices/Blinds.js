@@ -11,11 +11,11 @@ const ACTION_NAMES = {
 export default class Blinds extends CommonDeviceSchema {
   static async create(name) {
     let data = await CommonDeviceSchema._create(name, DeviceIds.byType.Blinds);
-    return new Blinds(data.id, data.name, data.meta);
+    return new Blinds(data.id, data.name, data.meta, data.roomId);
   }
 
-  constructor(id, name, meta) {
-    super(id, name, meta, DeviceIds.byType.Blinds);
+  constructor(id, name, meta, roomId) {
+    super(id, name, meta, DeviceIds.byType.Blinds, roomId);
 
     this.isOpen = false;
     this.level = 0;

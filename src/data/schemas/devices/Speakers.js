@@ -5,227 +5,186 @@ import rebuildFunctionalSlots from "vuetify/lib/util/rebuildFunctionalSlots";
 
 // Data extracted from API Docs
 const ACTION_NAMES = {
-    setVolume: "setVolume",
-    play: "play",
-    pause: "pause",
-    stop: "stop",
-    resume: "resume",
-    nextSong: "nextSong",
-    previousSong: "previousSong",
-    setGenre: "setGenre",
-    getPlaylist: "getPlaylist"
+  setVolume: "setVolume",
+  play: "play",
+  pause: "pause",
+  stop: "stop",
+  resume: "resume",
+  nextSong: "nextSong",
+  previousSong: "previousSong",
+  setGenre: "setGenre",
+  getPlaylist: "getPlaylist"
 };
 
 function adjustNumberRange(value, min, max) {
-    value = Math.floor(value);
-    if (value < min) return min;
-    if (value > max) return max;
-    return value;
+  value = Math.floor(value);
+  if (value < min) return min;
+  if (value > max) return max;
+  return value;
 }
 
-export default  class Speakers extends  CommonDeviceSchema{
-    static maxVolume(){
-        return 10;
-    }
+export default class Speakers extends CommonDeviceSchema {
+  static maxVolume() {
+    return 10;
+  }
 
-    static minVolume(){
-        return 0;
-    }
+  static minVolume() {
+    return 0;
+  }
 
-    static supportedGenres(){
-        return [
-            "classical",
-            "country",
-            "dance",
-            "latina",
-            "pop",
-            "rock"
-        ];
-    }
+  static supportedGenres() {
+    return ["classical", "country", "dance", "latina", "pop", "rock"];
+  }
 
-    static supportedStatus(){
-        return ["playing", "paused", "stopped"];
-    }
+  static supportedStatus() {
+    return ["playing", "paused", "stopped"];
+  }
 
-    static async create(name){
-        let data = await CommonDeviceSchema._create(name,DeviceIds.byType.Speakers);
-        return new Speakers(data.id,data.name,data.meta);
-    }
+  static async create(name) {
+    let data = await CommonDeviceSchema._create(
+      name,
+      DeviceIds.byType.Speakers
+    );
+    return new Speakers(data.id, data.name, data.meta, data.roomId);
+  }
 
-    constructor(id, name, meta) {
-        super(id, name, meta, DeviceIds.byType.Speakers);
+  constructor(id, name, meta, roomId) {
+    super(id, name, meta, DeviceIds.byType.Speakers, roomId);
 
-        this.volume = Speakers.maxVolume();
-        this.genre = Speakers.supportedGenres()[0];
-        this.status = "stop";
-        this.song = undefined;
-    }
+    this.volume = Speakers.maxVolume();
+    this.genre = Speakers.supportedGenres()[0];
+    this.status = "stop";
+    this.song = undefined;
+  }
 
+  async setVolume(value) {
+    if (typeof value != "number")
+      throw new Error("Invalid argument. Volume should be of type numeric");
 
-    async setVolume(value){
-        if(typeof value != "number")
-            throw new Error("Invalid argument. Volume should be of type numeric");
+    value = adjustNumberRange(
+      value,
+      Speakers.minVolume(),
+      Speakers.maxVolume()
+    );
 
-        value = adjustNumberRange(value,Speakers.minVolume(),Speakers.maxVolume());
+    if (this.volume === value) return false;
 
-        if(this.volume === value)
-            return false;
+    let result = await apiWrapper.devices.performAction(
+      this.id,
+      ACTION_NAMES.setVolume,
+      [value]
+    );
 
-        let result = await apiWrapper.devices.performAction(
-            this.id,
-            ACTION_NAMES.setVolume,
-            [value]
+    if (result.result) this.volume = value;
 
-        );
+    return !!result.result;
+  }
 
-        if (result.result)
-            this.volume = value;
+  async play() {
+    if (this.status === "playing") return false;
 
-        return !!result.result;
-    }
+    let result = await apiWrapper.devices.performAction(
+      this.id,
+      ACTION_NAMES.play
+    );
 
-    async play(){
+    if (result.result) this.status = "playing";
 
-        if(this.status === "playing")
-            return false;
+    return !!result.result;
+  }
 
-        let result = await apiWrapper.devices.performAction(
-            this.id,
-            ACTION_NAMES.play
-        );
+  async resume() {
+    if (this.status === "playing" || this.status === "stopped") return false;
 
-        if(result.result)
-            this.status = "playing";
+    let result = await apiWrapper.devices.performAction(
+      this.id,
+      ACTION_NAMES.resume
+    );
 
-        return !! result.result;
-    }
+    if (result.result) this.status = "playing";
 
-    async resume(){
+    return !!result.result;
+  }
 
-        if(this.status === "playing" || this.status === "stopped")
-            return false;
+  async stop() {
+    if (this.status == "stopped") return false;
 
-        let result = await apiWrapper.devices.performAction(
-            this.id,
-            ACTION_NAMES.resume
-        );
+    let result = await apiWrapper.devices.performAction(
+      this.id,
+      ACTION_NAMES.stop
+    );
 
-        if(result.result)
-            this.status = "playing";
+    if (result.result) this.status = "stopped";
 
-        return !! result.result;
-    }
+    return !!result.result;
+  }
 
-    async stop(){
+  async pause() {
+    if (this.status == "paused") return false;
 
-        if(this.status == "stopped")
-            return false;
+    let result = await apiWrapper.devices.performAction(
+      this.id,
+      ACTION_NAMES.pause
+    );
 
-        let result = await apiWrapper.devices.performAction(
-            this.id,
-            ACTION_NAMES.stop
-        );
+    if (result.result) this.status = "resume";
 
-        if(result.result)
-            this.status = "stopped";
+    return !!result.result;
+  }
 
-        return !! result.result;
-    }
+  async nextSong() {
+    if (this.status === "stopped" || this.status === "paused") return false;
 
-    async pause(){
-        if(this.status == "paused")
-        return false;
+    let result = await apiWrapper.devices.performAction(
+      this.id,
+      ACTION_NAMES.nextSong
+    );
 
-        let result = await apiWrapper.devices.performAction(
-            this.id,
-            ACTION_NAMES.pause
-        );
+    return !!result.result;
+  }
 
-        if(result.result)
-            this.status = "resume";
+  async previousSong() {
+    if (this.status === "stopped" || this.status === "paused") return false;
 
-        return !! result.result;
-    }
+    let result = await apiWrapper.devices.performAction(
+      this.id,
+      ACTION_NAMES.previousSong
+    );
 
-    async nextSong(){
-        if(this.status === "stopped" || this.status === "paused")
-            return false;
+    return !!result.result;
+  }
 
-        let result = await apiWrapper.devices.performAction(
-            this.id,
-            ACTION_NAMES.nextSong
-        );
+  async selectGenre(genre) {
+    if (!Speakers.supportedGenres().includes(genre))
+      return new Error("Invalid Argument. Genre not supported");
 
-        return !! result.result;
-    }
+    if (this.genre === genre) return false;
 
-    async previousSong(){
-        if(this.status === "stopped" || this.status === "paused")
-            return false;
+    let result = await apiWrapper.devices.performAction(
+      this.id,
+      ACTION_NAMES.setGenre,
+      [genre]
+    );
 
-        let result = await apiWrapper.devices.performAction(
-            this.id,
-            ACTION_NAMES.previousSong
-        );
+    if (result.result != undefined) this.genre = genre;
 
-        return !! result.result;
-    }
+    return !!result.result;
+  }
 
-    async selectGenre(genre){
-        if(!Speakers.supportedGenres().includes(genre))
-            return new Error("Invalid Argument. Genre not supported");
+  async getPlaylist() {
+    let result = await apiWrapper.devices.performAction(
+      this.id,
+      ACTION_NAMES.getPlaylist
+    );
 
-        if(this.genre === genre)
-            return false;
+    return result.result;
+  }
 
-        let result = await apiWrapper.devices.performAction(
-            this.id,
-            ACTION_NAMES.setGenre,
-            [genre]
-
-        );
-
-        if(result.result != undefined)
-            this.genre = genre;
-
-        return !! result.result;
-    }
-
-    async getPlaylist(){
-        let result = await apiWrapper.devices.performAction(
-            this.id,
-            ACTION_NAMES.getPlaylist
-        );
-
-        return result.result;
-    }
-
-    async refreshState() {
-        let state = await this._getState();
-        this.status = state.status;
-        this.volume = Number.parseInt(state.volume);
-        this.genre = state.genre;
-       this.song = state.song;
-    }
+  async refreshState() {
+    let state = await this._getState();
+    this.status = state.status;
+    this.volume = Number.parseInt(state.volume);
+    this.genre = state.genre;
+    this.song = state.song;
+  }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -23,13 +23,14 @@ export default class CommonDeviceSchema extends CommonSchema {
       "device"
     );
 
-    return { id: result.id, name: name, meta: meta };
+    return { id: result.id, name: name, meta: meta, roomId: null };
   }
 
-  constructor(id, name, meta, deviceId) {
+  constructor(id, name, meta, deviceId, roomId) {
     super(id, name, meta, "devices", "device");
 
     this.deviceId = deviceId;
+    this.roomId = roomId;
   }
 
   async setFavourite(value) {
@@ -58,11 +59,14 @@ export default class CommonDeviceSchema extends CommonSchema {
 
   async addToRoom(roomId) {
     let result = await apiWrapper.devices.addToRoom(this.id, roomId);
+    if (result.result)
+      this.roomId = roomId;
     return !!result.result;
   }
 
-  async deleteFromRooms() {
-    let result = await apiWrapper.devices.deleteFromRooms(this.id);
+  async deleteFromRoom() {
+    if (this.roomId == null) return false;
+    let result = await apiWrapper.devices.deleteFromRoom(this.id, this.roomId);
     return !!result.result;
   }
 
