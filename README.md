@@ -17,8 +17,8 @@
   - [ ] Confirmacion de eliminacion
 - [ ] Dispositivos
   - [ ] Crear Dispositivos
-  - [ ] Mostar dispositivos favoritos en home
-  - [ ] Mostrar rutinas favoritas en home
+  - [x] Mostar dispositivos favoritos en home
+  - [x] Mostrar rutinas favoritas en home
   - [ ] Deshacer cambios
   - [ ] Confirmacion de eliminacion
 - [ ] Implementar la barra de busqueda
