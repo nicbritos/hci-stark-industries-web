@@ -360,7 +360,7 @@ export default {
         URLS.rooms.create.method,
         data
       );
-      return result.result;
+      return result;
     },
     update: async (roomId, data) => {
       return await requestQuery(
@@ -486,18 +486,28 @@ export default {
       return response;
     },
     getRooms: async regionId => {
-      let res = await requestQuery(
+      let response = await requestQuery(
         composeURL(URLS.regions.getRooms.url, regionId, "rooms"),
         URLS.regions.getRooms.method
       );
-      return res.result;
+      let error = getErrorInfo(response);
+      if (error != null) {
+        throw new Error(error);
+      }
+
+      return response;
     },
     addRoom: async (regionId, roomId) => {
-      let res = await requestQuery(
+      let response = await requestQuery(
         composeURL(URLS.regions.addRoom.url, regionId, "rooms", roomId),
         URLS.regions.addRoom.method
       );
-      return res.result;
+      let error = getErrorInfo(response);
+      if (error != null) {
+        throw new Error(error);
+      }
+
+      return response;
     },
     deleteRoom: async roomId => {
       let res = await requestQuery(

@@ -1,5 +1,6 @@
 import apiWrapper from "@/data/apiWrapper";
 import CommonSchema from "./CommonSchema";
+import Room from "./Room";
 
 // Data extracted from API Docs
 export default class Region extends CommonSchema {
@@ -7,7 +8,13 @@ export default class Region extends CommonSchema {
     let response = await apiWrapper.regions.getAll();
     let output = [];
     for (let region of response.result) {
-      output.push(new Region(region.id, region.name, response.result.meta));
+      let regionInstance = new Region(
+        region.id,
+        region.name,
+        response.result.meta
+      );
+      output.push(regionInstance);
+      await regionInstance._loadRooms();
     }
 
     return output;
@@ -24,7 +31,9 @@ export default class Region extends CommonSchema {
       "result"
     );
 
-    return new Region(result.id, name, meta);
+    let region = new Region(result.id, name, meta);
+    await region._loadRooms();
+    return region;
   }
 
   constructor(id, name, meta) {
@@ -33,9 +42,20 @@ export default class Region extends CommonSchema {
     this.rooms = [];
   }
 
-  // async getRooms() {
-  //   return [];
-  // }
+  async _loadRooms() {
+    let rooms = (await apiWrapper.regions.getRooms(this.id)).result;
+    this.rooms = [];
+    for (let room of rooms) {
+      this.rooms.push(new Room(room.id, room.name, room.meta));
+    }
+  }
+
+  async createRoom(name) {
+    let room = await Room.create(name, this.id);
+    await apiWrapper.regions.addRoom(this.id, room.id);
+    this.rooms.push(room);
+    return room;
+  }
 
   // async setRegion(region) {
   //   if (typeof region !== "string" || (region = region.trim()).length === 0)
