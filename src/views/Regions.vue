@@ -1,68 +1,17 @@
 <template>
   <v-container grid-list-md fluid>
-    <v-dialog v-model="dialogs.regions.new" max-width="700px">
-      <v-card>
-        <v-card-text>
-          <v-container fluid>
-            <v-row justify="start">
-              <v-col cols="1">
-                <v-btn
-                  large
-                  icon
-                  color="primary"
-                  v-on="on"
-                  v-blur
-                  @click="newRegionClose"
-                >
-                  <v-icon large>arrow_back</v-icon>
-                </v-btn>
-              </v-col>
-              <v-col>
-                <h1 class="mt-3" style="color: black">
-                  New Region
-                </h1>
-              </v-col>
-            </v-row>
+    <NewRegion
+      :regions="regions"
+      :show="dialogs.regions.new"
+      @closeClick="onNewRegionClose"
+    ></NewRegion>
+    <EditRegion
+      :regions="regions"
+      :region="editRegion"
+      :show="dialogs.regions.edit"
+      @closeClick="onEditRegionClose"
+    ></EditRegion>
 
-            <v-row justify="start">
-              <v-col cols="1"> </v-col>
-              <v-col>
-                <v-text-field
-                  :error-messages="newItem.errorMessages"
-                  @input="validateNewNameAndSave"
-                  @blur="validateNewNameAndSave"
-                  :counter="newItem.nameMaxLength"
-                  v-model="newItem.name"
-                  label="Name"
-                  clearable
-                ></v-text-field>
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-card-text>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            color="blue darken-1"
-            text
-            outlined
-            @click="closeDialog(dialogs.regions, 'new')"
-            v-blur
-            >Cancel</v-btn
-          >
-          <v-btn
-            outlined
-            color="blue darken-1"
-            text
-            @click="newRegionClose"
-            :disabled="!isValidNewName"
-            v-blur
-            >Save</v-btn
-          >
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
     <v-row>
       <v-col>
         <v-toolbar flat color="transparent">
@@ -80,7 +29,7 @@
             class="ml-3 mb-2"
             v-on="on"
             v-blur
-            @click="newRegionOpen"
+            @click="onNewRegionOpen"
             >NEW REGION</v-btn
           >
         </v-toolbar>
@@ -90,6 +39,9 @@
               v-for="item of regions"
               :key="item.id"
               :region="item"
+              @edit="onEditRegionOpen(item)"
+              @delete="onDeleteRegionOpen"
+              @newRoom="onNewRoomOpen(item)"
             ></Region>
           </v-expansion-panels>
         </v-container>
@@ -99,83 +51,69 @@
 </template>
 
 <script>
-import apiWrapper from "../data/apiWrapper";
 import Region from "@/components/individuals/Region";
-import DataValidator from "../data/DataValidator";
+import RegionSchema from "../data/schemas/Region";
+import NewRegion from "../components/action_menus/regions/NewRegion";
+import EditRegion from "../components/action_menus/regions/EditRegion";
 
 export default {
   name: "Regions",
-  components: { Region },
+  components: { Region, NewRegion, EditRegion },
   data() {
     return {
       on: false,
       regions: [],
+      editRegion: null,
+      newRoomRegion: null,
       dialogs: {
         regions: {
           new: false,
           edit: false,
           delete: false
+        },
+        rooms: {
+          new: false
         }
-      },
-      newItem: {},
-      defaultNewItem: {
-        name: "",
-        errorMessages: [],
-        nameMaxLength: DataValidator.MAX_NAME_LENGTH
       }
     };
   },
-  computed: {
-    isValidNewName() {
-      return this.validateNewName().length === 0;
-    }
-  },
   methods: {
-    newRegionOpen() {
-      this.newItem = Object.assign({}, this.defaultNewItem);
-      this.openDialog(this.dialogs.regions, "new");
+    onNewRegionOpen() {
+      this.dialogs.regions.new = true;
     },
-    async newRegionClose() {
-      this.$store.state.loading = true;
-
-      let data = {
-        name: this.newItem.name
-      };
-      this.regions.push(await apiWrapper.regions.create(data));
-
-      this.$store.state.loading = false;
-      this.closeDialog(this.dialogs.regions, "new");
+    onNewRegionClose(data) {
+      console.log(data);
+      this.dialogs.regions.new = false;
     },
 
-    openDialog(item, type) {
-      if (item == null || type == null || item[type] == null) return;
-      if (!item[type]) item[type] = true;
+    onEditRegionOpen(region) {
+      this.editRegion = region;
+      this.dialogs.regions.edit = true;
     },
-    closeDialog(item, type) {
-      if (item == null || type == null || item[type] == null) return;
-      if (item[type]) item[type] = false;
+    onEditRegionClose(data) {
+      console.log(data);
+      this.dialogs.regions.edit = false;
     },
 
-    validateNewNameAndSave() {
-      return (this.newItem.errorMessages = this.validateNewName());
+    onDeleteRegionOpen() {
+      this.dialogs.regions.delete = true;
     },
-    validateNewName() {
-      let errorMessages = DataValidator.validateName(this.newItem.name, "Name");
-      if (errorMessages.length === 0) {
-        if (
-          this.regions.filter(value => {
-            return value.name === this.newItem.name;
-          }).length > 0
-        ) {
-          errorMessages.push("Name already exists");
-        }
-      }
+    onDeleteRegionClose(data) {
+      console.log(data);
+      this.dialogs.regions.delete = false;
+    },
 
-      return errorMessages;
+    onNewRoomOpen(region) {
+      this.newRoomRegion = region;
+      this.dialogs.rooms.new = true;
+    },
+    onNewRoomClose(data) {
+      console.log(data);
+      this.dialogs.rooms.new = false;
     }
   },
   async mounted() {
-    this.regions = await apiWrapper.regions.getAll();
+    this.regions = await RegionSchema.getAll();
   }
 };
 </script>
