@@ -52,7 +52,7 @@
           >
         </v-toolbar>
         <v-container fluid>
-          <v-expansion-panels popout>
+          <v-expansion-panels popout :value="expandRegionIndex">
             <Region
               v-for="item of regions"
               :key="item.id"
@@ -86,6 +86,7 @@ export default {
       editRegion: null,
       deleteRegion: null,
       newRoomRegion: null,
+      expandRegionIndex: null,
       dialogs: {
         regions: {
           new: false,
@@ -167,6 +168,16 @@ export default {
   },
   async mounted() {
     this.regions = await RegionSchema.getAll();
+
+    if (this.$router.currentRoute.params.regionId) {
+      for (let i = 0; i < this.regions.length; i++) {
+        let region = this.regions[i];
+        if (region.id === this.$router.currentRoute.params.regionId) {
+          this.expandRegionIndex = i;
+          break;
+        }
+      }
+    }
   }
 };
 </script>

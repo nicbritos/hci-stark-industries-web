@@ -28,6 +28,14 @@ const routes = {
       },
       component: Regions
     },
+    regionsWithId: {
+      path: "/regions/:regionId",
+      name: "regionsWithId",
+      meta: {
+        requiresAuth: false
+      },
+      component: Regions
+    },
     rooms: {
       path: "/regions/:regionId/room/:rid",
       name: "devices",

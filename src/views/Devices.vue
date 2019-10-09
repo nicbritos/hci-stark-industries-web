@@ -2,8 +2,8 @@
   <v-container grid-list-md fluid>
     <v-dialog v-model="dialogs.devices.new" max-width="700px">
       <NewDevice
-        region="ABC1"
-        room="ABC2"
+        :region="region"
+        :room="room"
         :value="dialogs.devices.new"
         @cancel="newDeviceClose"
       ></NewDevice>
@@ -30,7 +30,7 @@
           </v-toolbar-title>
         </v-toolbar>
         <DeviceContainer
-          :items="this.RoomModel.favoriteDevices"
+          :items="favouriteDevices"
           v-on:reload="reload"
         ></DeviceContainer>
         <v-divider></v-divider>
@@ -58,7 +58,7 @@
           >
         </v-toolbar>
         <DeviceContainer
-          :items="this.RoomModel.devices"
+          :items="devices"
           v-on:reload="reload"
         ></DeviceContainer>
       </v-col>
@@ -70,6 +70,8 @@ import apiWrapper from "../data/apiWrapper";
 import DeviceContainer from "@/components/containers/DeviceContainer";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import NewDevice from "@/components/action_menus/NewDevice";
+import Region from "../data/schemas/Region";
+import Room from "../data/schemas/Room";
 
 export default {
   name: "Devices",
@@ -77,42 +79,29 @@ export default {
   data() {
     return {
       breadcrumbsItems: [],
-
       dialogs: {
         devices: {
-          new: false
+          new: false,
+          delete: false
+        },
+        room: {
+          edit: false,
+          delete: false
         }
       },
+      devices: [],
+      favouriteDevices: [],
       newDevice: {},
-
       on: false,
-
-      RoomModel: {
-        id: null,
-        name: null,
-        region: null,
-        devices: [],
-        favoriteDevices: []
-      }
+      region: null,
+      room: null
     };
-  },
-  computed: {
-    defaultDevice() {
-      return {
-        name: null,
-        region: null,
-        room: null,
-        device: null
-      };
-    }
   },
   methods: {
     reload() {
       console.log("'Bout to Update");
-      this.LoadModel();
     },
     newDeviceOpen() {
-      this.newDevice = Object.assign({}, this.defaultDevice);
       this.openDialog(this.dialogs.devices, "new");
     },
     newDeviceClose() {
@@ -127,41 +116,24 @@ export default {
     closeDialog(item, type) {
       if (item == null || type == null || item[type] == null) return;
       if (item[type]) item[type] = false;
-    },
-    async LoadModel() {
-      console.log("LOADING");
-      let id = this.$route.params.rid;
-
-      let room = await apiWrapper.rooms.get(id);
-
-      let devices = await apiWrapper.rooms.getDevices(id);
-      console.log("DEVSSS");
-      console.log(devices);
-
-      let favDevs = devices.filter(el => {
-        return el.meta.favourited;
-      });
-      console.log("FAV DEVS");
-      console.log(favDevs);
-
-      this.RoomModel = {
-        id: id,
-        name: room.name,
-        region: room.meta.region,
-        devices: devices,
-        favoriteDevices: favDevs
-      };
-
-      console.log("AAAAAAAAAAAA");
-      console.log(this.RoomModel);
     }
   },
   async mounted() {
-    await this.LoadModel();
+    let roomId = this.$route.params.rid;
+
+    this.room = await Room.get(roomId);
+    this.region = this.room.parentRegion;
+    this.devices = this.room.devices;
+    this.favouriteDevices = this.room.favouriteDevices;
 
     this.breadcrumbsItems = [
-      { to: "/regions", text: this.RoomModel.region.name },
-      { to: "/", text: this.RoomModel.name, disabled: true }
+      { to: "/regions", text: "Regions" },
+      { to: "/regions/" + this.region.id, text: this.region.name },
+      {
+        to: this.$router.currentRoute.path,
+        text: this.room.name,
+        disabled: true
+      }
     ];
   }
 };

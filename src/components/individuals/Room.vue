@@ -34,13 +34,13 @@ export default {
   },
   methods: {
     goToRoom() {
-      this.$router.push(
-        this.$router.currentRoute.path +
-          "/" +
-          this.room.parentRegion.id +
-          "/room/" +
-          this.room.id
-      );
+      let path = this.$router.currentRoute.path;
+      if (!this.$router.currentRoute.params.regionId) {
+        path += "/" + this.room.parentRegion.id;
+      }
+      path += "/room/" + this.room.id;
+
+      this.$router.push(path);
     },
     async refreshDevices() {
       console.log("Getting Devices for Room");
