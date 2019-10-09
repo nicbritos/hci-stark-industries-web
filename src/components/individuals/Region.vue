@@ -72,7 +72,7 @@
 
       <BoxContainer :items="region.rooms">
         <template v-slot:item="{ item }">
-          <Room :room="item"></Room>
+          <Room :name="item.name" :count="item.getCount()"></Room>
         </template>
       </BoxContainer>
     </v-expansion-panel-content>

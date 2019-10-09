@@ -2,7 +2,7 @@
   <v-card hover style="cursor: default" width="350">
     <v-card-text v-ripple style="cursor: pointer" @click="goToRoom">
       <p class="display-1 text--primary">
-        {{ room.name }}
+        {{ name }}
       </p>
       <div class="text--secondary">{{ roomQuantityString }}<br /></div>
     </v-card-text>
@@ -10,25 +10,23 @@
 </template>
 
 <script>
-import apiWrapper from "../../data/apiWrapper";
 export default {
   name: "Room",
   props: {
-    room: {
-      type: Object,
+    name: {
+      type: String,
+      required: true
+    },
+    count: {
+      type: Number,
       required: true
     }
   },
-  data: () => ({
-    devices: []
-  }),
   computed: {
     roomQuantityString() {
-      console.log("IN ROOM");
-      console.log(this.devices);
       return (
-        (this.devices.length === 0 ? "No" : this.devices.length) +
-        (this.devices.length === 1 ? " device" : " devices")
+        (this.count === 0 ? "No" : this.count) +
+        (this.count === 1 ? " device" : " devices")
       );
     }
   },
@@ -41,14 +39,7 @@ export default {
       path += "/room/" + this.room.id;
 
       this.$router.push(path);
-    },
-    async refreshDevices() {
-      console.log("Getting Devices for Room");
-      this.devices = await apiWrapper.rooms.getDevices(this.room.id);
     }
-  },
-  async mounted() {
-    await this.refreshDevices();
   }
 };
 </script>

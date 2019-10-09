@@ -25,7 +25,9 @@ export default class Room extends CommonSchema {
   }
 
   static async create(name, region) {
-    let meta = {};
+    let meta = {
+      count: 0
+    };
     let result = await CommonSchema._create(
       name,
       meta,
@@ -59,6 +61,10 @@ export default class Room extends CommonSchema {
     return result;
   }
 
+  getCount() {
+    return this.meta.count;
+  }
+
   async createDevice(data) {
     let device = Object.assign({}, data);
     device.room = this;
@@ -66,6 +72,11 @@ export default class Room extends CommonSchema {
     let deviceInstance = await DeviceCreator.create(device);
     await apiWrapper.devices.addToRoom(deviceInstance.id, this.id);
     this.devices.push(deviceInstance);
+
+    let newMeta = Object.assign({}, this.meta);
+    newMeta.count++;
+    await this._updateMeta(newMeta);
+
     return deviceInstance;
   }
 

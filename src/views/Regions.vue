@@ -168,6 +168,11 @@ export default {
   },
   async mounted() {
     this.regions = await RegionSchema.getAll();
+    for (let region of this.regions) {
+      for (let room of region.rooms) {
+        await room._loadDevices();
+      }
+    }
 
     if (this.$router.currentRoute.params.regionId) {
       for (let i = 0; i < this.regions.length; i++) {
