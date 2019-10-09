@@ -8,7 +8,7 @@
     <v-card hover style="cursor: default" width="200">
       <v-card-text @click="OpenMenu()" v-ripple style="cursor: pointer">
         <div class="text--secondary">
-          {{ device.name + (room ? " from " + device.room.name : "") }}
+          {{ device.name + (room && device.room ? " from " + device.room.name : "") }}
         </div>
         <v-container fluid>
           <v-row align="start" justify="center">
@@ -65,16 +65,17 @@ import ImageRetriever from "../../data/ImageRetriever";
 import DeviceSelector from "../containers/DeviceSelector";
 import apiWrapper from "../../data/apiWrapper";
 import QuickActionHelper from "../../data/QuickActionHelper";
+import CommonDeviceSchema from "../../data/schemas/devices/CommonDeviceSchema";
 
 export default {
-  name: "Routine",
+  name: "Device",
   components: { DeviceSelector },
   model: {
     events: ["selectUpdate", "click"]
   },
   props: {
     device: {
-      type: Object,
+      type: CommonDeviceSchema,
       required: true
     },
     room: {
@@ -227,24 +228,24 @@ export default {
   },
   async mounted() {
     this.image = this.GetImage();
-    this.fav = this.GetFavourite();
-
-    console.log("AFTER APPLYING");
-    console.log(
-      `device: ${this.device.name} is fav: ${this.fav} and in DB is: ${
-        this.device.meta.favourited
-      }`
-    );
-    this.hasAction = await QuickActionHelper.hasQuickAction(
-      this.device.type.id
-    );
-
-    if (this.hasAction) {
-      this.quickAction = await QuickActionHelper.getQuickAction(
-        this.device.type.id
-      );
-      this.isOn = this.quickAction.checkState(this.device);
-    }
+    // this.fav = this.GetFavourite();
+    //
+    // console.log("AFTER APPLYING");
+    // console.log(
+    //   `device: ${this.device.name} is fav: ${this.fav} and in DB is: ${
+    //     this.device.meta.favourited
+    //   }`
+    // );
+    // this.hasAction = await QuickActionHelper.hasQuickAction(
+    //   this.device.type.id
+    // );
+    //
+    // if (this.hasAction) {
+    //   this.quickAction = await QuickActionHelper.getQuickAction(
+    //     this.device.type.id
+    //   );
+    //   this.isOn = this.quickAction.checkState(this.device);
+    // }
   }
 };
 </script>
