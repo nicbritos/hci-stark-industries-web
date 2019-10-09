@@ -339,11 +339,16 @@ export default {
   },
   rooms: {
     getAll: async () => {
-      let result = await requestQuery(
+      let response = await requestQuery(
         URLS.rooms.list.url,
         URLS.rooms.list.method
       );
-      return result.result;
+      let error = getErrorInfo(response);
+      if (error != null) {
+        throw new Error(error);
+      }
+
+      return response.result;
     },
     get: async roomId => {
       let response = await requestQuery(

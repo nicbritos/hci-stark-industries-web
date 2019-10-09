@@ -1,5 +1,5 @@
 import apiWrapper from "../apiWrapper";
-import CommonSchema from "CommonSchema";
+import CommonSchema from "./CommonSchema";
 
 function adjustNumberRange(value, min, max) {
   value = Math.floor(value);
@@ -10,6 +10,22 @@ function adjustNumberRange(value, min, max) {
 
 // Data extracted from API Docs
 export default class Routine extends CommonSchema {
+  static async getAll() {
+    let routines = await apiWrapper.routines.getAll();
+    let output = [];
+    for (let routine of routines) {
+      let routineInstance = new Routine(
+        routine.id,
+        routine.name,
+        routine.actions,
+        routine.result.meta
+      );
+      output.push(routineInstance);
+    }
+
+    return output;
+  }
+
   static async create(name, description, actions) {
     let meta = {
       description: description
@@ -30,6 +46,26 @@ export default class Routine extends CommonSchema {
     super(id, name, meta, "routines", "routine");
 
     this.actions = actions;
+  }
+
+  isFavourite() {
+    return this.meta ? !!this.meta.favourite : false;
+  }
+
+  async setFavourite(value) {
+    let nextValue = !!value;
+    if (this.meta.favourite === nextValue) return false;
+
+    let metaCopy = Object.assign({}, this.meta);
+    metaCopy.favourite = nextValue;
+    let result = await apiWrapper.routines.update(this.id, {
+      name: this.name,
+      id: this.id,
+      meta: metaCopy
+    });
+
+    if (result.result) this.meta.favourite = nextValue;
+    return !!result.result;
   }
 
   async updateDescription(newDescription) {
