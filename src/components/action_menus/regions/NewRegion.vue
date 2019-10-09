@@ -1,5 +1,10 @@
 <template>
-  <NewEditRegion :regions="regions" :show="show" type="New" @closeClick="onClose"></NewEditRegion>
+  <NewEditRegion
+    :regions="regions"
+    :show="show"
+    type="New"
+    @closeClick="onClose"
+  ></NewEditRegion>
 </template>
 
 <script>

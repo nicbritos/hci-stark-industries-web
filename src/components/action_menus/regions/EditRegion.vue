@@ -1,6 +1,6 @@
 <template>
   <NewEditRegion
-          :region="region"
+    :region="region"
     :regions="regions"
     :show="show"
     type="Edit"

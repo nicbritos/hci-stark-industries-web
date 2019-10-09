@@ -1,26 +1,34 @@
 <template>
   <v-container grid-list-md fluid>
-    <NewRoom
-      :show="dialogs.rooms.new"
-      :regions="regions"
-      @closeClick="onNewRoomClose"
-    ></NewRoom>
-    <NewRegion
-      :regions="regions"
-      :show="dialogs.regions.new"
-      @closeClick="onNewRegionClose"
-    ></NewRegion>
-    <EditRegion
-      :regions="regions"
-      :region="editRegion"
-      :show="dialogs.regions.edit"
-      @closeClick="onEditRegionClose"
-    ></EditRegion>
-    <DeleteDialog
-      :name="deleteRegion ? deleteRegion.name : ''"
-      :show="dialogs.regions.delete"
-      @closeClick="onDeleteRegionClose"
-    ></DeleteDialog>
+    <v-dialog v-model="dialogs.rooms.new" max-width="700px">
+      <NewRoom
+        :show="dialogs.rooms.new"
+        :regions="regions"
+        @closeClick="onNewRoomClose"
+      ></NewRoom>
+    </v-dialog>
+    <v-dialog v-model="dialogs.regions.new" max-width="700px">
+      <NewRegion
+        :show="dialogs.regions.new"
+        :regions="regions"
+        @closeClick="onNewRegionClose"
+      ></NewRegion>
+    </v-dialog>
+    <v-dialog v-model="dialogs.regions.edit" max-width="700px">
+      <EditRegion
+        :show="dialogs.regions.edit"
+        :regions="regions"
+        :region="editRegion"
+        @closeClick="onEditRegionClose"
+      ></EditRegion>
+    </v-dialog>
+    <v-dialog v-model="dialogs.regions.delete" max-width="700px">
+      <DeleteDialog
+        :show="dialogs.regions.delete"
+        :name="deleteRegion ? deleteRegion.name : ''"
+        @closeClick="onDeleteRegionClose"
+      ></DeleteDialog>
+    </v-dialog>
 
     <v-row>
       <v-col>
