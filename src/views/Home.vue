@@ -31,8 +31,9 @@
         </v-toolbar>
         <DeviceContainer :room="true" :items="devices" v-on:reload="reload"></DeviceContainer>
       </v-col>
-    </v-row> </v-container
-></template>
+    </v-row>
+  </v-container>
+</template>
 
 <script>
 import BoxContainer from "@/components/containers/BoxContainer";
@@ -54,9 +55,16 @@ export default {
     };
   },
   methods:{
-    reload(){
+    async reload(){
+      console.log("LATEST EVENT SEND");
+
       console.log("'Bout to Update");
-      this.LoadModel();
+      await this.LoadModel();
+      console.log("LATEST EVENT SEND");
+
+      this.$emit('reloadthings');
+      console.log("LATEST EVENT SEND");
+
 
     },
     async LoadModel(){

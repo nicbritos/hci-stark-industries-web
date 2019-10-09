@@ -110,6 +110,9 @@ export default {
     reload() {
       console.log("'Bout to Update");
       this.LoadModel();
+      this.$emit('reloadthings');
+
+
     },
     newDeviceOpen() {
       this.newDevice = Object.assign({}, this.defaultDevice);

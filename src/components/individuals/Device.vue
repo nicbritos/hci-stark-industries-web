@@ -222,9 +222,11 @@ export default {
       this.fav = this.GetFavourite();
 
     console.log("AFTER APPLYING")
-    console.log(`device: ${this.device.name} is fav: ${this.fav} and in DB is: ${this.device.meta.favourited}`)
+    console.log(`device: ${this.device.name} is fav: ${this.fav} and in DB is: ${this.device.meta.favourited}`);
+
       this.hasAction = await QuickActionHelper.hasQuickAction(this.device.type.id);
 
+    console.log(`HAS ACTION: ${this.hasAction}`);
     if(this.hasAction){
         this.quickAction = await QuickActionHelper.getQuickAction(this.device.type.id);
         this.isOn = this.quickAction.checkState(this.device);

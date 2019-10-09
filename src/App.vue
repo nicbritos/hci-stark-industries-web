@@ -108,7 +108,6 @@
       >
         <v-icon>arrow_back</v-icon>
       </v-app-bar-nav-icon>
-      <!--      <img id="logo" src="@/assets/logo.png" alt="logo castelar bus" />-->
 
       <v-text-field
         hide-details
@@ -116,7 +115,7 @@
         single-line
         class="ml-3"
         placeholder="Start typing to Search"
-        v-model="search"
+        v-model="searchText"
         clearable
       ></v-text-field>
 
@@ -149,23 +148,83 @@
       </v-menu>
     </v-app-bar>
 
-    <v-content>
+    <v-content v-on:reloadthings="LoadSearchResults">
+      <v-row v-if="openSearchMenu">
+        <v-col>
+          <v-toolbar flat color="transparent">
+            <v-toolbar-title>
+              <h2>
+                Search Results
+              </h2>
+            </v-toolbar-title>
+          </v-toolbar>
+
+          <v-expansion-panels  >
+            <div class="expansionContainer">
+            <v-expansion-panel >
+              <v-expansion-panel-header>
+                <h3>
+                {{this.deviceSearchResults.length}} devices found
+                </h3>
+              </v-expansion-panel-header>
+              <v-expansion-panel-content>
+                <DeviceContainer  :room="true" :items="deviceSearchResults" v-on:reload-site="reload" ></DeviceContainer>
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+            <v-expansion-panel >
+              <v-expansion-panel-header>
+                <h3>
+                {{this.routinesSearchResults.length}} routines found
+                </h3>
+              </v-expansion-panel-header>
+              <v-expansion-panel-content>
+
+                <BoxContainer :items="routinesSearchResults" >
+                  <template v-slot:item="{ item }">
+                    <Routine :routine="item" v-on:reload="reload"></Routine>
+                  </template>
+                </BoxContainer>
+
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+            </div>
+          </v-expansion-panels>
+
+
+
+        </v-col>
+      </v-row>
+      <v-divider/>
       <router-view />
     </v-content>
   </v-app>
 </template>
 
 <script>
-import Loader from "@/components/Loader";
+  import DeviceContainer from "@/components/containers/DeviceContainer";
+  import Loader from "@/components/Loader";
 import { mapGetters } from "vuex";
+import apiWrapper from "./data/apiWrapper";
+  import BoxContainer from "@/components/containers/BoxContainer";
+  import Routine from "@/components/individuals/Routine";
 
 export default {
   name: "App",
   components: {
-    Loader
+    Loader,
+    DeviceContainer,
+    BoxContainer,
+    Routine
   },
   data: () => ({
     fixed: false,
+    searchText: "",
+    openSearchMenu: false,
+    reloadSearchResults:false,
+    deviceSearchResults:[],
+    unfilteredDevicesSearchResults:[],
+    routinesSearchResults:[],
+    unfilteredRoutineSearchResults:[],
     noBackButtonRoutes: ["regions", "home", "login", "register", "about"],
     items: [
       { icon: "home", title: "Home", to: "/" },
@@ -233,28 +292,6 @@ export default {
     this.$store.dispatch("setWindowWidth");
     this.$store.state.loading = false;
 
-    // database.onAuthStateChanged(async user => {
-    //   if (user) {
-    //     localStorage.loggedIn = true;
-    //     const userData = await database.getUserInformation();
-    //     this.$store.dispatch("setUserData", userData);
-    //     this.$store.state.loading = false;
-    //   } else {
-    //     localStorage.loggedIn = false;
-    //     this.$store.dispatch("resetUserData");
-    //     this.$store.state.loading = false;
-    //   }
-    // });
-
-    // database
-    //   .getStops()
-    //   .then(stops => this.$store.dispatch("setStops", stops))
-    //   .catch(err => console.error(err));
-
-    // database
-    //   .getDefaultTrips()
-    //   .then(trips => this.$store.dispatch("setDefaultTrips", trips))
-    //   .catch(err => alert("No tenés suficiente permisos"));
   },
   mounted() {
     this.$store.watch(
@@ -284,24 +321,57 @@ export default {
       );
       if (path.length > 0) this.$router.push(path);
       else this.$router.push("/");
-    }
+    },
+    reload(){
+      this.LoadSearchResults();
+    },
+    async LoadSearchResults(){
+
+      this.unfilteredDevicesSearchResults = await apiWrapper.devices.getAll();
+
+      this.deviceSearchResults = this.unfilteredDevicesSearchResults
+              .filter(el=>{return el.name.replace(/\s+/g, '').toLowerCase().includes(this.searchText.replace(/\s+/g, '').toLowerCase());})
+
+      console.log(this.deviceSearchResults);
+      console.log(`DEVICES FOUND: ${this.deviceSearchResults.length}`);
+
+      this.unfilteredRoutineSearchResults = await apiWrapper.routines.getAll();
+
+      console.log(this.unfilteredRoutineSearchResults);
+      this.routinesSearchResults = this.unfilteredRoutineSearchResults
+              .filter(el=>{return el.name.replace(/\s+/g, '').toLowerCase().includes(this.searchText.replace(/\s+/g, '').toLowerCase());})
+
+
+    },
+  },
+  watch:{
+    searchText: async function (val) {
+      if(val === ""){
+        console.log("Close Search Menu")
+        this.openSearchMenu = false;
+      }
+      else{
+        console.log("Open Search Menu")
+
+        this.openSearchMenu = true;
+
+        await this.LoadSearchResults();
+      }
+    },
   }
 };
 </script>
 
 <style lang="scss">
+
+  .expansionContainer{
+
+    width: 90%;
+  }
 body {
   position: relative;
   background-color: #fafafa;
 }
-
-// a:not(.v-list__tile) {
-//   text-decoration: none;
-
-//   &:hover {
-//     text-decoration: underline;
-//   }
-// }
 
 .nav-btn {
   height: 36px !important;
