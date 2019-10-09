@@ -5,32 +5,27 @@ import Blinds from "./Blinds";
 import Lamp from "./Lamp";
 
 export default {
-  instantiate(device) {
+  async create(device) {
     let type = DeviceIds.byId[device.typeId];
     switch (type) {
       case "Air Conditioner":
-        return new AC(
-          device.id,
-          device.name,
-          JSON.parse(device.meta),
-          device.room
-        );
+        return AC.create(device.name, device.room);
       case "Door":
-        return new Door(
+        return Door.create(
           device.id,
           device.name,
           JSON.parse(device.meta),
           device.room
         );
       case "Blinds":
-        return new Blinds(
+        return Blinds.create(
           device.id,
           device.name,
           JSON.parse(device.meta),
           device.room
         );
       case "Lamp":
-        return new Lamp(
+        return Lamp.create(
           device.id,
           device.name,
           JSON.parse(device.meta),

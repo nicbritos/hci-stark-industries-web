@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="errorDialog" persistent max-width="400px">
     <template v-slot:activator="{ on }">
-      <v-btn color="primary" dark v-on="on">Error</v-btn>
+      <v-btn color="primary" dark >Error</v-btn>
     </template>
     <v-card dark raised>
       <v-card-title>

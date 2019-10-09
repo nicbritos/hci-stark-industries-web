@@ -1,6 +1,7 @@
 <template>
   <NewEditRoom
     :regions="regions"
+    :room="room"
     :show="show"
     type="Edit"
     @closeClick="onClose"

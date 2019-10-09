@@ -1,4 +1,4 @@
-import apiWrapper from "@/data/apiWrapper";
+import apiWrapper from "../apiWrapper";
 import CommonSchema from "CommonSchema";
 
 function adjustNumberRange(value, min, max) {

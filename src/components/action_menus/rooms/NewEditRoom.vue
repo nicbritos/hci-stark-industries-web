@@ -1,60 +1,51 @@
 <template>
-  <v-dialog v-model="show" max-width="700px">
-    <v-card>
-      <v-card-text>
-        <v-container fluid>
-          <v-row justify="start">
-            <v-col cols="1">
-              <v-btn
-                large
-                icon
-                color="primary"
-                v-on="on"
-                v-blur
-                @click="onClose"
-              >
-                <v-icon large>arrow_back</v-icon>
-              </v-btn>
-            </v-col>
-            <v-col>
-              <h1 class="mt-3" style="color: black">{{ type }} Room</h1>
-            </v-col>
-          </v-row>
+  <v-card>
+    <v-card-text>
+      <v-container fluid>
+        <v-row justify="start">
+          <v-col cols="1">
+            <v-btn large icon color="primary"  v-blur @click="onClose">
+              <v-icon large>arrow_back</v-icon>
+            </v-btn>
+          </v-col>
+          <v-col>
+            <h1 class="mt-3" style="color: black">{{ type }} Room</h1>
+          </v-col>
+        </v-row>
 
-          <v-row justify="start">
-            <v-col cols="1"> </v-col>
-            <v-col>
-              <v-text-field
-                :error-messages="errorMessages"
-                @input="validateNewNameAndSave"
-                @blur="validateNewNameAndSave"
-                :counter="nameMaxLength"
-                v-model="newItem.name"
-                label="Name"
-                clearable
-              ></v-text-field>
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-card-text>
+        <v-row justify="start">
+          <v-col cols="1"> </v-col>
+          <v-col>
+            <v-text-field
+              :error-messages="errorMessages"
+              @input="validateNewNameAndSave"
+              @blur="validateNewNameAndSave"
+              :counter="nameMaxLength"
+              v-model="newItem.name"
+              label="Name"
+              clearable
+            ></v-text-field>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-card-text>
 
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn color="blue darken-1" text outlined @click="onClose" v-blur
-          >Cancel</v-btn
-        >
-        <v-btn
-          outlined
-          color="blue darken-1"
-          text
-          @click="onSave"
-          :disabled="disableSaveButton"
-          v-blur
-          >Save</v-btn
-        >
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+    <v-card-actions>
+      <v-spacer></v-spacer>
+      <v-btn color="blue darken-1" text outlined @click="onClose" v-blur
+        >Cancel</v-btn
+      >
+      <v-btn
+        outlined
+        color="blue darken-1"
+        text
+        @click="onSave"
+        :disabled="disableSaveButton"
+        v-blur
+        >Save</v-btn
+      >
+    </v-card-actions>
+  </v-card>
 </template>
 
 <script>
@@ -101,17 +92,24 @@ export default {
     }
   },
   watch: {
-    show: function(val, oldVal) {
+    show: function(val) {
       if (val) {
-        this.newItem = Object.assign({}, this.defaultNewItem);
-        if (this.room) this.newItem.name = this.room.name;
-        this.exited = false;
-      } else if (oldVal) {
-        this.onClose();
+        this.resetData();
       }
     }
   },
+  mounted() {
+    this.resetData();
+  },
   methods: {
+    resetData() {
+      this.newItem = Object.assign({}, this.defaultNewItem);
+      if (this.room) {
+        console.log(this.room)
+        this.newItem.name = this.room.name;
+      }
+    },
+
     validateNewNameAndSave() {
       return (this.errorMessages = this.validateNewName());
     },
@@ -136,16 +134,10 @@ export default {
     },
 
     onSave() {
-      if (!this.exited) {
-        this.exited = true;
-        this.$emit("closeClick", this.newItem);
-      }
+      this.$emit("closeClick", this.newItem);
     },
     onClose() {
-      if (!this.exited) {
-        this.exited = true;
-        this.$emit("closeClick", null);
-      }
+      this.$emit("closeClick", null);
     }
   }
 };

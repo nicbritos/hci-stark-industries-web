@@ -1,5 +1,5 @@
 import CommonDeviceSchema from "./CommonDeviceSchema";
-import apiWrapper from "@/data/apiWrapper";
+import apiWrapper from "../../apiWrapper";
 import DeviceIds from "./DeviceIds";
 
 // Data extracted from API Docs
@@ -33,15 +33,15 @@ function formatColor(colors) {
 }
 
 export default class Lamp extends CommonDeviceSchema {
-  static async create(name, supportsColors) {
+  static async create(name, supportsColors, room) {
     let data = await CommonDeviceSchema._create(name, DeviceIds.byType.Lamp, {
       supportsColors: !!supportsColors
-    });
-    return new Lamp(data.id, data.name, data.meta, data.roomId);
+    }, room);
+    return new Lamp(data.id, data.name, data.meta, data.room);
   }
 
-  constructor(id, name, meta, roomId) {
-    super(id, name, meta, DeviceIds.byType.Lamp, roomId);
+  constructor(id, name, meta, room) {
+    super(id, name, meta, DeviceIds.byType.Lamp, room);
 
     this.isOn = false;
     this.brightness = 100;

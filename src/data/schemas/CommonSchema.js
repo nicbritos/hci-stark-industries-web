@@ -1,4 +1,4 @@
-import apiWrapper from "@/data/apiWrapper";
+import apiWrapper from "../apiWrapper";
 
 export default class CommonSchema {
   static _formatMeta(meta) {
@@ -25,6 +25,17 @@ export default class CommonSchema {
     this.serverReturnTypeName = serverReturnTypeName;
   }
 
+  async _updateMeta(newMeta) {
+    let output = {
+      name: this.name,
+      meta: newMeta
+    };
+
+    let result = await apiWrapper[this.type].update(this.id, output);
+    if (result.result) this.meta = newMeta;
+    return !!result.result;
+  }
+
   async _changeName(newName, customData) {
     if (typeof newName !== "string" || (newName = newName.trim()).length === 0)
       return false;
@@ -45,7 +56,7 @@ export default class CommonSchema {
   async refreshInformation() {
     let result = await apiWrapper[this.type].get(this.id);
     this.name = result[this.serverReturnTypeName].name;
-    this.meta = JSON.parse(result[this.serverReturnTypeName].meta);
+    this.meta = result[this.serverReturnTypeName].meta;
     return true;
   }
 

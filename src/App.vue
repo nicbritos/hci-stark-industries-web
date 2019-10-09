@@ -129,7 +129,7 @@
       >
       <v-menu absolute v-if="true">
         <template v-slot:activator="{ on }">
-          <v-btn id="profile-btn" icon v-on="on" v-blur>
+          <v-btn id="profile-btn" icon  v-blur>
             <v-icon large>
               account_circle
             </v-icon>
@@ -275,15 +275,22 @@ export default {
       this.$store.state.loading = true;
     },
     upOneLevel() {
-      let path = this.$router.currentRoute.path.substring(
-        0,
-        this.$router.currentRoute.path.lastIndexOf(
-          "/",
-          this.$router.currentRoute.path.length - 2
-        )
-      );
-      if (path.length > 0) this.$router.push(path);
-      else this.$router.push("/");
+      if (
+        this.$router.currentRoute.path.match("/regions/") &&
+        this.$router.currentRoute.path.match("/room/")
+      ) {
+        this.$router.push("/regions");
+      } else {
+        let path = this.$router.currentRoute.path.substring(
+          0,
+          this.$router.currentRoute.path.lastIndexOf(
+            "/",
+            this.$router.currentRoute.path.length - 2
+          )
+        );
+        if (path.length > 0) this.$router.push(path);
+        else this.$router.push("/");
+      }
     }
   }
 };
@@ -294,14 +301,6 @@ body {
   position: relative;
   background-color: #fafafa;
 }
-
-// a:not(.v-list__tile) {
-//   text-decoration: none;
-
-//   &:hover {
-//     text-decoration: underline;
-//   }
-// }
 
 .nav-btn {
   height: 36px !important;

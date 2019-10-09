@@ -1,26 +1,34 @@
 <template>
   <v-container grid-list-md fluid>
-    <NewRoom
-      :show="dialogs.rooms.new"
-      :regions="regions"
-      @closeClick="onNewRoomClose"
-    ></NewRoom>
-    <NewRegion
-      :regions="regions"
-      :show="dialogs.regions.new"
-      @closeClick="onNewRegionClose"
-    ></NewRegion>
-    <EditRegion
-      :regions="regions"
-      :region="editRegion"
-      :show="dialogs.regions.edit"
-      @closeClick="onEditRegionClose"
-    ></EditRegion>
-    <DeleteDialog
-      :name="deleteRegion ? deleteRegion.name : ''"
-      :show="dialogs.regions.delete"
-      @closeClick="onDeleteRegionClose"
-    ></DeleteDialog>
+    <v-dialog v-model="dialogs.rooms.new" max-width="700px">
+      <NewRoom
+        :show="dialogs.rooms.new"
+        :regions="regions"
+        @closeClick="onNewRoomClose"
+      ></NewRoom>
+    </v-dialog>
+    <v-dialog v-model="dialogs.regions.new" max-width="700px">
+      <NewRegion
+        :show="dialogs.regions.new"
+        :regions="regions"
+        @closeClick="onNewRegionClose"
+      ></NewRegion>
+    </v-dialog>
+    <v-dialog v-model="dialogs.regions.edit" max-width="700px">
+      <EditRegion
+        :show="dialogs.regions.edit"
+        :regions="regions"
+        :region="editRegion"
+        @closeClick="onEditRegionClose"
+      ></EditRegion>
+    </v-dialog>
+    <v-dialog v-model="dialogs.regions.delete" max-width="700px">
+      <DeleteDialog
+        :show="dialogs.regions.delete"
+        :name="deleteRegion ? deleteRegion.name : ''"
+        @closeClick="onDeleteRegionClose"
+      ></DeleteDialog>
+    </v-dialog>
 
     <v-row>
       <v-col>
@@ -37,14 +45,14 @@
             outlined
             color="primary"
             class="ml-3 mb-2"
-            v-on="on"
+
             v-blur
             @click="onNewRegionOpen"
             >NEW REGION</v-btn
           >
         </v-toolbar>
         <v-container fluid>
-          <v-expansion-panels popout>
+          <v-expansion-panels popout :value="expandRegionIndex">
             <Region
               v-for="item of regions"
               :key="item.id"
@@ -78,6 +86,7 @@ export default {
       editRegion: null,
       deleteRegion: null,
       newRoomRegion: null,
+      expandRegionIndex: null,
       dialogs: {
         regions: {
           new: false,
@@ -159,6 +168,21 @@ export default {
   },
   async mounted() {
     this.regions = await RegionSchema.getAll();
+    for (let region of this.regions) {
+      for (let room of region.rooms) {
+        await room._loadDevices();
+      }
+    }
+
+    if (this.$router.currentRoute.params.regionId) {
+      for (let i = 0; i < this.regions.length; i++) {
+        let region = this.regions[i];
+        if (region.id === this.$router.currentRoute.params.regionId) {
+          this.expandRegionIndex = i;
+          break;
+        }
+      }
+    }
   }
 };
 </script>

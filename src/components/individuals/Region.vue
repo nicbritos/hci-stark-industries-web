@@ -32,7 +32,7 @@
           outlined
           text
           class="mb-2 mr-4"
-          v-on="on"
+
           v-blur
           >EDIT</v-btn
         >
@@ -42,7 +42,7 @@
           outlined
           color="error"
           class="mb-2 mr-4"
-          v-on="on"
+
           v-blur
           >DELETE</v-btn
         >
@@ -64,7 +64,7 @@
           color="primary"
           class="ma-2 mr-4"
           outlined
-          v-on="on"
+
           v-blur
           >NEW ROOM</v-btn
         >
@@ -72,7 +72,7 @@
 
       <BoxContainer :items="region.rooms">
         <template v-slot:item="{ item }">
-          <Room :room="item"></Room>
+          <Room :roomid="item.id" :name="item.name" :count="item.getCount()" :parent="region"></Room>
         </template>
       </BoxContainer>
     </v-expansion-panel-content>
