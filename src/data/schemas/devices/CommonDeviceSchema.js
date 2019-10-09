@@ -1,7 +1,19 @@
 import apiWrapper from "../../apiWrapper";
 import CommonSchema from "../CommonSchema";
+import DeviceInstantiator from "./DeviceInstantiator";
 
 export default class CommonDeviceSchema extends CommonSchema {
+  static async getAll() {
+    let devices = await apiWrapper.devices.getAll();
+    let output = [];
+    for (let device of devices) {
+      let deviceInstance = DeviceInstantiator.instantiate(device);
+      if (deviceInstance != null) output.push(deviceInstance);
+    }
+
+    return output;
+  }
+
   static async _create(name, deviceId, customMetadata, room) {
     let meta = {
       favourite: false
@@ -41,13 +53,12 @@ export default class CommonDeviceSchema extends CommonSchema {
     let metaCopy = Object.assign({}, this.meta);
     metaCopy.favourite = nextValue;
     let result = await apiWrapper.devices.update(this.id, {
-      name: name,
+      name: this.name,
       typeId: this.deviceId,
       id: this.id,
       meta: CommonDeviceSchema._formatMeta(metaCopy)
     });
 
-    // eslint-disable-next-line require-atomic-updates
     if (result.result) this.meta.favourite = nextValue;
     return !!result.result;
   }

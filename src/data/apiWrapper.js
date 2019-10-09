@@ -200,6 +200,7 @@ function getErrorInfo(result) {
   return "TODO";
 }
 
+// TODO: Change all to return array or object w/direct data
 // TODO: Manejo de errores aca y en cada clase
 // Every method returns a (processed) Promise
 // A successful query returns an Object as specified by the API documentation
@@ -209,12 +210,16 @@ export default {
 
   devices: {
     getAll: async () => {
-      let result = await requestQuery(
+      let response = await requestQuery(
         URLS.devices.list.url,
         URLS.devices.list.method
       );
+      let error = getErrorInfo(response);
+      if (error != null) {
+        throw new Error(error);
+      }
 
-      return result.devices;
+      return response.devices;
     },
     getByType: async typeId => {
       return await requestQuery(
