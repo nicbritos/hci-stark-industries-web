@@ -10,12 +10,12 @@
 - [ ] Ejecutar acciones sobre dispositivos
 - [ ] Crear rutinas
 - [ ] Ejecutar rutinas
-- [ ] * Crear habitaciones
-- [ ] * Asociar los dispositivos a las habitaciones
-- [ ] * Consultar dispositivos por habitaciones
+- [x] * Crear habitaciones
+- [x] * Asociar los dispositivos a las habitaciones
+- [x] * Consultar dispositivos por habitaciones
 - [ ] * Restringir acceso a dispositivos / habitaciones / rutinas con PIN.
-- [ ] * Modificar info de las habitaciones
-- [ ] * Eliminar habitaciones
+- [x] * Modificar info de las habitaciones
+- [x] * Eliminar habitaciones
 - [ ] * Desasociar los dispositivos registrados de las habitaciones
 - [ ] * Consultar el registro de acciones realizadas JA
 - [ ] * Consultar el consumo electrico para un determinado periodo JA2
@@ -41,10 +41,10 @@
   - [x] Crear region
   - [x] Editar region
   - [x] Eliminar region
-- [ ] Cuartos
+- [x] Cuartos
   - [x] Crear cuarto
-  - [ ] Editar cuarto
-  - [ ] Eliminar cuarto
+  - [x] Editar cuarto
+  - [x] Eliminar cuarto
 - [ ] Rutinas
   - [x] Ver Rutinas
   - [ ] Crear Rutinas
@@ -69,3 +69,6 @@
 - [ ] Auth/unauth router fix
 - [ ] HACERLO REACTIVE!!!!!!!!!!!!!!!!!!!!!!
 - [ ] INFORME
+- [ ] Race conditions
+- [ ] Error messages
+- [ ] Atomic operations (such as delete)
