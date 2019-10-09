@@ -1,16 +1,13 @@
-import apiWrapper from "@/data/apiWrapper";
+import apiWrapper from "../../apiWrapper";
 import CommonSchema from "../CommonSchema";
 
-// Data extracted from API Docs
-const ACTION_NAMES = {
-  getState: "getState"
-};
-
 export default class CommonDeviceSchema extends CommonSchema {
-  static async _create(name, deviceId, customMetadata) {
+  static async _create(name, deviceId, customMetadata, room) {
     let meta = {
       favourite: false
     };
+    if (room && room.id) meta.room = room.id;
+
     if (customMetadata != null) {
       meta = Object.assign(meta, customMetadata);
     }
@@ -23,14 +20,14 @@ export default class CommonDeviceSchema extends CommonSchema {
       "device"
     );
 
-    return { id: result.id, name: name, meta: meta, roomId: null };
+    return { id: result.id, name: name, meta: meta, room: room };
   }
 
-  constructor(id, name, meta, deviceId, roomId) {
+  constructor(id, name, meta, deviceId, room) {
     super(id, name, meta, "devices", "device");
 
     this.deviceId = deviceId;
-    this.roomId = roomId;
+    this.room = room;
   }
 
   isFavourite() {
@@ -59,18 +56,6 @@ export default class CommonDeviceSchema extends CommonSchema {
     return CommonSchema._changeName(newName, {
       typeId: this.deviceId
     });
-  }
-
-  async addToRoom(roomId) {
-    let result = await apiWrapper.devices.addToRoom(this.id, roomId);
-    if (result.result) this.roomId = roomId;
-    return !!result.result;
-  }
-
-  async deleteFromRoom() {
-    if (this.roomId == null) return false;
-    let result = await apiWrapper.devices.deleteFromRoom(this.id, this.roomId);
-    return !!result.result;
   }
 
   async _getState() {

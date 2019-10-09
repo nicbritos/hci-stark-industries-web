@@ -2,6 +2,8 @@ import DeviceInstantiator from "./devices/DeviceInstantiator";
 import apiWrapper from "../apiWrapper";
 import CommonSchema from "./CommonSchema";
 import Region from "./Region";
+import CommonDeviceSchema from "./devices/CommonDeviceSchema";
+import DeviceCreator from "./devices/DeviceCreator";
 
 // Data extracted from API Docs
 export default class Room extends CommonSchema {
@@ -31,6 +33,7 @@ export default class Room extends CommonSchema {
       "rooms",
       "result"
     );
+    await apiWrapper.regions.addRoom(region.id, result.id);
 
     return new Room(result.id, name, meta, region);
   }
@@ -57,23 +60,14 @@ export default class Room extends CommonSchema {
     return result;
   }
 
-  async setRegion(region) {
-    if (typeof region !== "string" || (region = region.trim()).length === 0)
-      throw new Error("No region provided");
-    if (this.meta.region === region) return false;
+  async createDevice(data) {
+    let device = Object.assign({}, data);
+    device.room = this;
 
-    let metaCopy = Object.assign({}, this.meta);
-    metaCopy.region = region;
-    let result = await apiWrapper.rooms.update(this.id, {
-      name: name,
-      typeId: this.deviceId,
-      id: this.id,
-      meta: CommonSchema._formatMeta(metaCopy)
-    });
-
-    // eslint-disable-next-line require-atomic-updates
-    if (result.result) this.meta.region = region;
-    return !!result.result;
+    let deviceInstance = await DeviceCreator.create(device);
+    await apiWrapper.devices.addToRoom(deviceInstance.id, this.id);
+    this.devices.push(deviceInstance);
+    return deviceInstance;
   }
 
   async changeName(newName) {
@@ -86,7 +80,7 @@ export default class Room extends CommonSchema {
     this.devices = [];
     this.favouriteDevices = [];
     for (let device of result) {
-      device.roomId = this;
+      device.room = this;
       let deviceInstance = DeviceInstantiator.instantiate(device);
       this.devices.push(deviceInstance);
       if (deviceInstance.isFavourite())

@@ -1,5 +1,5 @@
 import CommonDeviceSchema from "./CommonDeviceSchema";
-import apiWrapper from "@/data/apiWrapper";
+import apiWrapper from "../../apiWrapper";
 import DeviceIds from "./DeviceIds";
 
 // Data extracted from API Docs
@@ -40,13 +40,13 @@ export default class Oven extends CommonDeviceSchema {
     return ["normal", "eco", "off"];
   }
 
-  static async create(name) {
-    let data = await CommonDeviceSchema._create(name, DeviceIds.byType.Oven);
-    return new Oven(data.id, data.name, data.meta, data.roomId);
+  static async create(name, room) {
+    let data = await CommonDeviceSchema._create(name, DeviceIds.byType.Oven, undefined, room);
+    return new Oven(data.id, data.name, data.meta, data.room);
   }
 
-  constructor(id, name, meta, roomId) {
-    super(id, name, meta, DeviceIds.byType.Oven, roomId);
+  constructor(id, name, meta, room) {
+    super(id, name, meta, DeviceIds.byType.Oven, room);
     this.temperature = Oven.maxTemperature();
     this.isOn = false;
     this.heatMode = Oven.supportedHeatModes()[0];

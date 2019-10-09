@@ -1,4 +1,4 @@
-import apiWrapper from "@/data/apiWrapper";
+import apiWrapper from "../apiWrapper";
 
 export default class CommonSchema {
   static _formatMeta(meta) {
