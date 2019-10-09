@@ -94,14 +94,22 @@ export default {
   watch: {
     show: function(val) {
       if (val) {
-        this.newItem = Object.assign({}, this.defaultNewItem);
-        if (this.room) {
-          this.newItem.name = this.room.name;
-        }
+        this.resetData();
       }
     }
   },
+  mounted() {
+    this.resetData();
+  },
   methods: {
+    resetData() {
+      this.newItem = Object.assign({}, this.defaultNewItem);
+      if (this.room) {
+        console.log(this.room)
+        this.newItem.name = this.room.name;
+      }
+    },
+
     validateNewNameAndSave() {
       return (this.errorMessages = this.validateNewName());
     },

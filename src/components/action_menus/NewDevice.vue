@@ -294,7 +294,7 @@ import DataValidator from "../../data/DataValidator";
 export default {
   name: "NewDevice",
   model: {
-    events: ["cancel", "save"]
+    events: ["closeClick"]
   },
   props: {
     room: {
@@ -395,8 +395,6 @@ export default {
       this.data = Object.assign({}, this.defaultData);
     },
     backOneStep() {
-      console.log("Going back");
-      console.log(this.data.stepper);
       if (this.data.stepper === 4) {
         this.data.stepper--;
         this.data.name = null;
@@ -461,7 +459,7 @@ export default {
     },
 
     onCancel() {
-      this.$emit("cancel");
+      this.$emit("closeClick", null);
     },
     onSave() {
       let newDevice = {
@@ -471,10 +469,10 @@ export default {
         name: this.data.name
       };
       this.data.loading = true;
-      this.$emit("save", newDevice);
+      this.$emit("closeClick", newDevice);
     }
   },
-  mounted() {
+  created() {
     this.resetData();
   }
 };

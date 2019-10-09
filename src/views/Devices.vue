@@ -5,17 +5,45 @@
         :region="region"
         :room="room"
         :value="dialogs.devices.new"
-        @cancel="newDeviceClose"
+        @closeClick="newDeviceClose"
       ></NewDevice>
     </v-dialog>
+    <v-dialog v-model="dialogs.rooms.edit" max-width="700px">
+      <EditRoom
+        :show="dialogs.rooms.edit"
+        :regions="regions"
+        :room="room"
+        @closeClick="onEditRoomClose"
+      ></EditRoom>
+    </v-dialog>
+    <v-dialog v-model="dialogs.rooms.delete" max-width="700px">
+      <DeleteDialog
+        :show="dialogs.rooms.delete"
+        :name="room ? room.name : ''"
+        @closeClick="onDeleteRoomClose"
+      ></DeleteDialog>
+    </v-dialog>
+
     <v-toolbar class="ml-n6" flat color="transparent">
       <Breadcrumbs :items="breadcrumbsItems"></Breadcrumbs>
       <v-spacer></v-spacer>
 
-      <v-btn class="mt-4 mr-4" text outlined color="primary" v-on="on" v-blur
+      <v-btn
+        class="mt-4 mr-4"
+        text
+        outlined
+        color="primary"
+        @click="onEditRoomOpen"
+        v-blur
         >EDIT</v-btn
       >
-      <v-btn class="mt-4 mr-n6" text outlined color="error" v-on="on" v-blur
+      <v-btn
+        class="mt-4 mr-n6"
+        text
+        outlined
+        color="error"
+        @click="onDeleteRoomOpen"
+        v-blur
         >DELETE</v-btn
       >
     </v-toolbar>
@@ -29,10 +57,7 @@
             </h2>
           </v-toolbar-title>
         </v-toolbar>
-        <DeviceContainer
-          :items="favouriteDevices"
-          v-on:reload="reload"
-        ></DeviceContainer>
+        <DeviceContainer :items="favouriteDevices"></DeviceContainer>
         <v-divider></v-divider>
       </v-col>
     </v-row>
@@ -47,66 +72,93 @@
           </v-toolbar-title>
           <v-spacer></v-spacer>
 
-          <v-btn
-            @click="newDeviceOpen"
-            outlined
-            text
-            color="primary"
-            v-on="on"
-            v-blur
+          <v-btn @click="newDeviceOpen" outlined text color="primary" v-blur
             >NEW DEVICE</v-btn
           >
         </v-toolbar>
-        <DeviceContainer
-          :items="devices"
-          v-on:reload="reload"
-        ></DeviceContainer>
+        <DeviceContainer :items="devices"></DeviceContainer>
       </v-col>
     </v-row> </v-container
 ></template>
 
 <script>
-import apiWrapper from "../data/apiWrapper";
 import DeviceContainer from "@/components/containers/DeviceContainer";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import NewDevice from "@/components/action_menus/NewDevice";
-import Region from "../data/schemas/Region";
 import Room from "../data/schemas/Room";
+import DeleteDialog from "../components/info_dialogs/DeleteDialog";
+import EditRoom from "../components/action_menus/rooms/EditRoom";
 
 export default {
   name: "Devices",
-  components: { NewDevice, DeviceContainer, Breadcrumbs },
+  components: {
+    NewDevice,
+    DeviceContainer,
+    Breadcrumbs,
+    DeleteDialog,
+    EditRoom
+  },
   data() {
     return {
+      roomBreadcrumbItem: {},
       breadcrumbsItems: [],
       dialogs: {
         devices: {
           new: false,
           delete: false
         },
-        room: {
+        rooms: {
           edit: false,
           delete: false
         }
       },
+      regions: [],
       devices: [],
       favouriteDevices: [],
       newDevice: {},
-      on: false,
       region: null,
       room: null
     };
   },
   methods: {
-    reload() {
-      console.log("'Bout to Update");
-    },
     newDeviceOpen() {
       this.openDialog(this.dialogs.devices, "new");
     },
-    newDeviceClose() {
-      // Save to DB
-      this.closeDialog(this.dialogs.devices, "new");
+    newDeviceClose(device) {
+      this.dialogs.devices.new = false;
+    },
+
+    onEditRoomOpen() {
+      this.dialogs.rooms.edit = true;
+    },
+    async onEditRoomClose(room) {
+      if (room) {
+        this.$store.state.loading = true;
+
+        await this.room.changeName(room.name);
+        this.roomBreadcrumbItem.text = this.room.name;
+
+        this.$store.state.loading = false;
+      }
+
+      this.dialogs.rooms.edit = false;
+    },
+
+    onDeleteRoomOpen() {
+      this.dialogs.rooms.delete = true;
+    },
+    async onDeleteRoomClose(value) {
+      if (value) {
+        this.$store.state.loading = true;
+
+        if (await this.room.delete()) {
+          this.$store.state.loading = false;
+          this.dialogs.rooms.delete = false;
+          this.$router.push("/regions/" + this.region.id);
+        }
+      } else {
+        this.dialogs.rooms.delete = false;
+      }
     },
 
     openDialog(item, type) {
@@ -135,6 +187,7 @@ export default {
         disabled: true
       }
     ];
+    this.roomBreadcrumbItem = this.breadcrumbsItems[this.breadcrumbsItems.length - 1];
   }
 };
 </script>
