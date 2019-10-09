@@ -93,13 +93,10 @@ export default {
   },
   watch: {
     show: function(val) {
-      if (!val) {
+      if (val) {
         this.newItem = Object.assign({}, this.defaultNewItem);
       }
     }
-  },
-  mounted() {
-    this.newItem = Object.assign({}, this.defaultNewItem);
   },
   methods: {
     validateNewNameAndSave() {
@@ -126,16 +123,10 @@ export default {
     },
 
     onSave() {
-      if (!this.exited) {
-        this.exited = true;
-        this.$emit("closeClick", this.newItem);
-      }
+      this.$emit("closeClick", this.newItem);
     },
     onClose() {
-      if (!this.exited) {
-        this.exited = true;
-        this.$emit("closeClick", null);
-      }
+      this.$emit("closeClick", null);
     }
   }
 };
