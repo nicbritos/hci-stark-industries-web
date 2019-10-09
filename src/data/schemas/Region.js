@@ -46,12 +46,12 @@ export default class Region extends CommonSchema {
     let rooms = (await apiWrapper.regions.getRooms(this.id)).result;
     this.rooms = [];
     for (let room of rooms) {
-      this.rooms.push(new Room(room.id, room.name, room.meta));
+      this.rooms.push(new Room(room.id, room.name, room.meta, this));
     }
   }
 
   async createRoom(name) {
-    let room = await Room.create(name, this.id);
+    let room = await Room.create(name, this);
     await apiWrapper.regions.addRoom(this.id, room.id);
     this.rooms.push(room);
     return room;

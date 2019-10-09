@@ -8,33 +8,33 @@ export default {
   instantiate(device) {
     let type = DeviceIds.byId[device.typeId];
     switch (type) {
-      case "AC":
+      case "Air Conditioner":
         return new AC(
           device.id,
           device.name,
           JSON.parse(device.meta),
-          device.roomId
+          device.room
         );
       case "Door":
         return new Door(
           device.id,
           device.name,
           JSON.parse(device.meta),
-          device.roomId
+          device.room
         );
       case "Blinds":
         return new Blinds(
           device.id,
           device.name,
           JSON.parse(device.meta),
-          device.roomId
+          device.room
         );
       case "Lamp":
         return new Lamp(
           device.id,
           device.name,
           JSON.parse(device.meta),
-          device.roomId
+          device.room
         );
       default:
         return null;

@@ -33,6 +33,10 @@ export default class CommonDeviceSchema extends CommonSchema {
     this.roomId = roomId;
   }
 
+  isFavourite() {
+    return this.meta ? !!this.meta.favourite : false;
+  }
+
   async setFavourite(value) {
     let nextValue = !!value;
     if (this.meta.favourite === nextValue) return false;
@@ -59,8 +63,7 @@ export default class CommonDeviceSchema extends CommonSchema {
 
   async addToRoom(roomId) {
     let result = await apiWrapper.devices.addToRoom(this.id, roomId);
-    if (result.result)
-      this.roomId = roomId;
+    if (result.result) this.roomId = roomId;
     return !!result.result;
   }
 
@@ -71,14 +74,12 @@ export default class CommonDeviceSchema extends CommonSchema {
   }
 
   async _getState() {
-    console.log("En GetState, Por hacer performAction")
-    let result = await apiWrapper.devices.getState(
-      this.id
-    );
+    console.log("En GetState, Por hacer performAction");
+    let result = await apiWrapper.devices.getState(this.id);
 
     console.log(result);
 
-    console.log("Saliendo de GET state")
+    console.log("Saliendo de GET state");
 
     return result.result;
   }

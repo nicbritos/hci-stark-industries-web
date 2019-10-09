@@ -341,11 +341,16 @@ export default {
       return result.result;
     },
     get: async roomId => {
-      let result = await requestQuery(
+      let response = await requestQuery(
         composeURL(URLS.rooms.get.url, roomId),
         URLS.rooms.get.method
       );
-      return result.result;
+      let error = getErrorInfo(response);
+      if (error != null) {
+        throw new Error(error);
+      }
+
+      return response;
     },
     getDevices: async roomId => {
       let result = await requestQuery(

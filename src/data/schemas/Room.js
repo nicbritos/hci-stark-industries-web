@@ -1,14 +1,30 @@
 import DeviceInstantiator from "./devices/DeviceInstantiator";
-import apiWrapper from "@/data/apiWrapper";
+import apiWrapper from "../apiWrapper";
 import CommonSchema from "./CommonSchema";
+import Region from "./Region";
 
 // Data extracted from API Docs
 export default class Room extends CommonSchema {
-  static async create(name, region) {
-    let meta = {
-      region: region
-    };
+  static async get(roomId) {
+    let response = await apiWrapper.rooms.get(roomId);
+    let parentRegion = new Region(
+      response.home.id,
+      response.home.name,
+      response.home.meta
+    );
+    let roomInstance = new Room(
+      response.result.id,
+      response.result.name,
+      response.result.meta,
+      parentRegion
+    );
+    await roomInstance._loadDevices();
 
+    return roomInstance;
+  }
+
+  static async create(name, region) {
+    let meta = {};
     let result = await CommonSchema._create(
       name,
       meta,
@@ -17,11 +33,29 @@ export default class Room extends CommonSchema {
       "result"
     );
 
-    return new Room(result.id, name, meta);
+    return new Room(result.id, name, meta, region);
   }
 
-  constructor(id, name, meta) {
+  constructor(id, name, meta, parentRegion) {
     super(id, name, meta, "rooms", "room");
+    this.devices = [];
+    this.favouriteDevices = [];
+    this.parentRegion = parentRegion;
+  }
+
+  async setFavourite(device, value) {
+    if (!this.devices.includes(device) || device.isFavourite() === value)
+      return false;
+    let result = await device.setFavourite(value);
+    if (result) {
+      if (value) {
+        this.favouriteDevices.push(device);
+      } else {
+        this.favouriteDevices.splice(this.favouriteDevices.indexOf(device), 1);
+      }
+    }
+
+    return result;
   }
 
   async setRegion(region) {
@@ -47,14 +81,17 @@ export default class Room extends CommonSchema {
     return this._changeName(newName);
   }
 
-  async getDevices() {
+  async _loadDevices() {
     let result = await apiWrapper.rooms.getDevices(this.id);
 
-    let devices = [];
+    this.devices = [];
+    this.favouriteDevices = [];
     for (let device of result.devices) {
-      device.roomId = this.id;
-      devices.push(DeviceInstantiator.instantiate(device));
+      device.roomId = this;
+      let deviceInstance = DeviceInstantiator.instantiate(device);
+      this.devices.push(deviceInstance);
+      if (deviceInstance.isFavourite())
+        this.favouriteDevices.push(deviceInstance);
     }
-    return devices;
   }
 }

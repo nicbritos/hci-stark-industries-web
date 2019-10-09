@@ -90,7 +90,9 @@ export default class AC extends CommonDeviceSchema {
 
   async setTemperature(value) {
     if (typeof value != "number")
-      throw new Error("Invalid argument. Temperature should be of type numeric");
+      throw new Error(
+        "Invalid argument. Temperature should be of type numeric"
+      );
 
     value = adjustNumberRange(value, AC.minTemperature(), AC.maxTemperature());
 
@@ -141,8 +143,7 @@ export default class AC extends CommonDeviceSchema {
     let result = await apiWrapper.devices.performAction(
       this.id,
       ACTION_NAMES.setHorizontalSwing,
-        [value]
-
+      [value]
     );
 
     if (result.result) this.swing.horizontal = value;
@@ -156,8 +157,7 @@ export default class AC extends CommonDeviceSchema {
     let result = await apiWrapper.devices.performAction(
       this.id,
       ACTION_NAMES.setFanSpeed,
-        [value]
-
+      [value]
     );
 
     if (result.result) this.swing.horizontal = value;
