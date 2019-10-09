@@ -1,3 +1,5 @@
+import Region from "./schemas/Region";
+
 const TRANSPORT = "http://";
 const BASE_URL = "127.0.0.1";
 const PORT = "9090";
@@ -125,6 +127,40 @@ const URLS = {
       url: composeURL(URL, "rooms"),
       method: METHODS.DELETE
     }
+  },
+  regions: {
+    list: {
+      url: composeURL(URL, "homes"),
+      method: METHODS.GET
+    },
+    get: {
+      url: composeURL(URL, "homes"),
+      method: METHODS.GET
+    },
+    create: {
+      url: composeURL(URL, "homes"),
+      method: METHODS.POST
+    },
+    update: {
+      url: composeURL(URL, "homes"),
+      method: METHODS.PUT
+    },
+    delete: {
+      url: composeURL(URL, "homes"),
+      method: METHODS.DELETE
+    },
+    getRooms: {
+      url: composeURL(URL, "homes"),
+      method: METHODS.GET
+    },
+    addRoom: {
+      url: composeURL(URL, "homes"),
+      method: METHODS.POST
+    },
+    deleteRoom: {
+      url: composeURL(URL, "homes", "rooms"),
+      method: METHODS.DELETE
+    }
   }
 };
 
@@ -157,6 +193,12 @@ async function requestQuery(url, method, data) {
   }
   if (!response.ok) throw new Error(response.statusText); // TODO: Change to known errors
   return response.json();
+}
+
+function getErrorInfo(result) {
+  if (!("error" in result))
+    return null;
+  return "TODO"
 }
 
 // TODO: Manejo de errores aca y en cada clase
@@ -377,6 +419,81 @@ export default {
       let res = await requestQuery(
         composeURL(URLS.routines.delete.url, routineId),
         URLS.routines.delete.method
+      );
+      return res.result;
+    }
+  },
+  regions: {
+    getAll: async () => {
+      let response = await requestQuery(
+        URLS.regions.list.url,
+        URLS.regions.list.method
+      );
+      let error = getErrorInfo(response);
+      if (error != null) {
+        throw new Error(error);
+      }
+
+      let output = [];
+      for (let region of response.result) {
+        output.push(new Region(region.id, region.name, response.result.meta));
+      }
+
+      return output;
+    },
+    get: async regionId => {
+      let res = await requestQuery(
+        composeURL(URLS.regions.get.url, regionId),
+        URLS.regions.get.method
+      );
+      return res.result;
+    },
+    create: async data => {
+      let response = await requestQuery(
+        URLS.regions.create.url,
+        URLS.regions.create.method,
+        data
+      );
+      let error = getErrorInfo(response);
+      if (error != null) {
+        throw new Error(error);
+      }
+
+      return new Region(response.result.id, response.result.name, response.result.meta);
+    },
+    update: async (regionId, data) => {
+      let res = await requestQuery(
+        composeURL(URLS.regions.update.url, regionId),
+        URLS.regions.update.method,
+        data
+      );
+      return res.result;
+    },
+    delete: async regionId => {
+      let res = await requestQuery(
+        composeURL(URLS.regions.delete.url, regionId),
+        URLS.regions.delete.method
+      );
+      return res.result;
+    },
+    getRooms: async regionId => {
+      let res = await requestQuery(
+        composeURL(URLS.regions.getRooms.url, regionId, "rooms"),
+        URLS.regions.getRooms.method
+      );
+      return res.result;
+    },
+    addRoom: async (regionId, roomId) => {
+      let res = await requestQuery(
+        composeURL(URLS.regions.addRoom.url, regionId, "rooms", roomId),
+        URLS.regions.addRoom.method
+      );
+      return res.result;
+    },
+    deleteRoom: async roomId => {
+      let res = await requestQuery(
+        composeURL(URLS.regions.deleteRoom.url, roomId),
+        URLS.regions.deleteRoom.method
       );
       return res.result;
     }
