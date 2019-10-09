@@ -6,12 +6,11 @@
       </p>
       <div class="text--secondary">{{ roomQuantityString }}<br /></div>
     </v-card-text>
-
   </v-card>
 </template>
 
 <script>
-  import apiWrapper from "../../data/apiWrapper";
+import apiWrapper from "../../data/apiWrapper";
 export default {
   name: "Room",
   props: {
@@ -20,8 +19,8 @@ export default {
       required: true
     }
   },
-  data:()=>({
-    devices:[],
+  data: () => ({
+    devices: []
   }),
   computed: {
     roomQuantityString() {
@@ -31,13 +30,19 @@ export default {
         (this.devices.length === 0 ? "No" : this.devices.length) +
         (this.devices.length === 1 ? " device" : " devices")
       );
-    },
+    }
   },
   methods: {
     goToRoom() {
-      this.$router.push(this.$router.currentRoute.path + "/room/" + this.room.id);
+      this.$router.push(
+        this.$router.currentRoute.path +
+          "/" +
+          this.room.parentRegion.id +
+          "/room/" +
+          this.room.id
+      );
     },
-    async refreshDevices(){
+    async refreshDevices() {
       console.log("Getting Devices for Room");
       this.devices = await apiWrapper.rooms.getDevices(this.room.id);
     }
