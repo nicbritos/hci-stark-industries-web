@@ -4,11 +4,11 @@
       <v-row>
         <v-col cols="6">
           <v-fade-transition leave-absolute>
-            <h3 v-if="!open" key="0" class="text-no-bold">
+            <h3 v-if="!open" class="text-no-bold">
               {{ region.name }}
             </h3>
 
-            <h2 v-else key="1" class="text-no-bold">
+            <h2 v-else class="text-no-bold">
               {{ region.name }}
             </h2>
           </v-fade-transition>
@@ -26,10 +26,24 @@
     <v-expansion-panel-content>
       <v-row>
         <v-spacer></v-spacer>
-        <v-btn color="primary" outlined text class="mb-2 mr-4" v-on="on" v-blur
+        <v-btn
+          @click="onButtonClick('edit')"
+          color="primary"
+          outlined
+          text
+          class="mb-2 mr-4"
+          v-on="on"
+          v-blur
           >EDIT</v-btn
         >
-        <v-btn text outlined color="error" class="mb-2 mr-4" v-on="on" v-blur
+        <v-btn
+          @click="onButtonClick('delete')"
+          text
+          outlined
+          color="error"
+          class="mb-2 mr-4"
+          v-on="on"
+          v-blur
           >DELETE</v-btn
         >
       </v-row>
@@ -44,7 +58,14 @@
           </v-toolbar-title>
         </v-toolbar>
         <v-spacer></v-spacer>
-        <v-btn text color="primary" class="ma-2 mr-4" outlined v-on="on" v-blur
+        <v-btn
+          @click="onButtonClick('newRoom')"
+          text
+          color="primary"
+          class="ma-2 mr-4"
+          outlined
+          v-on="on"
+          v-blur
           >NEW ROOM</v-btn
         >
       </v-row>
@@ -61,26 +82,36 @@
 <script>
 import BoxContainer from "@/components/containers/BoxContainer";
 import Room from "@/components/individuals/Room";
+import Region from "../../data/schemas/Region";
+
 export default {
   name: "Region",
   components: { BoxContainer, Room },
-  data:()=>({
-    on:false
+  model: {
+    events: ["delete", "edit", "newRoom"]
+  },
+  data: () => ({
+    on: false
   }),
   props: {
     region: {
-      type: Object,
+      type: Region,
       required: true
     }
   },
   computed: {
     roomQuantityString() {
-      console.log("In REgion");
+      console.log("In Region");
       console.log(this.region.rooms);
       return (
         (this.region.rooms.length === 0 ? "No" : this.region.rooms.length) +
         (this.region.rooms.length === 1 ? " room" : " rooms")
       );
+    }
+  },
+  methods: {
+    onButtonClick(name) {
+      this.$emit(name);
     }
   }
 };

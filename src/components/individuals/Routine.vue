@@ -19,9 +19,16 @@
         </v-icon>
       </v-btn>
       <v-spacer></v-spacer>
-      <v-btn large icon v-blur text color="primary" @click="UpdateFavoriteState()">
-        <v-icon large v-if="routine.meta.favourited" key="0">favorite</v-icon>
-        <v-icon large v-else key="1">favorite_outline</v-icon>
+      <v-btn
+        large
+        icon
+        v-blur
+        text
+        color="primary"
+        @click="UpdateFavoriteState()"
+      >
+        <v-icon large v-if="routine.meta.favourited">favorite</v-icon>
+        <v-icon large v-else>favorite_outline</v-icon>
       </v-btn>
       <v-btn large icon v-blur @click="Execute()">
         <v-icon large color="primary">play_circle_outline</v-icon>
@@ -31,7 +38,7 @@
 </template>
 
 <script>
-  import apiWrapper from "../../data/apiWrapper";
+import apiWrapper from "../../data/apiWrapper";
 export default {
   name: "Routine",
   props: {
@@ -40,33 +47,29 @@ export default {
       required: true
     }
   },
-  methods:{
-    async Execute(){
+  methods: {
+    async Execute() {
       console.log("Executing Routine: " + this.routine.name);
       await apiWrapper.routines.execute(this.routine.id);
     },
-    async UpdateFavoriteState(){
-      let data ={
+    async UpdateFavoriteState() {
+      let data = {
         name: this.routine.name,
         actions: this.routine.actions,
         meta: this.routine.meta
-      }
+      };
 
       data.meta.favourited = !data.meta.favourited;
-      this.routine.meta.favourited = data.meta.favourited
+      this.routine.meta.favourited = data.meta.favourited;
 
-      await apiWrapper.routines.update(this.routine.id,data);
-      this.$emit('reload-site');
-
-
-
+      await apiWrapper.routines.update(this.routine.id, data);
+      this.$emit("reload-site");
     }
   },
-  mounted(){
+  mounted() {
     console.log("Cargando RUTINA");
     console.log(this.routine);
   }
-
 };
 </script>
 

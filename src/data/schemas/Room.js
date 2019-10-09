@@ -1,6 +1,6 @@
 import DeviceInstantiator from "./devices/DeviceInstantiator";
 import apiWrapper from "@/data/apiWrapper";
-import CommonSchema from "CommonSchema";
+import CommonSchema from "./CommonSchema";
 
 // Data extracted from API Docs
 export default class Room extends CommonSchema {
@@ -9,7 +9,13 @@ export default class Room extends CommonSchema {
       region: region
     };
 
-    let result = await CommonSchema._create(name, meta, null, "rooms", "room");
+    let result = await CommonSchema._create(
+      name,
+      meta,
+      null,
+      "rooms",
+      "result"
+    );
 
     return new Room(result.id, name, meta);
   }

@@ -1,73 +1,27 @@
 <template>
   <v-container grid-list-md fluid>
-    <v-snackbar :value="true">
-      Deleted Region "Third Floor"
-      <v-btn text color="primary">
-        UNDO
-      </v-btn>
-      <v-btn icon text color="primary">
-        <v-icon>close</v-icon>
-      </v-btn>
-    </v-snackbar>
-    <v-dialog v-model="dialogs.regions.new" max-width="700px">
-      <v-card>
-        <v-card-text>
-          <v-container fluid>
-            <v-row justify="start">
-              <v-col cols="1">
-                <v-btn
-                  large
-                  icon
-                  color="primary"
-                  v-on="on"
-                  v-blur
-                  @click="newRegionClose"
-                >
-                  <v-icon large>arrow_back</v-icon>
-                </v-btn>
-              </v-col>
-              <v-col>
-              <h1 class="mt-3" style="color: black">
-                  New Region
-                </h1>
-              </v-col>
-            </v-row>
+    <NewRoom
+      :show="dialogs.rooms.new"
+      :regions="regions"
+      @closeClick="onNewRoomClose"
+    ></NewRoom>
+    <NewRegion
+      :regions="regions"
+      :show="dialogs.regions.new"
+      @closeClick="onNewRegionClose"
+    ></NewRegion>
+    <EditRegion
+      :regions="regions"
+      :region="editRegion"
+      :show="dialogs.regions.edit"
+      @closeClick="onEditRegionClose"
+    ></EditRegion>
+    <DeleteDialog
+      :name="deleteRegion ? deleteRegion.name : ''"
+      :show="dialogs.regions.delete"
+      @closeClick="onDeleteRegionClose"
+    ></DeleteDialog>
 
-            <v-row justify="start">
-              <v-col cols="1">
-              </v-col>
-              <v-col>
-              <v-text-field
-                  v-model="newItem.name"
-                  label="Name"
-                  clearable
-                ></v-text-field>
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-card-text>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            color="blue darken-1"
-            text
-            outlined
-            @click="closeDialog(dialogs.regions, 'new')"
-            v-blur
-            >Cancel</v-btn
-          >
-          <v-btn
-            outlined
-            color="blue darken-1"
-            text
-            @click="newRegionClose"
-            v-blur
-            >Save</v-btn
-          >
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
     <v-row>
       <v-col>
         <v-toolbar flat color="transparent">
@@ -85,7 +39,7 @@
             class="ml-3 mb-2"
             v-on="on"
             v-blur
-            @click="newRegionOpen"
+            @click="onNewRegionOpen"
             >NEW REGION</v-btn
           >
         </v-toolbar>
@@ -95,6 +49,9 @@
               v-for="item of regions"
               :key="item.id"
               :region="item"
+              @edit="onEditRegionOpen(item)"
+              @delete="onDeleteRegionOpen(item)"
+              @newRoom="onNewRoomOpen(item)"
             ></Region>
           </v-expansion-panels>
         </v-container>
@@ -104,62 +61,104 @@
 </template>
 
 <script>
-import apiWrapper from "../data/apiWrapper";
 import Region from "@/components/individuals/Region";
+import RegionSchema from "../data/schemas/Region";
+import NewRoom from "../components/action_menus/rooms/NewRoom";
+import NewRegion from "../components/action_menus/regions/NewRegion";
+import EditRegion from "../components/action_menus/regions/EditRegion";
+import DeleteDialog from "../components/info_dialogs/DeleteDialog";
+
 export default {
   name: "Regions",
-  components: { Region },
+  components: { Region, NewRoom, NewRegion, EditRegion, DeleteDialog },
   data() {
     return {
-      regions: null,
-      on:false,
+      on: false,
+      regions: [],
+      editRegion: null,
+      deleteRegion: null,
+      newRoomRegion: null,
       dialogs: {
         regions: {
           new: false,
           edit: false,
           delete: false
+        },
+        rooms: {
+          new: false
         }
-      },
-      newItem: {
-        name: ""
       }
     };
   },
   methods: {
-    newRegionOpen() {
-      this.newItem = Object.assign({}, this.defaultQuestion);
-      this.openDialog(this.dialogs.regions, "new");
+    onNewRegionOpen() {
+      this.dialogs.regions.new = true;
     },
-    newRegionClose() {
-      // Save to DB
-      this.closeDialog(this.dialogs.regions, "delete");
+    async onNewRegionClose(region) {
+      if (region) {
+        this.$store.state.loading = true;
+
+        this.regions.push(await RegionSchema.create(region.name));
+
+        this.$store.state.loading = false;
+      }
+
+      this.dialogs.regions.new = false;
     },
 
-    openDialog(item, type) {
-      if (item == null || type == null || item[type] == null) return;
-      if (!item[type]) item[type] = true;
+    onEditRegionOpen(region) {
+      this.editRegion = region;
+      this.dialogs.regions.edit = true;
     },
-    closeDialog(item, type) {
-      if (item == null || type == null || item[type] == null) return;
-      if (item[type]) item[type] = false;
+    async onEditRegionClose(region) {
+      if (region) {
+        this.$store.state.loading = true;
+
+        await this.editRegion.changeName(region.name);
+
+        this.$store.state.loading = false;
+      }
+
+      this.dialogs.regions.edit = false;
+    },
+
+    onDeleteRegionOpen(region) {
+      this.deleteRegion = region;
+      this.dialogs.regions.delete = true;
+    },
+    async onDeleteRegionClose(value) {
+      if (value) {
+        this.$store.state.loading = true;
+
+        if (await this.deleteRegion.delete()) {
+          this.regions.splice(this.regions.indexOf(this.deleteRegion), 1);
+        }
+        this.deleteRegion = null;
+
+        this.$store.state.loading = false;
+      }
+
+      this.dialogs.regions.delete = false;
+    },
+
+    onNewRoomOpen(region) {
+      this.newRoomRegion = region;
+      this.dialogs.rooms.new = true;
+    },
+    async onNewRoomClose(room) {
+      if (room) {
+        this.$store.state.loading = true;
+
+        await this.newRoomRegion.createRoom(room.name);
+
+        this.$store.state.loading = false;
+      }
+
+      this.dialogs.rooms.new = false;
     }
   },
   async mounted() {
-    let rooms = await apiWrapper.rooms.getAll();
-    console.log("rooms");
-    console.log(rooms);
-
-    this.regions = [{
-      id:1,
-      name:"First Floor",
-      rooms: rooms.filter(el=>{return el.meta.region.id === 1;})
-    },
-      {      id:2,
-        name:"Second Floor",
-        rooms: rooms.filter(el=>{return el.meta.region.id === 2;})
-      }];
-    console.log("Regions");
-    console.log(this.regions);
+    this.regions = await RegionSchema.getAll();
   }
 };
 </script>

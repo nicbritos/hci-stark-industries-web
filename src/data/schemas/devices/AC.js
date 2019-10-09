@@ -1,4 +1,4 @@
-import CommonDeviceSchema from "@/data/schemas/CommonDeviceSchema";
+import CommonDeviceSchema from "./CommonDeviceSchema";
 import apiWrapper from "@/data/apiWrapper";
 import DeviceIds from "./DeviceIds";
 

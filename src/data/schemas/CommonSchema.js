@@ -2,7 +2,7 @@ import apiWrapper from "@/data/apiWrapper";
 
 export default class CommonSchema {
   static _formatMeta(meta) {
-    return JSON.stringify(meta);
+    return meta;
   }
 
   static async _create(name, meta, customData, type, serverReturnTypeName) {
@@ -30,8 +30,8 @@ export default class CommonSchema {
       return false;
 
     let output = {
-      name: this.name,
-      meta: this._formatMeta(this.meta)
+      name: newName,
+      meta: this.meta
     };
     if (customData != null) {
       output = Object.assign(output, customData);
