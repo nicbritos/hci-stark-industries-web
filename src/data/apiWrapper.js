@@ -196,9 +196,8 @@ async function requestQuery(url, method, data) {
 }
 
 function getErrorInfo(result) {
-  if (!("error" in result))
-    return null;
-  return "TODO"
+  if (!("error" in result)) return null;
+  return "TODO";
 }
 
 // TODO: Manejo de errores aca y en cada clase
@@ -434,19 +433,19 @@ export default {
         throw new Error(error);
       }
 
-      let output = [];
-      for (let region of response.result) {
-        output.push(new Region(region.id, region.name, response.result.meta));
-      }
-
-      return output;
+      return response;
     },
     get: async regionId => {
-      let res = await requestQuery(
+      let response = await requestQuery(
         composeURL(URLS.regions.get.url, regionId),
         URLS.regions.get.method
       );
-      return res.result;
+      let error = getErrorInfo(response);
+      if (error != null) {
+        throw new Error(error);
+      }
+
+      return response;
     },
     create: async data => {
       let response = await requestQuery(
@@ -459,22 +458,32 @@ export default {
         throw new Error(error);
       }
 
-      return new Region(response.result.id, response.result.name, response.result.meta);
+      return response;
     },
     update: async (regionId, data) => {
-      let res = await requestQuery(
+      let response = await requestQuery(
         composeURL(URLS.regions.update.url, regionId),
         URLS.regions.update.method,
         data
       );
-      return res.result;
+      let error = getErrorInfo(response);
+      if (error != null) {
+        throw new Error(error);
+      }
+
+      return response;
     },
     delete: async regionId => {
-      let res = await requestQuery(
+      let response = await requestQuery(
         composeURL(URLS.regions.delete.url, regionId),
         URLS.regions.delete.method
       );
-      return res.result;
+      let error = getErrorInfo(response);
+      if (error != null) {
+        throw new Error(error);
+      }
+
+      return response;
     },
     getRooms: async regionId => {
       let res = await requestQuery(

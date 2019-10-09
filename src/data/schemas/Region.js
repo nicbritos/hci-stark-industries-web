@@ -3,18 +3,32 @@ import CommonSchema from "./CommonSchema";
 
 // Data extracted from API Docs
 export default class Region extends CommonSchema {
-  static async create(name, region) {
-    let meta = {
-      region: region
-    };
+  static async getAll() {
+    let response = await apiWrapper.regions.getAll();
+    let output = [];
+    for (let region of response.result) {
+      output.push(new Region(region.id, region.name, response.result.meta));
+    }
 
-    let result = await CommonSchema._create(name, meta, null, "rooms", "room");
+    return output;
+  }
+
+  static async create(name) {
+    let meta = {};
+
+    let result = await CommonSchema._create(
+      name,
+      meta,
+      null,
+      "regions",
+      "result"
+    );
 
     return new Region(result.id, name, meta);
   }
 
   constructor(id, name, meta) {
-    super(id, name, meta, "homes", "home");
+    super(id, name, meta, "regions", "result");
 
     this.rooms = [];
   }
@@ -42,9 +56,9 @@ export default class Region extends CommonSchema {
   //   return !!result.result;
   // }
   //
-  // async changeName(newName) {
-  //   return this._changeName(newName);
-  // }
+  async changeName(newName) {
+    return this._changeName(newName);
+  }
   //
   // async getDevices() {
   //   let result = await apiWrapper.rooms.getDevices(this.id);
