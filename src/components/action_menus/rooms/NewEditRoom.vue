@@ -95,6 +95,9 @@ export default {
     show: function(val) {
       if (val) {
         this.newItem = Object.assign({}, this.defaultNewItem);
+        if (this.room) {
+          this.newItem.name = this.room.name;
+        }
       }
     }
   },
