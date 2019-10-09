@@ -12,10 +12,9 @@
 
         <BoxContainer :items="routines">
           <template v-slot:item="{ item }">
-            <Routine :routine="item" v-on:reload-site="reload" ></Routine>
+            <Routine :routine="item" v-on:reload-site="reload"></Routine>
           </template>
         </BoxContainer>
-
         <v-divider></v-divider>
       </v-col>
     </v-row>
@@ -29,7 +28,12 @@
             </h2>
           </v-toolbar-title>
         </v-toolbar>
-        <DeviceContainer :room="true" :items="devices" v-on:reload="reload"></DeviceContainer>
+
+        <DeviceContainer
+          :room="true"
+          :items="devices"
+          v-on:reload="reload"
+        ></DeviceContainer>
       </v-col>
     </v-row> </v-container
 ></template>
@@ -38,7 +42,8 @@
 import BoxContainer from "@/components/containers/BoxContainer";
 import Routine from "@/components/individuals/Routine";
 import DeviceContainer from "@/components/containers/DeviceContainer";
-import apiWrapper from "../data/apiWrapper";
+import CommonDeviceSchema from "../data/schemas/devices/CommonDeviceSchema";
+import RoutineSchema from "../data/schemas/Routine";
 
 export default {
   name: "Home",
@@ -53,21 +58,19 @@ export default {
       routines: []
     };
   },
-  methods:{
-    reload(){
+  methods: {
+    reload() {
       console.log("'Bout to Update");
-      this.LoadModel();
-
-    },
-    async LoadModel(){
-      let devs = await apiWrapper.devices.getAll();
-      this.devices = devs.filter(el=>{return el.meta.favourited});
-      let routs = await apiWrapper.routines.getAll();
-      this.routines = routs.filter(el=>{return el.meta.favourited});
-    },
+    }
   },
   async mounted() {
-    this.LoadModel();
+    this.devices = (await CommonDeviceSchema.getAll()).filter(device => {
+      return device.isFavourite();
+    });
+    console.log(this.devices);
+    this.routines = (await RoutineSchema.getAll()).filter(routine => {
+      return routine.isFavourite();
+    });
   }
 };
 </script>
