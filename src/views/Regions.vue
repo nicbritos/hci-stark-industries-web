@@ -1,5 +1,10 @@
 <template>
   <v-container grid-list-md fluid>
+    <NewRoom
+      :show="dialogs.rooms.new"
+      :regions="regions"
+      @closeClick="onNewRoomClose"
+    ></NewRoom>
     <NewRegion
       :regions="regions"
       :show="dialogs.regions.new"
@@ -58,13 +63,14 @@
 <script>
 import Region from "@/components/individuals/Region";
 import RegionSchema from "../data/schemas/Region";
+import NewRoom from "../components/action_menus/rooms/NewRoom";
 import NewRegion from "../components/action_menus/regions/NewRegion";
 import EditRegion from "../components/action_menus/regions/EditRegion";
 import DeleteDialog from "../components/info_dialogs/DeleteDialog";
 
 export default {
   name: "Regions",
-  components: { Region, NewRegion, EditRegion, DeleteDialog },
+  components: { Region, NewRoom, NewRegion, EditRegion, DeleteDialog },
   data() {
     return {
       on: false,
@@ -140,6 +146,14 @@ export default {
       this.dialogs.rooms.new = true;
     },
     async onNewRoomClose(room) {
+      if (room) {
+        this.$store.state.loading = true;
+
+        await this.newRoomRegion.createRoom(room.name);
+
+        this.$store.state.loading = false;
+      }
+
       this.dialogs.rooms.new = false;
     }
   },
