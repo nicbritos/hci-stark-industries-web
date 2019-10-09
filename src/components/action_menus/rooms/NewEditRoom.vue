@@ -93,10 +93,13 @@ export default {
   },
   watch: {
     show: function(val) {
-      if (val) {
+      if (!val) {
         this.newItem = Object.assign({}, this.defaultNewItem);
       }
     }
+  },
+  mounted() {
+    this.newItem = Object.assign({}, this.defaultNewItem);
   },
   methods: {
     validateNewNameAndSave() {
