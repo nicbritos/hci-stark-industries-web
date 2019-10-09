@@ -1,6 +1,6 @@
 const MIN_NAME_LENGTH = 3;
 const MAX_NAME_LENGTH = 60;
-const VALID_CHARACTERS = "A-Z, a-z, 0-9, _ and space";
+const VALID_CHARACTERS = "A-Z, a-z, 0-9, _ and spaces";
 const NAME_REGEX = /^[A-Za-z0-9_ ]*$/;
 
 export default {
@@ -9,18 +9,18 @@ export default {
 
   validateName(name, fieldName) {
     let errors = [];
-    if (typeof name !== "string") {
+    if (typeof name !== "string" || name.length === 0) {
       errors.push(fieldName + " is required");
       return errors;
     }
-    if (name < MIN_NAME_LENGTH) {
+    if (name.length < MIN_NAME_LENGTH) {
       errors.push(
         fieldName +
           " is too short. It needs to be at least " +
           MIN_NAME_LENGTH +
           " characters long"
       );
-    } else if (name > MAX_NAME_LENGTH) {
+    } else if (name.length > MAX_NAME_LENGTH) {
       errors.push(
         fieldName +
           " is too long. It needs to be at most " +
