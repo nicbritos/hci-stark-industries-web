@@ -9,13 +9,33 @@ export default {
     let type = DeviceIds.byId[device.typeId];
     switch (type) {
       case "AC":
-        return new AC(device.id, device.name, JSON.parse(device.meta));
+        return new AC(
+          device.id,
+          device.name,
+          JSON.parse(device.meta),
+          device.roomId
+        );
       case "Door":
-        return new Door(device.id, device.name, JSON.parse(device.meta));
+        return new Door(
+          device.id,
+          device.name,
+          JSON.parse(device.meta),
+          device.roomId
+        );
       case "Blinds":
-        return new Blinds(device.id, device.name, JSON.parse(device.meta));
+        return new Blinds(
+          device.id,
+          device.name,
+          JSON.parse(device.meta),
+          device.roomId
+        );
       case "Lamp":
-        return new Lamp(device.id, device.name, JSON.parse(device.meta));
+        return new Lamp(
+          device.id,
+          device.name,
+          JSON.parse(device.meta),
+          device.roomId
+        );
       default:
         return null;
     }

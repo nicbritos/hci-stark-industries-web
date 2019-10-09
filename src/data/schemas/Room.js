@@ -46,6 +46,7 @@ export default class Room extends CommonSchema {
 
     let devices = [];
     for (let device of result.devices) {
+      device.roomId = this.id;
       devices.push(DeviceInstantiator.instantiate(device));
     }
     return devices;
