@@ -8,7 +8,10 @@
     <v-card hover style="cursor: default" width="200">
       <v-card-text @click="OpenMenu()" v-ripple style="cursor: pointer">
         <div class="text--secondary">
-          {{ device.name + (room && device.room ? " from " + device.room.name : "") }}
+          {{
+            device.name +
+              (room && device.room ? " from " + device.room.name : "")
+          }}
         </div>
         <v-container fluid>
           <v-row align="start" justify="center">
@@ -28,11 +31,6 @@
           class="ml-2 mt-n1"
         >
         </v-checkbox>
-        <v-btn v-if="editable" icon v-blur text @click="OpenMenu()">
-          <v-icon>
-            more_horiz
-          </v-icon>
-        </v-btn>
         <v-spacer></v-spacer>
         <v-btn
           v-if="editable"
@@ -41,9 +39,10 @@
           v-blur
           text
           color="primary"
-          @click="applyFavouriteSelection()"
+          :loading="loadingFav"
+          @click="applyFavouriteSelection"
         >
-          <v-icon large v-if="this.device.meta.favourited">favorite</v-icon>
+          <v-icon large v-if="this.device.isFavourite()">favorite</v-icon>
           <v-icon large v-else>favorite_outline</v-icon>
         </v-btn>
         <v-switch
@@ -51,6 +50,7 @@
           class="ml-4 mb-n6 pb-0 pa-0 mt-0"
           v-model="isOn"
           v-blur
+          :loading="loadingToggle"
           @change="onSwitchUpdate()"
           color="primary"
         >
@@ -105,6 +105,8 @@ export default {
     fav: false,
     isOn: false,
     hasAction: true,
+    loadingFav: false,
+    loadingToggle: false,
     quickAction: null
   }),
   methods: {
@@ -114,17 +116,13 @@ export default {
       this.isOn = !this.isOn;
     },
     async applyFavouriteSelection() {
-      this.device.meta.favourited = !this.device.meta.favourited;
-      let data = {
-        name: this.device.name,
-        meta: {
-          favourited: this.device.meta.favourited
-        }
-      };
-      this.fav = this.device.meta.favourited;
-      await apiWrapper.devices.update(this.device.id, data);
-      console.log("Sending Reload Event");
-      this.$emit("reload");
+      this.loadingFav = true;
+      if (this.device.room) {
+        await this.device.room.setFavourite(this.device, !this.device.isFavourite());
+      } else {
+        await this.device.setFavourite(!this.device.isFavourite());
+      }
+      this.loadingFav = false;
     },
     onSelectUpdate(value) {
       this.$emit("selectUpdate", value);
@@ -138,16 +136,9 @@ export default {
     OpenMenu() {
       this.openMenu = true;
     },
-    GetFavourite() {
-      console.log("BEFORE APPLYING");
-      console.log(
-        `device: ${this.device.name} is fav: ${this.fav} and in DB is: ${
-          this.device.meta.favourited
-        }`
-      );
-      return this.device.meta.favourited;
-    },
-    GetImage() {
+    getImage() {
+
+
       switch (this.device.type.id) {
         case "rnizejqr2di0okho": // FRIDGE
           return ImageRetriever.GetImages(

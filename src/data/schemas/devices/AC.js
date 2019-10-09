@@ -49,7 +49,7 @@ export default class AC extends CommonDeviceSchema {
   static async create(name, room) {
     let data = await CommonDeviceSchema._create(
       name,
-      DeviceIds.byType.AC,
+      DeviceIds.byType["Air Conditioner"],
       undefined,
       room
     );
