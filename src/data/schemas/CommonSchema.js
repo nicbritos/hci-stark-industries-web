@@ -30,8 +30,8 @@ export default class CommonSchema {
       return false;
 
     let output = {
-      name: this.name,
-      meta: this._formatMeta(this.meta)
+      name: newName,
+      meta: this.meta
     };
     if (customData != null) {
       output = Object.assign(output, customData);
