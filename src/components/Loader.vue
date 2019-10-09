@@ -41,6 +41,7 @@ export default {
     loading: function(val) {
       if (val) {
         this.text = this.defaultText;
+        this.resetInterval();
         setInterval(() => {
           if (this.dots === 3) {
             this.dots = 0;
@@ -51,6 +52,13 @@ export default {
           }
         }, 750);
       } else if (this.timeout != null) {
+        this.resetInterval();
+      }
+    }
+  },
+  methods: {
+    resetInterval() {
+      if (this.timeout != null) {
         clearInterval(this.timeout);
         this.timeout = null;
       }
