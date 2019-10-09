@@ -90,6 +90,13 @@ export default {
       return false;
     }
   },
+  watch: {
+    show: function(val) {
+      if (val) {
+        this.newItem = Object.assign({}, this.defaultNewItem);
+      }
+    }
+  },
   methods: {
     validateNewNameAndSave() {
       return (this.errorMessages = this.validateNewName());
