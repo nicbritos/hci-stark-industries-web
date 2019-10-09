@@ -10,15 +10,25 @@
 </template>
 
 <script>
+import Region from "../../data/schemas/Region";
+
 export default {
   name: "Room",
   props: {
+    roomid: {
+      type: String,
+      required: true
+    },
     name: {
       type: String,
       required: true
     },
     count: {
       type: Number,
+      required: true
+    },
+    parent: {
+      type: Region,
       required: true
     }
   },
@@ -34,9 +44,9 @@ export default {
     goToRoom() {
       let path = this.$router.currentRoute.path;
       if (!this.$router.currentRoute.params.regionId) {
-        path += "/" + this.room.parentRegion.id;
+        path += "/" + this.parent.id;
       }
-      path += "/room/" + this.room.id;
+      path += "/room/" + this.roomid;
 
       this.$router.push(path);
     }
