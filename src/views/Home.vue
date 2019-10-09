@@ -32,7 +32,7 @@
         <DeviceContainer
           :room="true"
           :items="devices"
-          v-on:reload="reload"
+          v-on:favourited="processFavourited"
         ></DeviceContainer>
       </v-col>
     </v-row> </v-container
@@ -59,8 +59,13 @@ export default {
     };
   },
   methods: {
-    reload() {
-      console.log("'Bout to Update");
+    processFavourited(item, value) {
+      if (!value) {
+        let index = this.devices.indexOf(item);
+        if (index !== -1) this.devices.splice(index, 1);
+      } else if (!this.devices.includes(item)) {
+        this.devices.push(item);
+      }
     }
   },
   async mounted() {

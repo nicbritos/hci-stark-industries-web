@@ -66,12 +66,13 @@ import DeviceSelector from "../containers/DeviceSelector";
 import apiWrapper from "../../data/apiWrapper";
 import QuickActionHelper from "../../data/QuickActionHelper";
 import CommonDeviceSchema from "../../data/schemas/devices/CommonDeviceSchema";
+import Room from "../../data/schemas/Room";
 
 export default {
   name: "Device",
   components: { DeviceSelector },
   model: {
-    events: ["selectUpdate", "click"]
+    events: ["update", "click", "favourited"]
   },
   props: {
     device: {
@@ -117,12 +118,13 @@ export default {
     },
     async applyFavouriteSelection() {
       this.loadingFav = true;
-      if (this.device.room) {
+      try {
         await this.device.room.setFavourite(this.device, !this.device.isFavourite());
-      } else {
+      } catch (e) {
         await this.device.setFavourite(!this.device.isFavourite());
       }
       this.loadingFav = false;
+      this.$emit("favourited", this.device.isFavourite());
     },
     onSelectUpdate(value) {
       this.$emit("selectUpdate", value);
