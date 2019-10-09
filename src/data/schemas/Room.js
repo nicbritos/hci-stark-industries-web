@@ -7,15 +7,14 @@ import Region from "./Region";
 export default class Room extends CommonSchema {
   static async get(roomId) {
     let response = await apiWrapper.rooms.get(roomId);
-    let parentRegion = new Region(
-      response.home.id,
-      response.home.name,
-      response.home.meta
-    );
+    let result = response.result;
+    let region = result.home;
+
+    let parentRegion = new Region(region.id, region.name, region.meta);
     let roomInstance = new Room(
-      response.result.id,
-      response.result.name,
-      response.result.meta,
+      result.id,
+      result.name,
+      result.meta,
       parentRegion
     );
     await roomInstance._loadDevices();
@@ -82,11 +81,11 @@ export default class Room extends CommonSchema {
   }
 
   async _loadDevices() {
-    let result = await apiWrapper.rooms.getDevices(this.id);
+    let result = (await apiWrapper.rooms.getDevices(this.id)).result;
 
     this.devices = [];
     this.favouriteDevices = [];
-    for (let device of result.devices) {
+    for (let device of result) {
       device.roomId = this;
       let deviceInstance = DeviceInstantiator.instantiate(device);
       this.devices.push(deviceInstance);
