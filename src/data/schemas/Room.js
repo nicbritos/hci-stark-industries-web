@@ -33,7 +33,6 @@ export default class Room extends CommonSchema {
       "rooms",
       "result"
     );
-    await apiWrapper.regions.addRoom(region.id, result.id);
 
     return new Room(result.id, name, meta, region);
   }
@@ -86,5 +85,12 @@ export default class Room extends CommonSchema {
       if (deviceInstance.isFavourite())
         this.favouriteDevices.push(deviceInstance);
     }
+  }
+
+  async delete() {
+    for (let device of this.devices) {
+      await device.delete();
+    }
+    return super.delete();
   }
 }

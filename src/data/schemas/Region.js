@@ -90,4 +90,11 @@ export default class Region extends CommonSchema {
   //   }
   //   return devices;
   // }
+
+  async delete() {
+    for (let room of this.rooms) {
+      await room.delete();
+    }
+    return super.delete();
+  }
 }
