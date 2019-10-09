@@ -1,14 +1,5 @@
 <template>
   <v-container grid-list-md fluid>
-    <v-snackbar :value="true">
-      Deleted Region "Third Floor"
-      <v-btn text color="primary">
-        UNDO
-      </v-btn>
-      <v-btn icon text color="primary">
-        <v-icon>close</v-icon>
-      </v-btn>
-    </v-snackbar>
     <v-dialog v-model="dialogs.regions.new" max-width="700px">
       <v-card>
         <v-card-text>
@@ -27,17 +18,20 @@
                 </v-btn>
               </v-col>
               <v-col>
-              <h1 class="mt-3" style="color: black">
+                <h1 class="mt-3" style="color: black">
                   New Region
                 </h1>
               </v-col>
             </v-row>
 
             <v-row justify="start">
-              <v-col cols="1">
-              </v-col>
+              <v-col cols="1"> </v-col>
               <v-col>
-              <v-text-field
+                <v-text-field
+                  :error-messages="newItem.errorMessages"
+                  @input="validateNewNameAndSave"
+                  @blur="validateNewNameAndSave"
+                  :counter="newItem.nameMaxLength"
                   v-model="newItem.name"
                   label="Name"
                   clearable
@@ -62,6 +56,7 @@
             color="blue darken-1"
             text
             @click="newRegionClose"
+            :disabled="!isValidNewName"
             v-blur
             >Save</v-btn
           >
@@ -106,13 +101,15 @@
 <script>
 import apiWrapper from "../data/apiWrapper";
 import Region from "@/components/individuals/Region";
+import DataValidator from "../data/DataValidator";
+
 export default {
   name: "Regions",
   components: { Region },
   data() {
     return {
-      regions: null,
-      on:false,
+      on: false,
+      regions: [],
       dialogs: {
         regions: {
           new: false,
@@ -120,19 +117,34 @@ export default {
           delete: false
         }
       },
-      newItem: {
-        name: ""
+      newItem: {},
+      defaultNewItem: {
+        name: "",
+        errorMessages: [],
+        nameMaxLength: DataValidator.MAX_NAME_LENGTH
       }
     };
   },
+  computed: {
+    isValidNewName() {
+      return this.validateNewName().length === 0;
+    }
+  },
   methods: {
     newRegionOpen() {
-      this.newItem = Object.assign({}, this.defaultQuestion);
+      this.newItem = Object.assign({}, this.defaultNewItem);
       this.openDialog(this.dialogs.regions, "new");
     },
-    newRegionClose() {
-      // Save to DB
-      this.closeDialog(this.dialogs.regions, "delete");
+    async newRegionClose() {
+      this.$store.state.loading = true;
+
+      let data = {
+        name: this.newItem.name
+      };
+      this.regions.push(await apiWrapper.regions.create(data));
+
+      this.$store.state.loading = false;
+      this.closeDialog(this.dialogs.regions, "new");
     },
 
     openDialog(item, type) {
@@ -142,24 +154,28 @@ export default {
     closeDialog(item, type) {
       if (item == null || type == null || item[type] == null) return;
       if (item[type]) item[type] = false;
+    },
+
+    validateNewNameAndSave() {
+      return (this.newItem.errorMessages = this.validateNewName());
+    },
+    validateNewName() {
+      let errorMessages = DataValidator.validateName(this.newItem.name, "Name");
+      if (errorMessages.length === 0) {
+        if (
+          this.regions.filter(value => {
+            return value.name === this.newItem.name;
+          }).length > 0
+        ) {
+          errorMessages.push("Name already exists");
+        }
+      }
+
+      return errorMessages;
     }
   },
   async mounted() {
-    let rooms = await apiWrapper.rooms.getAll();
-    console.log("rooms");
-    console.log(rooms);
-
-    this.regions = [{
-      id:1,
-      name:"First Floor",
-      rooms: rooms.filter(el=>{return el.meta.region.id === 1;})
-    },
-      {      id:2,
-        name:"Second Floor",
-        rooms: rooms.filter(el=>{return el.meta.region.id === 2;})
-      }];
-    console.log("Regions");
-    console.log(this.regions);
+    this.regions = await apiWrapper.regions.getAll();
   }
 };
 </script>

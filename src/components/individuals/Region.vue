@@ -61,15 +61,17 @@
 <script>
 import BoxContainer from "@/components/containers/BoxContainer";
 import Room from "@/components/individuals/Room";
+import Region from "../../data/schemas/Region";
+
 export default {
   name: "Region",
   components: { BoxContainer, Room },
-  data:()=>({
-    on:false
+  data: () => ({
+    on: false
   }),
   props: {
     region: {
-      type: Object,
+      type: Region,
       required: true
     }
   },
