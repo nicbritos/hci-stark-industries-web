@@ -11,7 +11,7 @@ export default class Region extends CommonSchema {
       let regionInstance = new Region(
         region.id,
         region.name,
-        response.result.meta
+        region.meta
       );
       output.push(regionInstance);
       await regionInstance._loadRooms();
