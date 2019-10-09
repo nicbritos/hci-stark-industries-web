@@ -166,7 +166,7 @@ export default {
   },
   data: () => ({
     fixed: false,
-    noBackButtonRoutes: ["regions", "home", "login", "register", "about"],
+    noBackButtonRoutes: ["regions", "routines", "home", "login", "register", "about"],
     items: [
       { icon: "home", title: "Home", to: "/" },
       {
