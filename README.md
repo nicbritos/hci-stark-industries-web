@@ -32,10 +32,10 @@
 ## Falta
 
 - [ ] Buscar imagenes para el resto de los dispositivos
-- [ ] Hacer implementar el wrapper del api en los dispositivos:
-  - [ ] Horno
-  - [ ] AC
-  - [ ] Lampara
+- [x] Hacer implementar el wrapper del api en los dispositivos:
+  - [x] Horno
+  - [x] AC
+  - [x] Lampara
 - [x] Regiones
   - [x] Mostrar las regiones
   - [x] Crear region
