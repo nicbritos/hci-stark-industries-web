@@ -118,15 +118,16 @@ export default {
     validateNewName() {
       let errorMessages = DataValidator.validateName(this.newItem.name, "Name");
       if (errorMessages.length === 0) {
-        if (
-          this.regions.filter(value => {
-            return (
-              value.rooms.filter(room => {
-                return room !== this.room && value.name === this.newItem.name;
-              }).length > 0
-            );
-          }).length > 0
-        ) {
+        let found = false;
+        for (let region of this.regions) {
+          for (let room of region.rooms) {
+            if (room !== this.room && room.name === this.newItem.name) {
+              found = true;
+              break;
+            }
+          }
+        }
+        if (found) {
           errorMessages.push("Name already exists");
         }
       }
