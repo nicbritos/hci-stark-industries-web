@@ -34,12 +34,20 @@
           </v-icon>
         </v-btn>
         <v-spacer></v-spacer>
-        <v-btn v-if="editable " large icon v-blur text color="primary" @click="applyFavouriteSelection()">
-          <v-icon large v-if="this.device.meta.favourited" key="0">favorite</v-icon>
-          <v-icon large v-else key="1">favorite_outline</v-icon>
+        <v-btn
+          v-if="editable"
+          large
+          icon
+          v-blur
+          text
+          color="primary"
+          @click="applyFavouriteSelection()"
+        >
+          <v-icon large v-if="this.device.meta.favourited">favorite</v-icon>
+          <v-icon large v-else>favorite_outline</v-icon>
         </v-btn>
-          <v-switch
-                  v-if="editable&& hasAction"
+        <v-switch
+          v-if="editable && hasAction"
           class="ml-4 mb-n6 pb-0 pa-0 mt-0"
           v-model="isOn"
           v-blur
@@ -47,7 +55,6 @@
           color="primary"
         >
         </v-switch>
-
       </v-card-actions>
     </v-card>
   </v-container>
@@ -93,33 +100,30 @@ export default {
   },
   data: () => ({
     openMenu: false,
-      image:"",
-    fav:false,
-    isOn:false,
-    hasAction:true,
-    quickAction:null
+    image: "",
+    fav: false,
+    isOn: false,
+    hasAction: true,
+    quickAction: null
   }),
   methods: {
-    async onSwitchUpdate(){
+    async onSwitchUpdate() {
       console.log(`About to do quick action. Curr state: ${this.isOn}`);
       await this.quickAction.action(this.device.id, this.isOn);
-      this.isOn = !this.isOn
-
-
+      this.isOn = !this.isOn;
     },
-    async applyFavouriteSelection(){
+    async applyFavouriteSelection() {
       this.device.meta.favourited = !this.device.meta.favourited;
-      let data={
+      let data = {
         name: this.device.name,
-        meta:{
+        meta: {
           favourited: this.device.meta.favourited
         }
       };
       this.fav = this.device.meta.favourited;
-      await apiWrapper.devices.update(this.device.id,data);
+      await apiWrapper.devices.update(this.device.id, data);
       console.log("Sending Reload Event");
-      this.$emit('reload');
-
+      this.$emit("reload");
     },
     onSelectUpdate(value) {
       this.$emit("selectUpdate", value);
@@ -133,12 +137,16 @@ export default {
     OpenMenu() {
       this.openMenu = true;
     },
-      GetFavourite(){
-        console.log("BEFORE APPLYING")
-        console.log(`device: ${this.device.name} is fav: ${this.fav} and in DB is: ${this.device.meta.favourited}`)
-        return this.device.meta.favourited;
-      },
-      GetImage() {
+    GetFavourite() {
+      console.log("BEFORE APPLYING");
+      console.log(
+        `device: ${this.device.name} is fav: ${this.fav} and in DB is: ${
+          this.device.meta.favourited
+        }`
+      );
+      return this.device.meta.favourited;
+    },
+    GetImage() {
       switch (this.device.type.id) {
         case "rnizejqr2di0okho": // FRIDGE
           return ImageRetriever.GetImages(
@@ -218,23 +226,25 @@ export default {
     }
   },
   async mounted() {
-      this.image = this.GetImage();
-      this.fav = this.GetFavourite();
+    this.image = this.GetImage();
+    this.fav = this.GetFavourite();
 
-    console.log("AFTER APPLYING")
-    console.log(`device: ${this.device.name} is fav: ${this.fav} and in DB is: ${this.device.meta.favourited}`);
+    console.log("AFTER APPLYING");
+    console.log(
+      `device: ${this.device.name} is fav: ${this.fav} and in DB is: ${
+        this.device.meta.favourited
+      }`
+    );
+    this.hasAction = await QuickActionHelper.hasQuickAction(
+      this.device.type.id
+    );
 
-      this.hasAction = await QuickActionHelper.hasQuickAction(this.device.type.id);
-
-    console.log(`HAS ACTION: ${this.hasAction}`);
-    if(this.hasAction){
-        this.quickAction = await QuickActionHelper.getQuickAction(this.device.type.id);
-        this.isOn = this.quickAction.checkState(this.device);
-
-      }
-
-
-
+    if (this.hasAction) {
+      this.quickAction = await QuickActionHelper.getQuickAction(
+        this.device.type.id
+      );
+      this.isOn = this.quickAction.checkState(this.device);
+    }
   }
 };
 </script>

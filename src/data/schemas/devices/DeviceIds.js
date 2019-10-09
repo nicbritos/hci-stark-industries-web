@@ -1,11 +1,12 @@
 const byType = {
-  AC: "li6cbv5sdlatti0j",
+  "Air Conditioner": "li6cbv5sdlatti0j",
   Blinds: "eu0v2xgprrhhg41g",
   Door: "lsf78ly0eqrjbz91",
   Lamp: "go46xmbqeomjrsjr",
-  Fridge: "rnizejqr2di0okho",
+  Refrigerator: "rnizejqr2di0okho",
   Speakers: "c89b94e8581855bc",
-  Oven: "im77xxyulpegfmv8"
+  Oven: "im77xxyulpegfmv8",
+  Speaker: "c89b94e8581855bc"
 };
 
 let byId = {};

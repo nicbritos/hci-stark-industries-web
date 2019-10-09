@@ -1,5 +1,5 @@
-import CommonDeviceSchema from "@/data/schemas/CommonDeviceSchema";
-import apiWrapper from "@/data/apiWrapper";
+import CommonDeviceSchema from "./CommonDeviceSchema";
+import apiWrapper from "../../apiWrapper";
 import DeviceIds from "./DeviceIds";
 
 // Data extracted from API Docs
@@ -46,13 +46,18 @@ export default class AC extends CommonDeviceSchema {
     return ["auto", "25", "50", "75", "100"];
   }
 
-  static async create(name) {
-    let data = await CommonDeviceSchema._create(name, DeviceIds.byType.AC);
-    return new AC(data.id, data.name, data.meta, data.roomId);
+  static async create(name, room) {
+    let data = await CommonDeviceSchema._create(
+      name,
+      DeviceIds.byType.AC,
+      undefined,
+      room
+    );
+    return new AC(data.id, data.name, data.meta, data.room);
   }
 
-  constructor(id, name, meta, roomId) {
-    super(id, name, meta, DeviceIds.byType.AC, roomId);
+  constructor(id, name, meta, room) {
+    super(id, name, meta, DeviceIds.byType.AC, room);
 
     this.isOn = false;
     this.mode = AC.supportedModes()[0];
@@ -90,7 +95,9 @@ export default class AC extends CommonDeviceSchema {
 
   async setTemperature(value) {
     if (typeof value != "number")
-      throw new Error("Invalid argument. Temperature should be of type numeric");
+      throw new Error(
+        "Invalid argument. Temperature should be of type numeric"
+      );
 
     value = adjustNumberRange(value, AC.minTemperature(), AC.maxTemperature());
 
@@ -141,8 +148,7 @@ export default class AC extends CommonDeviceSchema {
     let result = await apiWrapper.devices.performAction(
       this.id,
       ACTION_NAMES.setHorizontalSwing,
-        [value]
-
+      [value]
     );
 
     if (result.result) this.swing.horizontal = value;
@@ -156,8 +162,7 @@ export default class AC extends CommonDeviceSchema {
     let result = await apiWrapper.devices.performAction(
       this.id,
       ACTION_NAMES.setFanSpeed,
-        [value]
-
+      [value]
     );
 
     if (result.result) this.swing.horizontal = value;

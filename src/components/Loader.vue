@@ -1,23 +1,69 @@
 <template>
-  <transition name="fade">
-    <div class="full" v-show="loading">
-      <div class="overlay"></div>
-      <div class="loader">
-        <v-progress-circular
-          :size="50"
-          :width="5"
-          color="white"
-          indeterminate
-        ></v-progress-circular>
-        <!-- <p class="white--text display-1 mt-5">Cargando...</p> -->
-      </div>
-    </div>
-  </transition>
+  <v-dialog persistent v-model="loading" max-width="200">
+    <v-card>
+      <v-card-text>
+        <v-container fluid>
+          <v-row justify="center">
+            <v-col cols="auto">
+              <v-progress-circular
+                :size="50"
+                :width="4"
+                color="primary"
+                indeterminate
+              ></v-progress-circular>
+            </v-col>
+          </v-row>
+          <v-row justify="center">
+            <v-col>
+              <div class="text-center subtitle-1 text--secondary">
+                {{ text }}
+              </div>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-card-text>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script>
 export default {
-  props: ["loading"]
+  props: ["loading"],
+  data() {
+    return {
+      text: "",
+      defaultText: "Loading",
+      timeout: null,
+      dots: 0
+    };
+  },
+  watch: {
+    loading: function(val) {
+      if (val) {
+        this.text = this.defaultText;
+        this.resetInterval();
+        setInterval(() => {
+          if (this.dots === 3) {
+            this.dots = 0;
+            this.text = this.defaultText;
+          } else {
+            this.text += ".";
+            this.dots++;
+          }
+        }, 750);
+      } else if (this.timeout != null) {
+        this.resetInterval();
+      }
+    }
+  },
+  methods: {
+    resetInterval() {
+      if (this.timeout != null) {
+        clearInterval(this.timeout);
+        this.timeout = null;
+      }
+    }
+  }
 };
 </script>
 

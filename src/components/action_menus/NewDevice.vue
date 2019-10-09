@@ -1,12 +1,5 @@
 <template>
   <v-card>
-    <!--    <v-img-->
-    <!--      class="white&#45;&#45;text"-->
-    <!--      src="@/assets/response_blue.png"-->
-    <!--      position="top center"-->
-    <!--      max-height="300"-->
-    <!--    >-->
-    <!--    </v-img>-->
     <v-card-text>
       <v-container fluid>
         <v-row>
@@ -197,7 +190,7 @@
                 v-blur
                 color="primary"
                 @click="data.stepper++"
-                :disabled="data.error || data.device == null"
+                :disabled="data.error || data.device.id == null"
                 >Continue</v-btn
               >
             </v-col>
@@ -247,11 +240,13 @@
             <v-col>
               <v-text-field
                 v-model="data.name"
-                label="Enter Name"
+                label="Name"
+                @input="validateNewNameAndSave"
+                @blur="validateNewNameAndSave"
                 clearable
                 :error="data.error"
                 :error-messages="data.errorMessages"
-                @input="validateName(data.name)"
+                :counter="nameMaxLength"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -278,7 +273,7 @@
       <v-spacer></v-spacer>
       <v-btn color="blue darken-1" text @click="onCancel" v-blur>Cancel</v-btn>
       <v-btn
-        :disabled="data.stepper < 4 || data.error || data.name == null"
+        :disabled="disableSaveButton"
         color="blue darken-1"
         text
         @click="onSave"
@@ -291,19 +286,23 @@
 </template>
 
 <script>
-  import apiWrapper from "../../data/apiWrapper";
+import DeviceIds from "../../data/schemas/devices/DeviceIds";
+import Region from "../../data/schemas/Region";
+import Room from "../../data/schemas/Room";
+import DataValidator from "../../data/DataValidator";
+
 export default {
   name: "NewDevice",
   model: {
-    events: ["cancel", "save"]
+    events: ["closeClick"]
   },
   props: {
     room: {
-      type: String,
+      type: Room,
       required: false
     },
     region: {
-      type: String,
+      type: Region,
       required: false
     },
     value: {
@@ -313,7 +312,8 @@ export default {
   },
   data() {
     return {
-      data: {}
+      data: {},
+      nameMaxLength: DataValidator.MAX_NAME_LENGTH
     };
   },
   computed: {
@@ -323,10 +323,9 @@ export default {
         selectedRegion: null,
         selectedRoom: null,
         name: null,
-        device: {id:null,name:null},
+        device: { id: null, name: null },
         error: false,
-        errorMessages: [],
-        loading: false,
+        errorMessages: []
       };
     },
     roomStep() {
@@ -341,82 +340,100 @@ export default {
     nameStep() {
       return this.deviceStep + 1;
     },
+    disableSaveButton() {
+      if (this.validateNewName().length !== 0) return true;
+      return (
+        this.data.stepper < this.nameStep ||
+        this.data.error ||
+        this.data.name == null
+      );
+    },
 
-    regions() {
-      return [
-        {
-          name: "Planta Baja",
-          id: "ABC1"
-        }
-      ];
-    },
-    rooms() {
-      return [
-        {
-          name: "Comedor",
-          id: "ABC2"
-        }
-      ];
-    },
     devices() {
-      return apiWrapper.devices.getSupportedDevices();
+      let data = [];
+      for (let type in DeviceIds.byType) {
+        data.push({
+          name: type,
+          id: DeviceIds.byType[type]
+        });
+      }
+      return data;
     }
   },
   watch: {
-    value: {
-      handler: function(val) {
-        if (!val) {
-          this.resetData();
-        }
+    value: function(val) {
+      if (!val) {
+        this.resetData();
       }
-    },
-  },
-  created() {
-    this.resetData();
+    }
   },
   methods: {
+    validateNewNameAndSave() {
+      this.data.errorMessages = this.validateNewName();
+      this.data.error = this.data.errorMessages.length > 0;
+      return this.data.errorMessages;
+    },
+    validateNewName() {
+      let errorMessages = DataValidator.validateName(this.data.name, "Name");
+      if (errorMessages.length === 0) {
+        let found = false;
+        // TODO
+        // for (let region of this.regions) {
+        //   if (region !== this.region && region.name === this.data.name) {
+        //     found = true;
+        //     break;
+        //   }
+        // }
+        if (found) {
+          errorMessages.push("Name already exists");
+        }
+      }
+
+      return errorMessages;
+    },
     resetData() {
       this.data = Object.assign({}, this.defaultData);
     },
     backOneStep() {
-      console.log("Going back");
-      console.log(this.data.stepper)
       if (this.data.stepper === 4) {
         this.data.stepper--;
         this.data.name = null;
       } else if (this.data.stepper === 3) {
         if (this.room === null) {
-          this.data.stepper--;
           this.data.device = null;
+        } else {
+          this.data.name = null;
         }
+        this.data.stepper--;
       } else if (this.data.stepper === 2) {
-        console.log(`region: ${this.region}`)
         if (this.region === null) {
-          this.data.stepper--;
           this.selectedRoom = null;
+        } else if (this.room === null) {
+          this.data.device = null;
+        } else {
+          this.data.name = null;
         }
+        this.data.stepper--;
       }
 
       this.data.error = false;
       this.data.errorMessages = [];
     },
 
-    getRegionName(regionId) {
-      return "Planta Baja";
+    getRegionName(region) {
+      return region.name;
     },
-    getRoomName(roomId) {
-      return "Comedor";
+    getRoomName(room) {
+      return room.name;
     },
     getDeviceName() {
-
-      if(this.data.device.id != null) {
+      if (this.data.device.id != null) {
         this.data.device.name = this.devices.find(el => {
           return this.data.device.id === el.id;
         }).name;
       }
 
       return this.data.device.name;
-
     },
 
     validateRegion() {
@@ -425,7 +442,6 @@ export default {
         messages.push("Please, select a Region");
       this.data.errorMessages = messages;
       this.data.error = messages.length > 0;
-
     },
     validateRoom() {
       let messages = [];
@@ -433,27 +449,17 @@ export default {
         messages.push("Please, select a Room");
       this.data.errorMessages = messages;
       this.data.error = messages.length > 0;
-
     },
     validateDevice() {
-
-      console.log(this.data.device)
+      console.log(this.data.device);
       let messages = [];
       if (this.data.device == null) messages.push("Please, select a Device");
-      this.data.errorMessages = messages;
-      this.data.error = messages.length > 0;
-
-    },
-    validateName(name) {
-      let messages = [];
-      if (typeof name !== "string" || name.trim().length === 0)
-        messages.push("Please, enter a Name");
       this.data.errorMessages = messages;
       this.data.error = messages.length > 0;
     },
 
     onCancel() {
-      this.$emit("cancel");
+      this.$emit("closeClick", null);
     },
     onSave() {
       let newDevice = {
@@ -463,18 +469,12 @@ export default {
         name: this.data.name
       };
       this.data.loading = true;
-      this.$emit("save", newDevice);
+      this.$emit("closeClick", newDevice);
     }
   },
-  mounted() {
-
-    if(this.Region === null )
-      this.stepper++;
-
-    if(this.Room === null)
-      this.stepper ++;
+  created() {
+    this.resetData();
   }
-
 };
 </script>
 

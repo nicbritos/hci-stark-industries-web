@@ -1,5 +1,5 @@
-import CommonDeviceSchema from "@/data/schemas/devices/CommonDeviceSchema";
-import apiWrapper from "@/data/apiWrapper";
+import CommonDeviceSchema from "./CommonDeviceSchema";
+import apiWrapper from "../../apiWrapper";
 import DeviceIds from "./DeviceIds";
 
 // Data extracted from API Docs
@@ -9,13 +9,13 @@ const ACTION_NAMES = {
 };
 
 export default class Blinds extends CommonDeviceSchema {
-  static async create(name) {
-    let data = await CommonDeviceSchema._create(name, DeviceIds.byType.Blinds);
-    return new Blinds(data.id, data.name, data.meta, data.roomId);
+  static async create(name, room) {
+    let data = await CommonDeviceSchema._create(name, DeviceIds.byType.Blinds, undefined, room);
+    return new Blinds(data.id, data.name, data.meta, data.room);
   }
 
-  constructor(id, name, meta, roomId) {
-    super(id, name, meta, DeviceIds.byType.Blinds, roomId);
+  constructor(id, name, meta, room) {
+    super(id, name, meta, DeviceIds.byType.Blinds, room);
 
     this.isOpen = false;
     this.level = 0;
