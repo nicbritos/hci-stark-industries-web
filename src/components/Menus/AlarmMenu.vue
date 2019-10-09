@@ -2,7 +2,7 @@
   <v-row>
     <v-dialog v-model="AlarmMenu" persistent max-width="500px">
       <template v-slot:activator="{ on }">
-        <v-btn color="primary" dark v-on="on">Open Alarm</v-btn>
+        <v-btn color="primary" dark >Open Alarm</v-btn>
       </template>
 
       <v-card dark raised>

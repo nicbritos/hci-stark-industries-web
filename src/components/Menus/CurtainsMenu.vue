@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="CurtainsMenu" persistent max-width="400px">
 <!--    <template v-slot:activator="{ on }">-->
-<!--      <v-btn color="primary" dark v-on="on">Open Curtain</v-btn>-->
+<!--      <v-btn color="primary" dark >Open Curtain</v-btn>-->
 <!--    </template>-->
 
     <v-card dark raised>

@@ -34,7 +34,7 @@
             text
             outlined
             color="primary"
-            v-on="on"
+
             v-blur
             >NEW ROUTINE</v-btn
           >

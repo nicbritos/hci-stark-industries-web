@@ -45,7 +45,7 @@
             outlined
             color="primary"
             class="ml-3 mb-2"
-            v-on="on"
+
             v-blur
             @click="onNewRegionOpen"
             >NEW REGION</v-btn

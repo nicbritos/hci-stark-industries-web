@@ -4,7 +4,7 @@
       <v-container fluid>
         <v-row justify="start">
           <v-col cols="1">
-            <v-btn large icon color="primary" v-on="on" v-blur @click="onClose">
+            <v-btn large icon color="primary"  v-blur @click="onClose">
               <v-icon large>arrow_back</v-icon>
             </v-btn>
           </v-col>
