@@ -63,9 +63,8 @@
 <script>
 import ImageRetriever from "../../data/ImageRetriever";
 import DeviceSelector from "../containers/DeviceSelector";
-import apiWrapper from "../../data/apiWrapper";
 import QuickActionHelper from "../../data/QuickActionHelper";
-
+import Devices from "../../data/schemas/Devices";
 export default {
   name: "Routine",
   components: { DeviceSelector },
@@ -114,15 +113,9 @@ export default {
     },
     async applyFavouriteSelection() {
       this.device.meta.favourited = !this.device.meta.favourited;
-      let data = {
-        name: this.device.name,
-        meta: {
-          favourited: this.device.meta.favourited
-        }
-      };
       this.fav = this.device.meta.favourited;
-      await apiWrapper.devices.update(this.device.id, data);
-      console.log("Sending Reload Event");
+
+      await Devices.setFavourite(this.device.id,this.device.meta.favourited);
       this.$emit("reload");
     },
     onSelectUpdate(value) {
@@ -138,12 +131,7 @@ export default {
       this.openMenu = true;
     },
     GetFavourite() {
-      console.log("BEFORE APPLYING");
-      console.log(
-        `device: ${this.device.name} is fav: ${this.fav} and in DB is: ${
-          this.device.meta.favourited
-        }`
-      );
+
       return this.device.meta.favourited;
     },
     GetImage() {

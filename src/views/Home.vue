@@ -39,6 +39,8 @@ import BoxContainer from "@/components/containers/BoxContainer";
 import Routine from "@/components/individuals/Routine";
 import DeviceContainer from "@/components/containers/DeviceContainer";
 import apiWrapper from "../data/apiWrapper";
+import Routines from "./Routines";
+import Devices from "../data/schemas/Devices";
 
 export default {
   name: "Home",
@@ -60,8 +62,7 @@ export default {
 
     },
     async LoadModel(){
-      let devs = await apiWrapper.devices.getAll();
-      this.devices = devs.filter(el=>{return el.meta.favourited});
+      this.devices = await Devices.getFavourtites();
       let routs = await apiWrapper.routines.getAll();
       this.routines = routs.filter(el=>{return el.meta.favourited});
     },
