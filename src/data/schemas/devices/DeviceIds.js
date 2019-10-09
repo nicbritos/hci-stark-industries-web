@@ -4,7 +4,6 @@ const byType = {
   Door: "lsf78ly0eqrjbz91",
   Lamp: "go46xmbqeomjrsjr",
   Refrigerator: "rnizejqr2di0okho",
-  Speakers: "c89b94e8581855bc",
   Oven: "im77xxyulpegfmv8",
   Speaker: "c89b94e8581855bc"
 };
@@ -15,6 +14,6 @@ for (let type of Object.keys(byType)) {
 }
 
 export default {
-  byId: byType,
+  byId: byId,
   byType: byType
 };
