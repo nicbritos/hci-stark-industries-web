@@ -2,7 +2,7 @@ import apiWrapper from "@/data/apiWrapper";
 
 export default class CommonSchema {
   static _formatMeta(meta) {
-    return JSON.stringify(meta);
+    return meta;
   }
 
   static async _create(name, meta, customData, type, serverReturnTypeName) {
