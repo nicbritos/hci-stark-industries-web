@@ -111,13 +111,18 @@
 
       <v-text-field
         hide-details
-        prepend-icon="search"
         single-line
         class="ml-3"
         placeholder="Start typing to Search"
         v-model="searchText"
         clearable
-      ></v-text-field>
+      >
+        <template v-slot:prepend>
+          <v-icon color="blue" @click="applySearch()">
+            search
+          </v-icon>
+        </template>
+      </v-text-field>
 
       <v-btn to="/login" light class="nav-btn ml-4" v-if="false" v-blur>
         <v-icon left>exit_to_app</v-icon>
@@ -149,72 +154,21 @@
     </v-app-bar>
 
     <v-content v-on:reloadthings="LoadSearchResults">
-      <v-row v-if="openSearchMenu">
-        <v-col>
-          <v-toolbar flat color="transparent">
-            <v-toolbar-title>
-              <h2>
-                Search Results
-              </h2>
-            </v-toolbar-title>
-          </v-toolbar>
 
-          <v-expansion-panels  >
-            <div class="expansionContainer">
-            <v-expansion-panel >
-              <v-expansion-panel-header>
-                <h3>
-                {{this.deviceSearchResults.length}} devices found
-                </h3>
-              </v-expansion-panel-header>
-              <v-expansion-panel-content>
-                <DeviceContainer  :room="true" :items="deviceSearchResults" v-on:reload-site="reload" ></DeviceContainer>
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-            <v-expansion-panel >
-              <v-expansion-panel-header>
-                <h3>
-                {{this.routinesSearchResults.length}} routines found
-                </h3>
-              </v-expansion-panel-header>
-              <v-expansion-panel-content>
-
-                <BoxContainer :items="routinesSearchResults" >
-                  <template v-slot:item="{ item }">
-                    <Routine :routine="item" v-on:reload="reload"></Routine>
-                  </template>
-                </BoxContainer>
-
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-            </div>
-          </v-expansion-panels>
-
-
-
-        </v-col>
-      </v-row>
-      <v-divider/>
       <router-view />
     </v-content>
   </v-app>
 </template>
 
 <script>
-  import DeviceContainer from "@/components/containers/DeviceContainer";
   import Loader from "@/components/Loader";
 import { mapGetters } from "vuex";
-import apiWrapper from "./data/apiWrapper";
-  import BoxContainer from "@/components/containers/BoxContainer";
-  import Routine from "@/components/individuals/Routine";
+
 
 export default {
   name: "App",
   components: {
     Loader,
-    DeviceContainer,
-    BoxContainer,
-    Routine
   },
   data: () => ({
     fixed: false,
@@ -308,6 +262,9 @@ export default {
       //   location.reload();
       // });
     },
+    applySearch(){
+
+    },
     showLoader() {
       this.$store.state.loading = true;
     },
@@ -327,19 +284,6 @@ export default {
     },
     async LoadSearchResults(){
 
-      this.unfilteredDevicesSearchResults = await apiWrapper.devices.getAll();
-
-      this.deviceSearchResults = this.unfilteredDevicesSearchResults
-              .filter(el=>{return el.name.replace(/\s+/g, '').toLowerCase().includes(this.searchText.replace(/\s+/g, '').toLowerCase());})
-
-      console.log(this.deviceSearchResults);
-      console.log(`DEVICES FOUND: ${this.deviceSearchResults.length}`);
-
-      this.unfilteredRoutineSearchResults = await apiWrapper.routines.getAll();
-
-      console.log(this.unfilteredRoutineSearchResults);
-      this.routinesSearchResults = this.unfilteredRoutineSearchResults
-              .filter(el=>{return el.name.replace(/\s+/g, '').toLowerCase().includes(this.searchText.replace(/\s+/g, '').toLowerCase());})
 
 
     },

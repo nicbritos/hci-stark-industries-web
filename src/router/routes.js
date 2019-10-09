@@ -9,6 +9,7 @@ import Routines from "@/views/Routines.vue";
 import Recovery from "@/views/Recovery.vue";
 import NewRoutine from "@/views/NewRoutine.vue";
 import PageNotFound from "@/views/PageNotFound.vue";
+import Search from "@/views/Search";
 
 const routes = {
   router: {
@@ -93,6 +94,11 @@ const routes = {
       path: "/page-not-found",
       name: "page-not-found",
       component: PageNotFound
+    },
+    search:{
+      path: "/Search/:query",
+      name:"Search",
+      component: Search
     }
   },
   breadcrumbs: {
