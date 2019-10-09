@@ -53,7 +53,8 @@
 <script>
 import BoxContainer from "@/components/containers/BoxContainer";
 import Routine from "@/components/individuals/Routine";
-import apiWrapper from "../data/apiWrapper";
+import RoutineSchema from "../data/schemas/Routine";
+
 export default {
   name: "Home",
   components: { BoxContainer, Routine },
@@ -61,7 +62,6 @@ export default {
     return {
       routines: [],
       favouriteRoutines: [],
-      on:false,
       dialogs: {
         routines: {
           new: false
@@ -81,24 +81,13 @@ export default {
     closeDialog(item, type) {
       if (item == null || type == null || item[type] == null) return;
       if (item[type]) item[type] = false;
-    },
-    async reload(){
-      console.log("EVent Recieved");
-      let routines = await apiWrapper.routines.getAll();
-      console.log(routines);
-      this.routines = routines;
-
-
-      let favs = routines.filter(el=>{return el.meta.favourited;});
-      console.log(favs);
-      this.favouriteRoutines = favs ;
-      console.log(this.favouriteRoutines);
-
-
     }
   },
   async mounted() {
-    this.reload();
+    this.routines = await RoutineSchema.getAll();
+    this.favouriteRoutines = this.routines.filter(value => {
+      return value.isFavourite();
+    });
   }
 };
 </script>

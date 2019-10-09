@@ -2,13 +2,6 @@
   <v-container grid-list-md fluid>
     <v-dialog v-model="dialogs.devices.add" max-width="800px">
       <v-card>
-        <!--        <v-img-->
-        <!--          class="white&#45;&#45;text"-->
-        <!--          src="@/assets/question_blue.png"-->
-        <!--          position="top center"-->
-        <!--          max-height="300"-->
-        <!--        >-->
-        <!--        </v-img>-->
         <v-card-text>
           <v-container fluid>
             <v-row>
@@ -43,13 +36,6 @@
 
     <v-dialog v-model="dialogs.devices.configure" max-width="800px">
       <v-card>
-        <!--        <v-img-->
-        <!--          class="white&#45;&#45;text"-->
-        <!--          src="@/assets/question_blue.png"-->
-        <!--          position="top center"-->
-        <!--          max-height="300"-->
-        <!--        >-->
-        <!--        </v-img>-->
         <v-card-text>
           <v-container fluid>
             <v-row>
@@ -70,10 +56,18 @@
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="configureDeviceClose(false)" v-blur
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="configureDeviceClose(false)"
+            v-blur
             >Cancel</v-btn
           >
-          <v-btn color="blue darken-1" text @click="configureDeviceClose(true)" v-blur
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="configureDeviceClose(true)"
+            v-blur
             >Save</v-btn
           >
         </v-card-actions>
@@ -211,7 +205,6 @@
                     outlined
                     color="primary"
                     class="ml-3 mb-2"
-
                     v-blur
                     @click="addDeviceOpen"
                     >ADD DEVICE</v-btn
@@ -285,6 +278,7 @@
 import OrderedBoxContainer from "@/components/containers/OrderedBoxContainer";
 import DeviceContainer from "@/components/containers/DeviceContainer";
 import Device from "@/components/individuals/Device";
+import CommonDeviceSchema from "../data/schemas/devices/CommonDeviceSchema";
 
 export default {
   name: "NewRoutine",
@@ -297,21 +291,20 @@ export default {
       data: {},
       dialogs: {
         devices: {
-          add: true,
+          add: false,
           configure: false
         }
       },
-      devices: this.$store.state.devices.items,
+      devices: [],
       selectedDevice: {},
-      selectedDeviceConfiguration: {},
       selectedDevices: [],
-      favouriteDevices: this.$store.state.devices.favourites
+      selectedDeviceConfiguration: {}
     };
   },
   computed: {
     defaultData() {
       return {
-        stepper: 3,
+        stepper: 1,
         description: null,
         name: null,
         selectedDevices: [],
@@ -331,27 +324,13 @@ export default {
     },
     nameStep() {
       return this.deviceStep + 1;
-    },
-
-    regions() {
-      return [
-        {
-          name: "Planta Baja",
-          id: "ABC1"
-        }
-      ];
-    },
-    rooms() {
-      return [
-        {
-          name: "Comedor",
-          id: "ABC2"
-        }
-      ];
     }
   },
   created() {
     this.resetData();
+  },
+  async mounted() {
+    this.devices = await CommonDeviceSchema.getAll();
   },
   methods: {
     addDeviceOpen() {
