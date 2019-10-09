@@ -37,8 +37,8 @@
   - [ ] AC
   - [ ] Lampara
 - [ ] Regiones
-  - [ ] Mostrar las regiones
-  - [ ] Crear region
+  - [x] Mostrar las regiones
+  - [x] Crear region
   - [ ] Editar region
   - [ ] Eliminar region
 - [ ] Cuartos
