@@ -1,4 +1,4 @@
-import CommonDeviceSchema from "@/data/schemas/devices/CommonDeviceSchema";
+import CommonDeviceSchema from "./CommonDeviceSchema";
 import apiWrapper from "@/data/apiWrapper";
 import DeviceIds from "./DeviceIds";
 import rebuildFunctionalSlots from "vuetify/lib/util/rebuildFunctionalSlots";
