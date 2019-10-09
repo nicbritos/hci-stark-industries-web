@@ -42,7 +42,7 @@
   - [x] Editar region
   - [x] Eliminar region
 - [ ] Cuartos
-  - [ ] Crear cuarto
+  - [x] Crear cuarto
   - [ ] Editar cuarto
   - [ ] Eliminar cuarto
 - [ ] Rutinas
