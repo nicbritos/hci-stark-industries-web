@@ -72,7 +72,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import NewDevice from "@/components/action_menus/NewDevice";
 
 export default {
-  name: "Rooms",
+  name: "Devices",
   components: { NewDevice, DeviceContainer, Breadcrumbs },
   data() {
     return {
@@ -160,7 +160,7 @@ export default {
     await this.LoadModel();
 
     this.breadcrumbsItems = [
-      { to: "/Regions", text: this.RoomModel.region.name },
+      { to: "/regions", text: this.RoomModel.region.name },
       { to: "/", text: this.RoomModel.name, disabled: true }
     ];
   }
