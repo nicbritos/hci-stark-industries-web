@@ -36,11 +36,11 @@
   - [ ] Horno
   - [ ] AC
   - [ ] Lampara
-- [ ] Regiones
+- [x] Regiones
   - [x] Mostrar las regiones
   - [x] Crear region
-  - [ ] Editar region
-  - [ ] Eliminar region
+  - [x] Editar region
+  - [x] Eliminar region
 - [ ] Cuartos
   - [ ] Crear cuarto
   - [ ] Editar cuarto
