@@ -31,7 +31,7 @@
 
 ## Falta
 
-- [ ] Buscar imagenes para el resto de los dispositivos
+- [x] Buscar imagenes para el resto de los dispositivos
 - [x] Hacer implementar el wrapper del api en los dispositivos:
   - [x] Horno
   - [x] AC
