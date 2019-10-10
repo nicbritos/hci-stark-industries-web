@@ -98,6 +98,22 @@ export default class Room extends CommonSchema {
     }
   }
 
+  async deleteDevice(device) {
+    let index = this.devices.indexOf(device);
+
+    if (index === -1) return false;
+    let favIndex = this.favouriteDevices.indexOf(device);
+    let result = await device.delete();
+    if (result) {
+      this.devices.splice(index, 1);
+      if (favIndex !== -1) {
+        this.favouriteDevices.splice(favIndex, 1);
+      }
+    }
+
+    return result;
+  }
+
   async delete() {
     for (let device of this.devices) {
       await device.delete();

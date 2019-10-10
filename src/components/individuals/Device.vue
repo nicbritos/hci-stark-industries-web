@@ -1,12 +1,14 @@
 <template>
   <v-container>
-    <DeviceSelector
-      :device="device"
-      :openMenu="openMenu"
-      v-on:CloseMenu="CloseMenu()"
-    ></DeviceSelector>
+    <v-dialog v-model="menu" persistent max-width="600px">
+      <DeviceSelector
+        :device="device"
+        v-on:CloseMenu="closeMenu()"
+      ></DeviceSelector>
+    </v-dialog>
+
     <v-card hover style="cursor: default" width="200">
-      <v-card-text @click="OpenMenu()" v-ripple style="cursor: pointer">
+      <v-card-text @click="onClick" v-ripple style="cursor: pointer">
         <div class="text--secondary">
           {{
             device.name +
@@ -101,7 +103,7 @@ export default {
     }
   },
   data: () => ({
-    openMenu: false,
+    menu: false,
     image: "",
     fav: false,
     isOn: false,
@@ -119,7 +121,10 @@ export default {
     async applyFavouriteSelection() {
       this.loadingFav = true;
       try {
-        await this.device.room.setFavourite(this.device, !this.device.isFavourite());
+        await this.device.room.setFavourite(
+          this.device,
+          !this.device.isFavourite()
+        );
       } catch (e) {
         await this.device.setFavourite(!this.device.isFavourite());
       }
@@ -129,113 +134,27 @@ export default {
     onSelectUpdate(value) {
       this.$emit("selectUpdate", value);
     },
+    openMenu() {
+      this.menu = true;
+    },
     onClick() {
-      this.$emit("click");
+      if (this.editable) this.openMenu();
+      else this.$emit("click");
     },
-    CloseMenu() {
-      this.openMenu = false;
-    },
-    OpenMenu() {
-      this.openMenu = true;
-    },
-    getImage() {
-
-
-      switch (this.device.type.id) {
-        case "rnizejqr2di0okho": // FRIDGE
-          return ImageRetriever.GetImages(
-            this.device.type.id,
-            ImageRetriever.ACTIONS.INVARIANT
-          );
-        case "c89b94e8581855bc": // SPEAKER
-          if (this.device.state.status === "playing")
-            return ImageRetriever.GetImages(
-              this.device.type.id,
-              ImageRetriever.ACTIONS.ON
-            );
-          else
-            return ImageRetriever.GetImages(
-              this.device.type.id,
-              ImageRetriever.ACTIONS.OFF
-            );
-        case "eu0v2xgprrhhg41g": // CURTAINS
-          if (
-            this.device.state.status === "opened" ||
-            this.device.state.status === "opening"
-          )
-            return ImageRetriever.GetImages(
-              this.device.type.id,
-              ImageRetriever.ACTIONS.OPEN
-            );
-          else
-            return ImageRetriever.GetImages(
-              this.device.type.id,
-              ImageRetriever.ACTIONS.CLOSE
-            );
-        case "go46xmbqeomjrsjr": // LAMP
-          if (this.device.state.status === "off")
-            return ImageRetriever.GetImages(
-              this.device.type.id,
-              ImageRetriever.ACTIONS.OFF
-            );
-          else
-            return ImageRetriever.GetImages(
-              this.device.type.id,
-              ImageRetriever.ACTIONS.ON
-            );
-        case "im77xxyulpegfmv8": //Oven
-          if (this.device.state.status === "off")
-            return ImageRetriever.GetImages(
-              this.device.type.id,
-              ImageRetriever.ACTIONS.OFF
-            );
-          else
-            return ImageRetriever.GetImages(
-              this.device.type.id,
-              ImageRetriever.ACTIONS.ON
-            );
-        case "li6cbv5sdlatti0j": //AC
-          if (this.device.state.status === "off")
-            return ImageRetriever.GetImages(
-              this.device.type.id,
-              ImageRetriever.ACTIONS.OFF
-            );
-          else
-            return ImageRetriever.GetImages(
-              this.device.type.id,
-              ImageRetriever.ACTIONS.ON
-            );
-        case "lsf78ly0eqrjbz91": // DOOR
-          if (this.device.state.lock === "locked")
-            return ImageRetriever.GetImages(
-              this.device.type.id,
-              ImageRetriever.ACTIONS.LOCK
-            );
-          else
-            return ImageRetriever.GetImages(
-              this.device.type.id,
-              ImageRetriever.ACTIONS.UNLOCK
-            );
-      }
+    closeMenu() {
+      this.menu = false;
     }
   },
   async mounted() {
-    this.image = this.GetImage();
-    // this.fav = this.GetFavourite();
-    //
-    // console.log("AFTER APPLYING");
-    // console.log(
-    //   `device: ${this.device.name} is fav: ${this.fav} and in DB is: ${
-    //     this.device.meta.favourited
-    //   }`
-    // );
+    this.image = ImageRetriever.getImage(this.device);
+
     // this.hasAction = await QuickActionHelper.hasQuickAction(
-    //   this.device.type.id
+    //   this.device.deviceId
     // );
     //
     // if (this.hasAction) {
     //   this.quickAction = await QuickActionHelper.getQuickAction(
-    //     this.device.type.id
+    //     this.device.deviceId
     //   );
     //   this.isOn = this.quickAction.checkState(this.device);
     // }
