@@ -116,9 +116,10 @@
         placeholder="Start typing to Search"
         v-model="searchText"
         clearable
+        @keyup="ev"
       >
         <template v-slot:prepend>
-          <v-icon color="blue" @click="applySearch()">
+          <v-icon color="blue" @click="applySearch()" >
             search
           </v-icon>
         </template>
@@ -153,7 +154,7 @@
       </v-menu>
     </v-app-bar>
 
-    <v-content v-on:reloadthings="LoadSearchResults">
+    <v-content >
 
       <router-view />
     </v-content>
@@ -173,12 +174,6 @@ export default {
   data: () => ({
     fixed: false,
     searchText: "",
-    openSearchMenu: false,
-    reloadSearchResults:false,
-    deviceSearchResults:[],
-    unfilteredDevicesSearchResults:[],
-    routinesSearchResults:[],
-    unfilteredRoutineSearchResults:[],
     noBackButtonRoutes: ["regions", "home", "login", "register", "about"],
     items: [
       { icon: "home", title: "Home", to: "/" },
@@ -262,7 +257,18 @@ export default {
       //   location.reload();
       // });
     },
+    ev(event){
+      if(event.keyCode === 13){
+        this.applySearch();
+      }
+    },
     applySearch(){
+      this.$router.push({
+        name:"Search",
+        params:{
+          query: this.searchText
+        }
+      });
 
     },
     showLoader() {
@@ -286,29 +292,9 @@ export default {
         else this.$router.push("/");
       }
     },
-    reload(){
-      this.LoadSearchResults();
-    },
-    async LoadSearchResults(){
-
-
-
-    },
   },
   watch:{
-    searchText: async function (val) {
-      if(val === ""){
-        console.log("Close Search Menu")
-        this.openSearchMenu = false;
-      }
-      else{
-        console.log("Open Search Menu")
 
-        this.openSearchMenu = true;
-
-        await this.LoadSearchResults();
-      }
-    },
   }
 };
 </script>

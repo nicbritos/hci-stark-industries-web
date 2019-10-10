@@ -69,18 +69,18 @@
                 return src.replace(/\s+/g, '').toLowerCase().includes(str.replace(/\s+/g, '').toLowerCase());
 			},
             async LoadSearchResults(){
-                let devices = Devices.getAll();
+                let devices = await Devices.getAll();
 
                 this.deviceSearchResults = devices.filter(el=>{return this.containsString(el.name,this.searchQuery)})
 
+                let routines = await apiWrapper.routines.getAll();
 
-                this.unfilteredRoutineSearchResults = await apiWrapper.routines.getAll();
-
-                console.log(this.unfilteredRoutineSearchResults);
-                this.routinesSearchResults = this.unfilteredRoutineSearchResults
+                this.routinesSearchResults = routines
                     .filter(el=>{return this.containsString(el.name,this.searchQuery) ;})
-
-            }
+            },
+            reload(){
+                this.LoadSearchResults();
+			}
 		},
 		mounted() {
             this.searchQuery = this.$route.params.query;
