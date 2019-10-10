@@ -46,15 +46,18 @@
 </template>
 
 <script>
-    //import apiWrapper from "./data/apiWrapper";
+    import apiWrapper from "../data/apiWrapper";
     import BoxContainer from "@/components/containers/BoxContainer";
     import Routine from "@/components/individuals/Routine";
     import DeviceContainer from "@/components/containers/DeviceContainer";
+    import Devices from "../data/schemas/Devices";
 
     export default {
         name: "Search",
 		data:()=>({
             searchQuery:"",
+			deviceSearchResults:[],
+			routinesSearchResults:[],
 		}),
 		components:{
             DeviceContainer,
@@ -62,25 +65,26 @@
             Routine
 		},
 		methods:{
-            LoadSearchResults(){
-                this.unfilteredDevicesSearchResults = await apiWrapper.devices.getAll();
+            containsString(src,str){
+                return src.replace(/\s+/g, '').toLowerCase().includes(str.replace(/\s+/g, '').toLowerCase());
+			},
+            async LoadSearchResults(){
+                let devices = Devices.getAll();
 
-                this.deviceSearchResults = this.unfilteredDevicesSearchResults
-                    .filter(el=>{return el.name.replace(/\s+/g, '').toLowerCase().includes(this.searchText.replace(/\s+/g, '').toLowerCase());})
+                this.deviceSearchResults = devices.filter(el=>{return this.containsString(el.name,this.searchQuery)})
 
-                console.log(this.deviceSearchResults);
-                console.log(`DEVICES FOUND: ${this.deviceSearchResults.length}`);
 
                 this.unfilteredRoutineSearchResults = await apiWrapper.routines.getAll();
 
                 console.log(this.unfilteredRoutineSearchResults);
                 this.routinesSearchResults = this.unfilteredRoutineSearchResults
-                    .filter(el=>{return el.name.replace(/\s+/g, '').toLowerCase().includes(this.searchText.replace(/\s+/g, '').toLowerCase());})
+                    .filter(el=>{return this.containsString(el.name,this.searchQuery) ;})
 
             }
 		},
 		mounted() {
             this.searchQuery = this.$route.params.query;
+            this.LoadSearchResults();
         }
     }
 </script>

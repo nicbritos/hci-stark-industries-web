@@ -2,7 +2,7 @@ import Home from "@/views/Home.vue";
 import Users from "@/views/Users.vue";
 import Login from "@/views/Login.vue";
 import About from "@/views/About.vue";
-import Rooms from "@/views/Devices.vue";
+import Rooms from "@/views/Room.vue";
 import Regions from "@/views/Regions.vue";
 import Register from "@/views/Register.vue";
 import Routines from "@/views/Routines.vue";
