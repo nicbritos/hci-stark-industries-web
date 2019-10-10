@@ -54,9 +54,10 @@
   - [ ] Deshacer cambios
   - [ ] Confirmacion de eliminacion
 - [ ] Dispositivos
-  - [ ] Crear Dispositivos
+  - [x] Crear Dispositivos
   - [x] Mostar dispositivos favoritos en home
   - [x] Mostrar rutinas favoritas en home
+  - [ ] Menu de dispositivo
   - [ ] Deshacer cambios
   - [ ] Confirmacion de eliminacion
   - [ ] Vista de todos los dispositivos
