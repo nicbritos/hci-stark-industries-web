@@ -98,7 +98,7 @@ export default {
     }
   },
   async mounted() {
-    this.reload();
+    await this.reload();
   }
 };
 </script>

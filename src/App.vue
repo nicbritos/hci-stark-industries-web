@@ -150,7 +150,7 @@
     </v-app-bar>
 
     <v-content>
-      <ErrorDialog :message="errorModel.message" :open="errorModel.openDialog" />
+      <ErrorDialog :message="errorModel.message" :open="errorModel.openDialog" v-on:CloseErrorDialog="CloseErrorDialog" />
       <router-view />
     </v-content>
   </v-app>
@@ -297,10 +297,12 @@ export default {
     OpenErrorDialog(msg){
       this.errorModel.openDialog = true;
       this.errorModel.message = msg;
+      console.log("Opening dialog: " + this.errorModel.openDialog);
     },
     CloseErrorDialog(){
       this.errorModel.openDialog = false;
       this.errorModel.message = "";
+      console.log("Closing Dialog")
     }
   }
 

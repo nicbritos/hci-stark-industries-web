@@ -1,6 +1,5 @@
 <template>
-<div>
-  fsdsgfsdsd {{open}}
+
   <v-dialog v-model="errorDialog" persistent max-width="400px">
     <v-card dark raised>
       <v-card-title>
@@ -23,7 +22,6 @@
       </v-card-actions>
     </v-card>
   </v-dialog>
-</div>
 </template>
 
 <script>
@@ -49,9 +47,12 @@ export default {
       console.log("CAMBIANDO");
       this.errorDialog = val;
 
-      // if(!val){
-      //   this.$emit("CloseErrorDialog");
-      // }
+    },
+    errorDialog: function (val) {
+      if(!val){
+        console.log("Emiting Event:")
+        this.$emit("CloseErrorDialog");
+      }
     }
   }
 };
