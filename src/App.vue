@@ -150,6 +150,7 @@
     </v-app-bar>
 
     <v-content>
+      <ErrorDialog :message="errorModel.message" :open="errorModel.openDialog" />
       <router-view />
     </v-content>
   </v-app>
@@ -159,15 +160,21 @@
 import Loader from "@/components/Loader";
 import { mapGetters } from "vuex";
 import apiWrapper from "./data/apiWrapper";
+import ErrorDialog from "./components/info_dialogs/ErrorDialog";
 
 export default {
   name: "App",
   components: {
+    ErrorDialog,
     Loader
   },
 
   data: () => ({
     fixed: false,
+    errorModel:{
+      message:"",
+      openDialog:false
+    },
     noBackButtonRoutes: ["regions", "home", "login", "register", "about"],
     items: [
       { icon: "home", title: "Home", to: "/" },
@@ -281,9 +288,21 @@ export default {
     if(err === apiWrapper.ERRORS.NETWORK) {
       console.log("NETWORK ERROR");
 
+      this.OpenErrorDialog("PEDAZO DE MIERDA");
+
     }
     return false;
   },
+  methods:{
+    OpenErrorDialog(msg){
+      this.errorModel.openDialog = true;
+      this.errorModel.message = msg;
+    },
+    CloseErrorDialog(){
+      this.errorModel.openDialog = false;
+      this.errorModel.message = "";
+    }
+  }
 
 };
 </script>
