@@ -1,7 +1,11 @@
 <template>
   <v-card dark raised>
     <v-dialog v-model="deleteDialog" max-width="700">
-      <DeleteDialog :name="device.name" :show="deleteDialog" @closeClick="Delete"></DeleteDialog>
+      <DeleteDialog
+        :name="device.name"
+        :show="deleteDialog"
+        @closeClick="Delete"
+      ></DeleteDialog>
     </v-dialog>
     <v-card-title>
       <span class="headline">{{ device ? device.name : "" }}</span>
@@ -21,6 +25,7 @@
           <v-btn
             icon
             class="justify-center col-md-1"
+            :disabled="temperature <= minTemperature || !isOn"
             @click="temperature = temperature - 1"
           >
             <v-avatar color="blue">
@@ -35,6 +40,7 @@
           <v-btn
             icon
             class="justify-center col-md-1"
+            :disabled="temperature >= maxTemperature || !isOn"
             @click="temperature = 1 + temperature"
           >
             <v-avatar color="blue">
@@ -44,7 +50,7 @@
         </v-row>
         <span>Mode</span>
         <v-row justify="space-around" align="center">
-          <v-radio-group v-model="mode" row>
+          <v-radio-group :disabled="!isOn" v-model="mode" row>
             <v-radio label="Cool" value="cool"></v-radio>
             <v-radio label="Fan" value="fan"></v-radio>
             <v-radio label="Heat" value="heat"></v-radio>
@@ -52,7 +58,7 @@
         </v-row>
         <span>Vertical Blades</span>
         <v-row justify="space-around" align="center">
-          <v-radio-group v-model="vertical_blades" row>
+          <v-radio-group :disabled="!isOn"  v-model="vertical_blades" row>
             <v-radio label="Auto" value="auto"></v-radio>
             <v-radio label="22°" value="22"></v-radio>
             <v-radio label="45°" value="45"></v-radio>
@@ -62,7 +68,7 @@
         </v-row>
         <span>Horizontal Blades</span>
         <v-row justify="space-around" align="center">
-          <v-radio-group v-model="horizontal_blades" row>
+          <v-radio-group  :disabled="!isOn" v-model="horizontal_blades" row>
             <v-radio label="Auto" value="auto"></v-radio>
             <v-radio label="-90°" value="-90"></v-radio>
             <v-radio label="-45°" value="-45"></v-radio>
@@ -73,7 +79,7 @@
         </v-row>
         <span>Speed</span>
         <v-row justify="space-around" align="center">
-          <v-radio-group v-model="speed" row>
+          <v-radio-group :disabled="!isOn" v-model="speed" row>
             <v-radio label="Auto" value="auto"></v-radio>
             <v-radio label="25%" value="25"></v-radio>
             <v-radio label="50%" value="50"></v-radio>
@@ -86,7 +92,7 @@
     <v-card-actions>
       <v-spacer></v-spacer>
       <v-btn v-blur color="red" @click="Exit()">Cancel</v-btn>
-      <v-btn v-blur color="blue" @click="SaveAndExit()">Confirm</v-btn>
+      <v-btn v-blur color="blue" :disabled="modified" @click="SaveAndExit()">Confirm</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -117,6 +123,25 @@ export default {
     deleteDialog: false,
     speed: "auto"
   }),
+  computed: {
+    modified() {
+      if (this.device == null) return false;
+      return (
+        this.device.isOn !== this.isOn ||
+        this.device.mode !== this.mode ||
+        this.device.swing.vertical !== this.vertical_blades ||
+        this.device.swing.horizontal !== this.horizontal_blades ||
+        this.device.speed !== this.speed
+      );
+    },
+
+    minTemperature() {
+      return AC.minTemperature();
+    },
+    maxTemperature() {
+      return AC.maxTemperature();
+    }
+  },
   methods: {
     async resetData() {
       if (this.device != null) {
@@ -155,6 +180,7 @@ export default {
         await this.device.setVerticalSwing(this.vertical_blades);
         await this.device.setHorizontalSwing(this.horizontal_blades);
       } else await this.device.turnOff();
+      this.$store.state.loading = false;
 
       this.Exit();
     },
