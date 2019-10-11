@@ -147,10 +147,88 @@ export default {
     },
     closeMenu() {
       this.menu = false;
+    },
+    GetImage() {
+      switch (this.device.type.id) {
+        case "rnizejqr2di0okho": // FRIDGE
+          return ImageRetriever.GetImages(
+                  this.device.type.id,
+                  ImageRetriever.ACTIONS.INVARIANT
+          );
+        case "c89b94e8581855bc": // SPEAKER
+          if (this.device.state.status === "playing")
+            return ImageRetriever.GetImages(
+                    this.device.type.id,
+                    ImageRetriever.ACTIONS.ON
+            );
+          else
+            return ImageRetriever.GetImages(
+                    this.device.type.id,
+                    ImageRetriever.ACTIONS.OFF
+            );
+        case "eu0v2xgprrhhg41g": // CURTAINS
+          if (
+                  this.device.state.status === "opened" ||
+                  this.device.state.status === "opening"
+          )
+            return ImageRetriever.GetImages(
+                    this.device.type.id,
+                    ImageRetriever.ACTIONS.OPEN
+            );
+          else
+            return ImageRetriever.GetImages(
+                    this.device.type.id,
+                    ImageRetriever.ACTIONS.CLOSE
+            );
+        case "go46xmbqeomjrsjr": // LAMP
+          if (this.device.state.status === "off")
+            return ImageRetriever.GetImages(
+                    this.device.type.id,
+                    ImageRetriever.ACTIONS.OFF
+            );
+          else
+            return ImageRetriever.GetImages(
+                    this.device.type.id,
+                    ImageRetriever.ACTIONS.ON
+            );
+        case "im77xxyulpegfmv8": //Oven
+          if (this.device.state.status === "off")
+            return ImageRetriever.GetImages(
+                    this.device.type.id,
+                    ImageRetriever.ACTIONS.OFF
+            );
+          else
+            return ImageRetriever.GetImages(
+                    this.device.type.id,
+                    ImageRetriever.ACTIONS.ON
+            );
+        case "li6cbv5sdlatti0j": //AC
+          if (this.device.state.status === "off")
+            return ImageRetriever.GetImages(
+                    this.device.type.id,
+                    ImageRetriever.ACTIONS.OFF
+            );
+          else
+            return ImageRetriever.GetImages(
+                    this.device.type.id,
+                    ImageRetriever.ACTIONS.ON
+            );
+        case "lsf78ly0eqrjbz91": // DOOR
+          if (this.device.state.lock === "locked")
+            return ImageRetriever.GetImages(
+                    this.device.type.id,
+                    ImageRetriever.ACTIONS.LOCK
+            );
+          else
+            return ImageRetriever.GetImages(
+                    this.device.type.id,
+                    ImageRetriever.ACTIONS.UNLOCK
+            );
+      }
     }
   },
   async mounted() {
-    this.image = ImageRetriever.getImage(this.device);
+    this.image = GetImage();
 
     // this.hasAction = await QuickActionHelper.hasQuickAction(
     //   this.device.deviceId
