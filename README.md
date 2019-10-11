@@ -59,7 +59,7 @@
   - [x] Mostrar rutinas favoritas en home
   - [ ] Menu de dispositivo
   - [ ] Deshacer cambios
-  - [ ] Confirmacion de eliminacion
+  - [x] Confirmacion de eliminacion
   - [ ] Vista de todos los dispositivos
   - [ ] Vista de dispositivos por categoria
 - [ ] Implementar la barra de busqueda
