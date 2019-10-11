@@ -92,7 +92,7 @@
     <v-card-actions>
       <v-spacer></v-spacer>
       <v-btn v-blur color="red" @click="Exit()">Cancel</v-btn>
-      <v-btn v-blur color="blue" :disabled="modified" @click="SaveAndExit()">Confirm</v-btn>
+      <v-btn v-blur color="blue" :disabled="!modified" @click="SaveAndExit()">SAVE</v-btn>
     </v-card-actions>
   </v-card>
 </template>

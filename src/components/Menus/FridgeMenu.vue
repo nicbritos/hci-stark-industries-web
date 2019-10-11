@@ -91,19 +91,14 @@
         <br />
         <span> Fridge Mode</span>
         <v-row>
-          <v-select dark
-                  label="Mode"
-          :items="dropdownFridgeMode"
-                    menu-props="offsetOverflow, offsetY"
-          v-model="mode"
+          <v-select
+            dark
+            label="Mode"
+            :items="dropdownFridgeMode"
+            menu-props="offsetOverflow, offsetY"
+            v-model="mode"
           >
           </v-select>
-<!--          <v-overflow-btn-->
-<!--            label="Mode"-->
-<!--            :items="dropdownFridgeMode"-->
-<!--            target="#dropdownFridgeMode"-->
-<!--            v-model="mode"-->
-<!--          />-->
         </v-row>
       </v-container>
     </v-card-text>
@@ -111,7 +106,7 @@
       <v-spacer></v-spacer>
       <v-btn v-blur color="red" @click="Exit()">Cancel</v-btn>
       <v-btn v-blur color="blue" :disabled="!modified" @click="SaveAndExit()"
-        >Confirm</v-btn
+        >SAVE</v-btn
       >
     </v-card-actions>
   </v-card>
@@ -142,16 +137,20 @@ export default {
   }),
   computed: {
     dropdownFridgeMode() {
-      return [{
-        text: "Normal",
-        value: "default"
-      }, {
-        text: "Vacation",
-        value: "vacation"
-      }, {
-        text: "Party",
-        value: "party"
-      }];
+      return [
+        {
+          text: "Normal",
+          value: "default"
+        },
+        {
+          text: "Vacation",
+          value: "vacation"
+        },
+        {
+          text: "Party",
+          value: "party"
+        }
+      ];
     },
     minFreezerTemperature() {
       return Fridge.minFreezerTemperature();

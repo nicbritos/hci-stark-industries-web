@@ -1,10 +1,16 @@
 <template>
-  <v-dialog v-model="DoorMenu" persistent max-width="400px">
     <v-card dark raised>
+      <v-dialog v-model="deleteDialog" max-width="700">
+        <DeleteDialog
+                :name="device.name"
+                :show="deleteDialog"
+                @closeClick="Delete"
+        ></DeleteDialog>
+      </v-dialog>
       <v-card-title>
-        <span class="headline">{{ name }}</span>
+        <span class="headline">{{ device.name }}</span>
 
-        <v-btn icon absolute right @click="DeleteAndExit()">
+        <v-btn icon absolute right @click="openDeleteDialog">
           <v-avatar color="red">
             <v-icon>delete</v-icon>
           </v-avatar>
@@ -55,36 +61,32 @@
       <v-card-actions class="justify-center">
         <div class="text-center">
           <v-btn color="red" @click="Exit()">Cancel</v-btn>
-          <v-btn color="blue" @click="SaveAndExit()">Confirm</v-btn>
+          <v-btn color="blue" @click="SaveAndExit()">SAVE</v-btn>
         </div>
       </v-card-actions>
     </v-card>
-  </v-dialog>
 </template>
 
 <script>
-  import Door from "../../data/schemas/devices/Door";
-  import ImageRetriever from "../../data/ImageRetriever";
+import Door from "../../data/schemas/devices/Door";
+import ImageRetriever from "../../data/ImageRetriever";
+import DeleteDialog from "../info_dialogs/DeleteDialog";
+
 export default {
   name: "DoorMenu",
+  components: { DeleteDialog },
   props: {
-    name: {
-      type: String,
+    device: {
+      type: Door,
       required: true
     },
-    deviceId: {
-      type: String,
-      required: true
-    },
-    openMenu: {
+    show: {
       type: Boolean,
       required: true
-    },
+    }
   },
 
   data: () => ({
-    DoorMenu: false,
-
     State: {
       open: true,
       locked: false
@@ -102,17 +104,30 @@ export default {
       image: ""
     },
 
-    closedDoorImage: ImageRetriever.GetImages("lsf78ly0eqrjbz91",ImageRetriever.ACTIONS.CLOSE),
-    openDoorImage: ImageRetriever.GetImages("lsf78ly0eqrjbz91",ImageRetriever.ACTIONS.OPEN),
+    closedDoorImage: ImageRetriever.GetImages(
+      "lsf78ly0eqrjbz91",
+      ImageRetriever.ACTIONS.CLOSE
+    ),
+    openDoorImage: ImageRetriever.GetImages(
+      "lsf78ly0eqrjbz91",
+      ImageRetriever.ACTIONS.OPEN
+    ),
 
-    lockDoorImage: ImageRetriever.GetImages("lsf78ly0eqrjbz91",ImageRetriever.ACTIONS.LOCK),
-    unlockDoorImage: ImageRetriever.GetImages("lsf78ly0eqrjbz91",ImageRetriever.ACTIONS.UNLOCK),
+    lockDoorImage: ImageRetriever.GetImages(
+      "lsf78ly0eqrjbz91",
+      ImageRetriever.ACTIONS.LOCK
+    ),
+    unlockDoorImage: ImageRetriever.GetImages(
+      "lsf78ly0eqrjbz91",
+      ImageRetriever.ACTIONS.UNLOCK
+    ),
 
     OpenButtonString: "Open Door",
     CloseButtonString: "Close Door",
 
     LockButtonString: "Lock Door",
-    UnlockButtonString: "Unlock Door"
+    UnlockButtonString: "Unlock Door",
+    deleteDialog: false
   }),
   methods: {
     ChangeDoorState() {
@@ -153,15 +168,26 @@ export default {
       this.SecurityRepresentation.image = this.lockDoorImage;
       this.State.locked = true;
     },
+
+    openDeleteDialog() {
+      this.deleteDialog = true;
+    },
+    async Delete(value) {
+      if (value) {
+        try {
+          await this.device.room.deleteDevice(this.device);
+        } catch (e) {
+          await this.device.delete();
+        }
+        this.deleteDialog = false;
+        this.onDelete();
+      } else {
+        this.deleteDialog = false;
+      }
+    },
     async LoadModel() {
-
-      var APIDoor = new Door(this.deviceId,this.name);
-
-      console.log("Model");
-
       await APIDoor.refreshState();
       console.log(APIDoor);
-
 
       if (APIDoor.isOpen) {
         this.SetOpenState();
@@ -176,15 +202,14 @@ export default {
       }
     },
     async SaveAndExit() {
-      var APIDoor = new Door(this.deviceId,this.name);
-      await  APIDoor.refreshState();
+      var APIDoor = new Door(this.deviceId, this.name);
+      await APIDoor.refreshState();
       console.log(APIDoor);
 
       if (this.State.open) {
         console.log("Open Door");
         APIDoor.open();
         APIDoor.unlock();
-
       } else {
         APIDoor.close();
         if (this.State.locked) {
@@ -197,11 +222,11 @@ export default {
       this.Exit();
     },
     Exit() {
-      console.log("Sending Close Event from Door")
-      this.$emit('CloseMenu')    },
+      console.log("Sending Close Event from Door");
+      this.$emit("CloseMenu");
+    },
     DeleteAndExit() {
-
-      var APIDoor = new Door(this.deviceId,this.name);
+      var APIDoor = new Door(this.deviceId, this.name);
 
       APIDoor.delete();
 
@@ -209,13 +234,15 @@ export default {
     }
   },
   watch: {
-    openMenu: function(val) {
-      this.DoorMenu = val;
+    show: function(val) {
       if (val) {
         this.LoadModel();
       }
     }
   },
+  mounted() {
+    this.LoadModel()
+  }
 };
 </script>
 

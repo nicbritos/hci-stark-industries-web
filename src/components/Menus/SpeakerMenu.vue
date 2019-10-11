@@ -154,7 +154,7 @@
     <v-card-actions class="justify-center">
       <div class="text-center">
         <v-btn color="red" @click="Exit()">Cancel</v-btn>
-        <v-btn color="blue" @click="Exit()">Confirm</v-btn>
+        <v-btn color="blue" @click="Exit()">SAVE</v-btn>
       </div>
     </v-card-actions>
   </v-card>

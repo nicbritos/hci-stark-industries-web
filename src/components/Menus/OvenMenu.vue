@@ -1,9 +1,15 @@
 <template>
-  <v-dialog v-model="OvenMenu" persistent max-width="400px">
     <v-card dark raised>
+      <v-dialog v-model="deleteDialog" max-width="700">
+        <DeleteDialog
+                :name="device.name"
+                :show="deleteDialog"
+                @closeClick="Delete"
+        ></DeleteDialog>
+      </v-dialog>
       <v-card-title>
-        <span class="headline">{{ name }}</span>
-        <v-btn icon absolute right @click="Delete()">
+        <span class="headline">{{ device.name }}</span>
+        <v-btn icon absolute right @click="openDeleteDialog">
           <v-avatar color="red">
             <v-icon>delete</v-icon>
           </v-avatar>
@@ -73,11 +79,10 @@
       <v-card-actions class="justify-center">
         <div class="text-center">
           <v-btn color="red" @click="Exit()">Cancel</v-btn>
-          <v-btn color="blue" @click="SaveAndExit()">Confirm</v-btn>
+          <v-btn color="blue" @click="SaveAndExit()">SAVE</v-btn>
         </div>
       </v-card-actions>
     </v-card>
-  </v-dialog>
 </template>
 
 <script>
@@ -85,91 +90,93 @@ import Oven from "../../data/schemas/devices/Oven";
 export default {
   name: "OvenMenu",
   props: {
-    name: {
-      type: String,
+    device: {
+      type: Oven,
       required: true
     },
-    deviceId: {
-      type: String,
-      required: true
-    },
-    openMenu: {
+    show: {
       type: Boolean,
       required: true
-    },
+    }
   },
   data: () => ({
-      enabled: false,
-      temperature: 100,
-      heat_source: "conventional",
-      grill: 0,
-      convection: 0,
-      labelsConvection: ["normal","eco","off"],
-      labelsGrill: ["large","eco","off"],
-      OvenMenu: false
-    }),
-  methods:{
-    Delete(){
-        var APIOven= new Oven(this.deviceId,this.name);
+    enabled: false,
+    temperature: 100,
+    heat_source: "conventional",
+    grill: 0,
+    convection: 0,
+    labelsConvection: ["normal", "eco", "off"],
+    labelsGrill: ["large", "eco", "off"],
+    deleteDialog: false
+  }),
+  methods: {
 
-
-        APIOven.delete();
-
-        this.Exit();
-      },
-    async LoadModel(){
-            let APIOven = new Oven(this.deviceId, this.name);
-            await APIOven.refreshState();
-
-
-            this.enabled = APIOven.isOn;
-            this.temperature = APIOven.temperature;
-            this.heat_source = APIOven.heatMode;
-            this.grill = labelsGrill.indexOf(APIOven.grillMode);
-            this.convection = labelsConvection.indexOf(APIOven.convectionMode);
-        },
-      async SaveAndExit(){
-        var APIOven = new Oven(this.deviceId, this.name);
-        await APIOven.refreshState();
-        if( APIOven.isOn() ){
-          if( this.enabled ) {
-            APIOven.setTemperature(this.temperature);
-            APIOven.setConvection(this.labelsConvection[this.convection]);
-            APIOven.setGrill(this.labelsGrill[this.grill]);
-            APIOven.setHeat(this.heat_source);
-          }
-          else {
-            APIOven.turnOff();
-          }
+    openDeleteDialog() {
+      this.deleteDialog = true;
+    },
+    async Delete(value) {
+      if (value) {
+        try {
+          await this.device.room.deleteDevice(this.device);
+        } catch (e) {
+          await this.device.delete();
         }
-        else {
-          if(this.enabled) {
-            APIOven.turnOn();
-            APIOven.setTemperature(this.temperature);
-            APIOven.setConvection(this.labelsConvection[this.convection]);
-            APIOven.setGrill(this.labelsGrill[this.grill]);
-            APIOven.setHeat(this.heat_source);
-          }
-        }
+        this.deleteDialog = false;
+        this.onDelete();
+      } else {
+        this.deleteDialog = false;
+      }
+    },
+    async LoadModel() {
+      let APIOven = new Oven(this.deviceId, this.name);
+      await APIOven.refreshState();
 
-        this.Exit();
-        },
-    Exit(){
-      console.log("Sending Close Event from Oven")
-      this.$emit('CloseMenu')
+      this.enabled = APIOven.isOn;
+      this.temperature = APIOven.temperature;
+      this.heat_source = APIOven.heatMode;
+      this.grill = labelsGrill.indexOf(APIOven.grillMode);
+      this.convection = labelsConvection.indexOf(APIOven.convectionMode);
+    },
+    async SaveAndExit() {
+      var APIOven = new Oven(this.deviceId, this.name);
+      await APIOven.refreshState();
+      if (APIOven.isOn()) {
+        if (this.enabled) {
+          APIOven.setTemperature(this.temperature);
+          APIOven.setConvection(this.labelsConvection[this.convection]);
+          APIOven.setGrill(this.labelsGrill[this.grill]);
+          APIOven.setHeat(this.heat_source);
+        } else {
+          APIOven.turnOff();
+        }
+      } else {
+        if (this.enabled) {
+          APIOven.turnOn();
+          APIOven.setTemperature(this.temperature);
+          APIOven.setConvection(this.labelsConvection[this.convection]);
+          APIOven.setGrill(this.labelsGrill[this.grill]);
+          APIOven.setHeat(this.heat_source);
+        }
+      }
+
+      this.Exit();
+    },
+    Exit() {
+      console.log("Sending Close Event from Oven");
+      this.$emit("CloseMenu");
     }
-
   },
-  watch:{
-     openMenu:function (val) {
-          this.OvenMenu= val;
-          if(val){
-
-              this.LoadModel();
-          }
-      },
+  watch: {
+    show: function(val) {
+      if (val) {
+        this.LoadModel();
+      }
+    }
+  },
+  mounted() {
+    this.LoadModel()
   }
-}
+};
 </script>
 
 <style scoped></style>
