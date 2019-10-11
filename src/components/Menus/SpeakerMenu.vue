@@ -154,7 +154,7 @@
     <v-card-actions class="justify-center">
       <div class="text-center">
         <v-btn color="red" @click="Exit()">Cancel</v-btn>
-        <v-btn color="blue" @click="Exit()">SAVE</v-btn>
+        <v-btn color="blue" @click="SaveAndExit()">SAVE</v-btn>
       </div>
     </v-card-actions>
   </v-card>
@@ -171,7 +171,7 @@ export default {
     device: {
       type: Speakers,
       required: true
-    },
+    },/* 
     deviceId: {
       type: String,
       required: true
@@ -183,14 +183,13 @@ export default {
     mode: {
       type: String,
       required: false
-    },
+    }, */
     show: {
       type: Boolean,
       required: true
     }
   },
   data: () => ({
-    SuperMenuOpen: false,
     interval: undefined,
     deleteDialog: false,
 

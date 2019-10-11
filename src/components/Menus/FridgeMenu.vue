@@ -205,7 +205,6 @@ export default {
       await this.device.setTemperature(this.temperature);
       await this.device.setFreezerTemperature(this.freezerTemperature);
       this.$store.state.loading = false;
-
       this.Exit();
     },
     Exit() {

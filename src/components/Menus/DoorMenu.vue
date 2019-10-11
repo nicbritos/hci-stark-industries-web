@@ -61,7 +61,7 @@
       <v-card-actions class="justify-center">
         <div class="text-center">
           <v-btn color="red" @click="Exit()">Cancel</v-btn>
-          <v-btn color="blue" @click="SaveAndExit()">SAVE</v-btn>
+          <v-btn color="blue" :disabled="!modified" @click="SaveAndExit()">SAVE</v-btn>
         </div>
       </v-card-actions>
     </v-card>
@@ -129,6 +129,13 @@ export default {
     UnlockButtonString: "Unlock Door",
     deleteDialog: false
   }),
+  computed: {
+    modified() {
+      if (this.device == null) return false;
+      return (this.State.open !== this.device.isOpen
+        || this.State.locked !== this.device.isLocked ) ;
+    }
+  },
   methods: {
     ChangeDoorState() {
       if (!this.State.open) {
@@ -168,7 +175,22 @@ export default {
       this.SecurityRepresentation.image = this.lockDoorImage;
       this.State.locked = true;
     },
+    async resetData() {
+      if (this.device != null) {
+        await this.device.refreshState();
+        if (this.device.isOpen) {
+          this.SetOpenState();
+        } else {
+          this.SetCloseState();
+        }
 
+        if (this.device.isLocked) {
+          this.SetLockState();
+        } else {
+          this.SetUnlockState();
+        }
+      }
+    },
     openDeleteDialog() {
       this.deleteDialog = true;
     },
@@ -185,37 +207,18 @@ export default {
         this.deleteDialog = false;
       }
     },
-    async LoadModel() {
-      await APIDoor.refreshState();
-      console.log(APIDoor);
-
-      if (APIDoor.isOpen) {
-        this.SetOpenState();
-      } else {
-        this.SetCloseState();
-      }
-
-      if (APIDoor.isLocked) {
-        this.SetLockState();
-      } else {
-        this.SetUnlockState();
-      }
-    },
     async SaveAndExit() {
-      var APIDoor = new Door(this.deviceId, this.name);
-      await APIDoor.refreshState();
-      console.log(APIDoor);
+      this.$store.state.loading = true;
 
       if (this.State.open) {
-        console.log("Open Door");
-        APIDoor.open();
-        APIDoor.unlock();
+        await this.device.open();
+        await this.device.unlock();
       } else {
-        APIDoor.close();
+        await this.device.close();
         if (this.State.locked) {
-          APIDoor.lock();
+          await this.device.lock();
         } else {
-          APIDoor.unlock();
+          await this.device.unlock();
         }
       }
 
@@ -225,23 +228,19 @@ export default {
       console.log("Sending Close Event from Door");
       this.$emit("CloseMenu");
     },
-    DeleteAndExit() {
-      var APIDoor = new Door(this.deviceId, this.name);
-
-      APIDoor.delete();
-
-      this.Exit();
+    onDelete() {
+      this.$emit("delete");
     }
   },
   watch: {
     show: function(val) {
       if (val) {
-        this.LoadModel();
+        this.resetData();
       }
     }
   },
   mounted() {
-    this.LoadModel()
+    this.resetData()
   }
 };
 </script>
