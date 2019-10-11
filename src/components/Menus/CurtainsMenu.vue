@@ -10,7 +10,7 @@
     <v-card-title>
       <span class="headline">{{ device.name }}</span>
 
-      <v-btn icon absolute right @click="Delete()">
+      <v-btn icon absolute right @click="openDeleteDialog()">
         <v-avatar color="red">
           <v-icon>delete</v-icon>
         </v-avatar>
