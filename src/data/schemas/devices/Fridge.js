@@ -4,7 +4,7 @@ import DeviceIds from "./DeviceIds";
 
 // Data extracted from API Docs
 const ACTION_NAMES = {
-  setMode: "mode",
+  setMode: "setMode",
   setTemperature: "setTemperature",
   setFreezerTemperature: "setFreezerTemperature"
 };
@@ -34,12 +34,17 @@ export default class Fridge extends CommonDeviceSchema {
   }
 
   static async create(name, room) {
-    let data = await CommonDeviceSchema._create(name, DeviceIds.byType.Fridge, undefined, room);
+    let data = await CommonDeviceSchema._create(
+      name,
+      DeviceIds.byType.Refrigerator,
+      undefined,
+      room
+    );
     return new Fridge(data.id, data.name, data.meta, data.room);
   }
 
   constructor(id, name, meta, room) {
-    super(id, name, meta, DeviceIds.byType.Fridge, room);
+    super(id, name, meta, DeviceIds.byType.Refrigerator, room);
     this.temperature = Fridge.maxFridgeTemperature();
     this.freezerTemperature = Fridge.maxFreezerTemperature();
     this.mode = Fridge.supportedModes()[0];
