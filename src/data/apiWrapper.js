@@ -189,6 +189,7 @@ async function requestQuery(url, method, data) {
   try {
     response = await fetch(url, init);
   } catch (error) {
+    console.log('NETWORK ERROR TRHOWN');
     throw ERRORS.NETWORK;
   }
   if (!response.ok) throw new Error(response.statusText); // TODO: Change to known errors

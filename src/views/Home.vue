@@ -67,7 +67,7 @@ export default {
     },
   },
   async mounted() {
-    this.LoadModel();
+    await this.LoadModel();
   }
 };
 </script>
