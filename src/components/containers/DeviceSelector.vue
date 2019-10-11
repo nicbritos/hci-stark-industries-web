@@ -10,6 +10,9 @@
   <SpeakerMenu
     v-else-if="device.deviceId === 'c89b94e8581855bc'"
     :device="device"
+    :device-id="device.id"
+    :name="device.name"
+    :mode="device.mode"
     :show="show"
     @delete="ResendEvent('delete', $event)"
     @CloseMenu="ResendEvent('close', $event)"
