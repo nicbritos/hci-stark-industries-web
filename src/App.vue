@@ -158,12 +158,14 @@
 <script>
 import Loader from "@/components/Loader";
 import { mapGetters } from "vuex";
+import apiWrapper from "./data/apiWrapper";
 
 export default {
   name: "App",
   components: {
     Loader
   },
+
   data: () => ({
     fixed: false,
     noBackButtonRoutes: ["regions", "home", "login", "register", "about"],
@@ -233,28 +235,7 @@ export default {
     this.$store.dispatch("setWindowWidth");
     this.$store.state.loading = false;
 
-    // database.onAuthStateChanged(async user => {
-    //   if (user) {
-    //     localStorage.loggedIn = true;
-    //     const userData = await database.getUserInformation();
-    //     this.$store.dispatch("setUserData", userData);
-    //     this.$store.state.loading = false;
-    //   } else {
-    //     localStorage.loggedIn = false;
-    //     this.$store.dispatch("resetUserData");
-    //     this.$store.state.loading = false;
-    //   }
-    // });
 
-    // database
-    //   .getStops()
-    //   .then(stops => this.$store.dispatch("setStops", stops))
-    //   .catch(err => console.error(err));
-
-    // database
-    //   .getDefaultTrips()
-    //   .then(trips => this.$store.dispatch("setDefaultTrips", trips))
-    //   .catch(err => alert("No tenés suficiente permisos"));
   },
   mounted() {
     this.$store.watch(
@@ -264,7 +245,6 @@ export default {
       }
     );
   },
-  methods: {
     logOut() {
       // database.signOut().then(() => {
       //   this.$router.push("/");
@@ -291,8 +271,20 @@ export default {
         if (path.length > 0) this.$router.push(path);
         else this.$router.push("/");
       }
+    },
+  errorCaptured(err, vm, info){
+    console.log("HANDLING ERROR");
+    console.log(err);
+    console.log(vm);
+    console.log(info);
+
+    if(err === apiWrapper.ERRORS.NETWORK) {
+      console.log("NETWORK ERROR");
+
     }
-  }
+    return false;
+  },
+
 };
 </script>
 
