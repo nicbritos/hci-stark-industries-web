@@ -92,7 +92,7 @@ export default {
               this.device.colors.green !== this.color.g ||
               this.device.colors.blue !== this.color.b
       );
-    },
+    }
   },
   methods: {
     openDeleteDialog() {
