@@ -111,14 +111,6 @@ export default {
         this.deleteDialog = false;
       }
     },
-    async LoadModel() {
-      let APILamp = new Lamp(this.deviceId, this.name);
-      await APILamp.refreshState();
-
-      this.color = APILamp.color;
-      this.enabled = APILamp.isOn;
-      this.intensity = APILamp.brightness;
-    },
     async resetData() {
       if (this.device != null) {
         await this.device.refreshState();
