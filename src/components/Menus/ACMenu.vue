@@ -1,8 +1,11 @@
 <template>
   <v-card dark raised>
+    <v-dialog v-model="deleteDialog" max-width="700">
+      <DeleteDialog :name="device.name" :show="deleteDialog" @closeClick="Delete"></DeleteDialog>
+    </v-dialog>
     <v-card-title>
-      <span class="headline">{{ device ? device.name : '' }}</span>
-      <v-btn icon absolute right @click="Delete()">
+      <span class="headline">{{ device ? device.name : "" }}</span>
+      <v-btn icon absolute right @click="openDeleteDialog">
         <v-avatar color="red">
           <v-icon>delete</v-icon>
         </v-avatar>
@@ -42,15 +45,15 @@
         <span>Mode</span>
         <v-row justify="space-around" align="center">
           <v-radio-group v-model="mode" row>
-            <v-radio label="cool" value="cool"></v-radio>
-            <v-radio label="fan" value="fan"></v-radio>
-            <v-radio label="heat" value="heat"></v-radio>
+            <v-radio label="Cool" value="cool"></v-radio>
+            <v-radio label="Fan" value="fan"></v-radio>
+            <v-radio label="Heat" value="heat"></v-radio>
           </v-radio-group>
         </v-row>
         <span>Vertical Blades</span>
         <v-row justify="space-around" align="center">
           <v-radio-group v-model="vertical_blades" row>
-            <v-radio label="auto" value="auto"></v-radio>
+            <v-radio label="Auto" value="auto"></v-radio>
             <v-radio label="22°" value="22"></v-radio>
             <v-radio label="45°" value="45"></v-radio>
             <v-radio label="67°" value="67"></v-radio>
@@ -60,7 +63,7 @@
         <span>Horizontal Blades</span>
         <v-row justify="space-around" align="center">
           <v-radio-group v-model="horizontal_blades" row>
-            <v-radio label="auto" value="auto"></v-radio>
+            <v-radio label="Auto" value="auto"></v-radio>
             <v-radio label="-90°" value="-90"></v-radio>
             <v-radio label="-45°" value="-45"></v-radio>
             <v-radio label="0°" value="0"></v-radio>
@@ -70,30 +73,31 @@
         </v-row>
         <span>Speed</span>
         <v-row justify="space-around" align="center">
-          <v-radio-group v-model="Speed" row>
-            <v-radio label="auto" value="auto"></v-radio>
-            <v-radio label="25" value="25"></v-radio>
-            <v-radio label="50" value="50"></v-radio>
-            <v-radio label="75" value="75"></v-radio>
-            <v-radio label="100" value="100"></v-radio>
+          <v-radio-group v-model="speed" row>
+            <v-radio label="Auto" value="auto"></v-radio>
+            <v-radio label="25%" value="25"></v-radio>
+            <v-radio label="50%" value="50"></v-radio>
+            <v-radio label="75%" value="75"></v-radio>
+            <v-radio label="100%" value="100"></v-radio>
           </v-radio-group>
         </v-row>
       </v-container>
     </v-card-text>
-    <v-card-actions class="justify-center">
-      <div class="text-center">
-        <v-btn color="red" @click="Exit()">Cancel</v-btn>
-        <v-btn color="blue" @click="SaveAndExit()">Confirm</v-btn>
-      </div>
+    <v-card-actions>
+      <v-spacer></v-spacer>
+      <v-btn v-blur color="red" @click="Exit()">Cancel</v-btn>
+      <v-btn v-blur color="blue" @click="SaveAndExit()">Confirm</v-btn>
     </v-card-actions>
   </v-card>
 </template>
 
 <script>
 import AC from "../../data/schemas/devices/AC";
+import DeleteDialog from "../info_dialogs/DeleteDialog";
 
 export default {
   name: "ACMenu",
+  components: { DeleteDialog },
   props: {
     device: {
       type: AC,
@@ -110,6 +114,7 @@ export default {
     mode: "cool",
     vertical_blades: "auto",
     horizontal_blades: "auto",
+    deleteDialog: false,
     speed: "auto"
   }),
   methods: {
@@ -124,14 +129,21 @@ export default {
       }
     },
 
-    async Delete() {
-      try {
-        await this.device.room.deleteDevice(this.device);
-      } catch (e) {
-        await this.device.delete();
+    openDeleteDialog() {
+      this.deleteDialog = true;
+    },
+    async Delete(value) {
+      if (value) {
+        try {
+          await this.device.room.deleteDevice(this.device);
+        } catch (e) {
+          await this.device.delete();
+        }
+        this.deleteDialog = false;
+        this.onDelete();
+      } else {
+        this.deleteDialog = false;
       }
-
-      this.onDelete();
     },
     async SaveAndExit() {
       this.$store.state.loading = true;

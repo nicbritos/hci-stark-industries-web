@@ -1,64 +1,5 @@
 let BASE_URL = "/img/devices/";
 
-export default {
-  ACTIONS: {
-    ON: 1,
-    OFF: 2,
-    OPEN: 3,
-    CLOSE: 4,
-    LOCK: 5,
-    UNLOCK: 6,
-    INVARIANT: 7
-  },
-
-  getImages(deviceId, action) {
-    console.log("Inside Imge Getter");
-    console.log(`deviceId: ${deviceId}`);
-    console.log(`action: ${action}`);
-    console.log("Colecction of items:");
-    console.log(IMAGES);
-    console.log("ItemFound");
-    console.log(
-      IMAGES.some(element => {
-        return element.deviceId === deviceId;
-      })
-    );
-
-    if (
-      !IMAGES.some(element => {
-        return element.deviceId === deviceId;
-      })
-    )
-      return new Error("Invalid Argument: deviceId is not valid");
-
-    console.log("DeviceID is valid");
-
-    let element = IMAGES.find(element => {
-      return element.deviceId === deviceId;
-    });
-
-    console.log("Element:");
-    console.log(element);
-
-    if (
-      !element.images.some(el => {
-        return el.action === action;
-      })
-    )
-      return new Error("Invalid Argument: action is not valid");
-
-    console.log("Action is valid");
-
-    let retURL =
-      BASE_URL +
-      element.images.find(img => {
-        return img.action === action;
-      }).path;
-    console.log(retURL);
-    return retURL;
-  }
-};
-
 const ACTIONS = {
   ON: 1,
   OFF: 2,
@@ -69,60 +10,118 @@ const ACTIONS = {
   INVARIANT: 7
 };
 
-const IMAGES = [
-  {
-    deviceName: "AC",
-    deviceId: "li6cbv5sdlatti0j",
-    images: [
-      { action: ACTIONS.ON, path: "air-conditioner.svg" },
-      { action: ACTIONS.OFF, path: ".svg" }
-    ]
+const IMAGES = {
+  li6cbv5sdlatti0j: {
+    [ACTIONS.ON]: "air-conditioner.svg",
+    [ACTIONS.OFF]: ".svg"
   },
-  {
-    deviceName: "Curtains",
-    deviceId: "eu0v2xgprrhhg41g",
-    images: [
-      { action: ACTIONS.OPEN, path: "CurtainOpen.svg" },
-      { action: ACTIONS.CLOSE, path: "CurtainClosed.svg" }
-    ]
+  eu0v2xgprrhhg41g: {
+    [ACTIONS.OPEN]: "CurtainOpen.svg",
+    [ACTIONS.CLOSE]: "CurtainClosed.svg"
   },
-  {
-    deviceName: "Fridge",
-    deviceId: "rnizejqr2di0okho",
-    images: [{ action: ACTIONS.INVARIANT, path: ".svg" }]
+  rnizejqr2di0okho: {
+    [ACTIONS.INVARIANT]: ".svg"
   },
-  {
-    deviceName: "Door",
-    deviceId: "lsf78ly0eqrjbz91",
-    images: [
-      { action: ACTIONS.OPEN, path: "OpenDoor.svg" },
-      { action: ACTIONS.CLOSE, path: "ClosedDoor.svg" },
-      { action: ACTIONS.LOCK, path: "DoorLock.svg" },
-      { action: ACTIONS.UNLOCK, path: "DoorUnlock.svg" }
-    ]
+  lsf78ly0eqrjbz91: {
+    [ACTIONS.OPEN]: "OpenDoor.svg",
+    [ACTIONS.CLOSE]: "ClosedDoor.svg",
+    [ACTIONS.LOCK]: "DoorLock.svg",
+    [ACTIONS.UNLOCK]: "DoorUnlock.svg"
   },
-  {
-    deviceName: "Lamp",
-    deviceId: "go46xmbqeomjrsjr",
-    images: [
-      { action: ACTIONS.ON, path: ".svg" },
-      { action: ACTIONS.OFF, path: ".svg" }
-    ]
+  go46xmbqeomjrsjr: {
+    [ACTIONS.ON]: ".svg",
+    [ACTIONS.OFF]: ".svg"
   },
-  {
-    deviceName: "Oven",
-    deviceId: "im77xxyulpegfmv8",
-    images: [
-      { action: ACTIONS.ON, path: ".svg" },
-      { action: ACTIONS.OFF, path: ".svg" }
-    ]
+  im77xxyulpegfmv8: {
+    [ACTIONS.ON]: ".svg",
+    [ACTIONS.OFF]: ".svg"
   },
-  {
-    deviceName: "Speaker",
-    deviceId: "c89b94e8581855bc",
-    images: [
-      { action: ACTIONS.ON, path: ".svg" },
-      { action: ACTIONS.OFF, path: ".svg" }
-    ]
+  c89b94e8581855bc: {
+    [ACTIONS.ON]: ".svg",
+    [ACTIONS.OFF]: ".svg"
+  },
+};
+
+function _getImage(deviceId, action) {
+  return BASE_URL + IMAGES[deviceId][action];
+}
+
+export default {
+  ACTIONS: ACTIONS,
+
+  getImage(device) {
+    switch (device.deviceId) {
+      case "rnizejqr2di0okho": // FRIDGE
+        return ImageRetriever.getImages(
+          device.deviceId,
+          ImageRetriever.ACTIONS.INVARIANT
+        );
+      case "c89b94e8581855bc": // SPEAKER
+        if (device.state.status === "playing")
+          return ImageRetriever.getImages(
+            device.deviceId,
+            ImageRetriever.ACTIONS.ON
+          );
+        else
+          return ImageRetriever.getImages(
+            device.deviceId,
+            ImageRetriever.ACTIONS.OFF
+          );
+      case "eu0v2xgprrhhg41g": // CURTAINS
+        if (device.status === "opened" || device.status === "opening")
+          return ImageRetriever.getImages(
+            device.deviceId,
+            ImageRetriever.ACTIONS.OPEN
+          );
+        else
+          return ImageRetriever.getImages(
+            device.deviceId,
+            ImageRetriever.ACTIONS.CLOSE
+          );
+      case "go46xmbqeomjrsjr": // LAMP
+        if (device.state.status === "off")
+          return ImageRetriever.getImages(
+            device.deviceId,
+            ImageRetriever.ACTIONS.OFF
+          );
+        else
+          return ImageRetriever.getImages(
+            device.deviceId,
+            ImageRetriever.ACTIONS.ON
+          );
+      case "im77xxyulpegfmv8": //Oven
+        if (device.state.status === "off")
+          return ImageRetriever.getImages(
+            device.deviceId,
+            ImageRetriever.ACTIONS.OFF
+          );
+        else
+          return ImageRetriever.getImages(
+            device.deviceId,
+            ImageRetriever.ACTIONS.ON
+          );
+      case "li6cbv5sdlatti0j": //AC
+        if (device.state.status === "off")
+          return ImageRetriever.getImages(
+            device.deviceId,
+            ImageRetriever.ACTIONS.OFF
+          );
+        else
+          return ImageRetriever.getImages(
+            device.deviceId,
+            ImageRetriever.ACTIONS.ON
+          );
+      case "lsf78ly0eqrjbz91": // DOOR
+        if (device.state.lock === "locked")
+          return ImageRetriever.getImages(
+            device.deviceId,
+            ImageRetriever.ACTIONS.LOCK
+          );
+        else
+          return ImageRetriever.getImages(
+            device.deviceId,
+            ImageRetriever.ACTIONS.UNLOCK
+          );
+    }
   }
-];
+};

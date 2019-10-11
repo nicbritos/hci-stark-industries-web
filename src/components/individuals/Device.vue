@@ -1,18 +1,18 @@
 <template>
   <v-container>
-    <v-dialog v-model="menu" persistent max-width="600px">
+    <v-dialog v-model="menu" max-width="600px">
       <DeviceSelector
         :device="device"
+        :show="menu"
         v-on:CloseMenu="closeMenu()"
       ></DeviceSelector>
     </v-dialog>
 
-    <v-card hover style="cursor: default" width="200">
+    <v-card dark hover style="cursor: default" width="200">
       <v-card-text @click="onClick" v-ripple style="cursor: pointer">
-        <div class="text--secondary">
+        <div class="white--text">
           {{
-            device.name +
-              (room && device.room ? " from " + device.room.name : "")
+            device.name
           }}
         </div>
         <v-container fluid>
@@ -20,6 +20,10 @@
             <v-img max-height="100" max-width="100" :src="image"></v-img>
           </v-row>
         </v-container>
+        <div class="white--text">
+          {{(room && device.room ? device.room.name : "")
+          }}
+        </div>
       </v-card-text>
       <v-card-actions v-if="selectable || editable">
         <v-checkbox

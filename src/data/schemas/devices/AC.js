@@ -57,7 +57,7 @@ export default class AC extends CommonDeviceSchema {
   }
 
   constructor(id, name, meta, room) {
-    super(id, name, meta, DeviceIds.byType.AC, room);
+    super(id, name, meta, DeviceIds.byType["Air Conditioner"], room);
 
     this.isOn = false;
     this.mode = AC.supportedModes()[0];
