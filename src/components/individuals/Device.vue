@@ -5,7 +5,7 @@
         :device="device"
         :show="menu"
         :mode="mode"
-        @close="closeMenu"
+        @CloseMenu="closeMenu"
       ></DeviceSelector>
     </v-dialog>
 

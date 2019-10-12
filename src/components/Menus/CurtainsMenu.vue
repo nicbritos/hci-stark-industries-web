@@ -132,6 +132,7 @@ export default {
       console.log("Sending Close Event from Curtains");
       this.$emit("CloseMenu", {
         confirmed: confirm,
+        deviceId: this.device.deviceId,
         name: this.device.name,
         id: this.device.id,
         customState: {

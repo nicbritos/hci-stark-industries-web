@@ -255,7 +255,7 @@
                     v-blur
                     color="primary"
                     @click="data.stepper++"
-                    :disabled="data.error || data.selectedDevices.length === 0"
+                    :disabled="data.error || selectedDevices.length === 0"
                     >Continue</v-btn
                   >
                 </v-col>
@@ -277,7 +277,7 @@
         >
         <v-btn
           :disabled="
-            data.stepper < 3 || data.error || data.selectedDevices.length === 0
+            data.stepper < 3 || data.error || selectedDevices.length === 0
           "
           color="blue darken-1"
           text
@@ -297,7 +297,7 @@ import DeviceContainer from "@/components/containers/DeviceContainer";
 import Device from "@/components/individuals/Device";
 import CommonDeviceSchema from "../data/schemas/devices/CommonDeviceSchema";
 import DeviceSelector from "../components/containers/DeviceSelector";
-
+import RoutineHelper from "../data/RoutineHelper";
 export default {
   name: "NewRoutine",
   components: { OrderedBoxContainer, DeviceContainer, Device,DeviceSelector },
@@ -381,12 +381,16 @@ export default {
       console.log("CONFIGURE DEVICES CLOSE");
       console.log(result);
       if (result.confirmed) { // result
+        console.log("Device added");
         this.selectedDevices.push(this.selectedDevice);
         this.closeDialog(this.dialogs.devices, "configure");
         this.closeDialog(this.dialogs.devices, "add");
       } else {
+        console.log("Device not added");
         this.closeDialog(this.dialogs.devices, "configure");
       }
+      console.log("Devices Selected: " + this.selectedDevices.length);
+      console.log("Errors: " + this.data.error)
     },
 
     openDialog(item, type) {
@@ -457,14 +461,21 @@ export default {
       this.$emit("cancel");
     },
     onSave() {
-      let newDevice = {
-        region: this.region != null ? this.region : this.data.selectedRegion,
-        room: this.room != null ? this.room : this.data.selectedRoom,
-        device: this.data.device,
-        name: this.data.name
-      };
+
+      let actions = [];
+
+      for (var dev in this.selectedDevices){
+        actions.push(RoutineHelper.GetActionsForDevice(dev));
+      }
+
       this.data.loading = true;
-      this.$emit("save", newDevice);
+      this.$emit("save",{
+        name: this.data.name,
+        meta:{
+          favourite: false
+        },
+        actions: actions
+      });
     }
   }
 };
