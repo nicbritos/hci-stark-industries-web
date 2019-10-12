@@ -9,29 +9,15 @@ export default {
     },
 
      GetImages(deviceId,action){
-         console.log("Inside Imge Getter");
-         console.log(`deviceId: ${deviceId}`);
-         console.log(`action: ${action}`);
-         console.log("Colecction of items:");
-         console.log(IMAGES);
-         console.log("ItemFound");
-         console.log(IMAGES.some(element =>{return element.deviceId === deviceId;}));
+
 
         if(!IMAGES.some(element =>{return element.deviceId === deviceId;}) )
             return new Error("Invalid Argument: deviceId is not valid");
 
-         console.log("DeviceID is valid");
-
-
         let element = IMAGES.find(element =>{return element.deviceId === deviceId;});
-
-         console.log("Element:")
-         console.log(element);
 
         if( !element.images.some(el => {return el.action === action;}))
             return new Error("Invalid Argument: action is not valid");
-
-         console.log("Action is valid");
 
          let retURL = BASE_URL + element.images.find(img=> {return img.action === action;}).path;
          console.log(retURL);
