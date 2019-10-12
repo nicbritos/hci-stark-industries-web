@@ -4,79 +4,8 @@ import user from "./modules/user";
 
 Vue.use(Vuex);
 
-let deviceTypes = {
-  light: {
-    image: "/img/devices/lightbulb.svg"
-  },
-  ac: {
-    image: "/img/devices/air-conditioner-on.svg"
-  }
-};
 
-let regions = [],
-  rooms = [],
-  devices = [];
 
-// let plantaBaja = {
-//   id: "pbaja",
-//   name: "First Floor",
-//   rooms: []
-// };
-//
-// let primerPiso = {
-//   id: "primerpiso",
-//   name: "Second Floor",
-//   rooms: []
-// };
-// regions.push(plantaBaja);
-// regions.push(primerPiso);
-//
-// let comedor = {
-//   id: "cuarto1",
-//   name: "Comedor",
-//   devices: []
-// };
-// rooms.push(comedor);
-// plantaBaja.rooms.push(comedor);
-//
-// let dormitorio = {
-//   id: "dormitorio1",
-//   name: "Dormitorio",
-//   devices: []
-// };
-// rooms.push(comedor);
-// primerPiso.rooms.push(dormitorio);
-
-let routines = [
-  {
-    id: "1",
-    name: "Llegando a casa",
-    description: "Prende el AC a 24C frio del comedor",
-    devices: [devices[1]],
-    on: true,
-    favourited: true
-  },
-  {
-    id: "2",
-    name: "Saliendo de casa",
-    description: "Apaga el AC y las luces del comedor",
-    devices: [devices[0], devices[1], devices[2]],
-    on: false,
-    favourited: true
-  },
-  {
-    id: "3",
-    name: "House Party",
-    description: "Prende todas las luces de la casa",
-    devices: [devices[1], devices[2]],
-    on: false,
-    favourited: false
-  }
-];
-
-let favouriteRoutines = [routines[0], routines[1]];
-
-let favouriteDevices = [devices[0], devices[1]];
 
 export default new Vuex.Store({
   modules: {
@@ -87,16 +16,6 @@ export default new Vuex.Store({
     loading: true,
     windowWidth: 0,
     ratingVisibility: false,
-    devices: {
-      items: devices,
-      favourites: favouriteDevices
-    },
-    routines: {
-      items: routines,
-      favourites: favouriteRoutines
-    },
-    rooms: rooms,
-    regions: regions,
     theme: "light"
   },
   // Store mutations in order to not modify the state directly.

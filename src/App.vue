@@ -14,7 +14,7 @@
     >
       <v-list class="list-title">
         <v-list-item>
-          Stark
+          Stark Industries
         </v-list-item>
       </v-list>
 
@@ -194,28 +194,18 @@ export default {
       { icon: "update", title: "Routines", to: "/routines" }
     ],
     items2: [
-      { icon: "group", title: "Users", to: "/users" },
-      // { icon: "exit_to_app", title: "Ingresar", to: "/login" },
-      // { icon: "person_add", title: "Registrarme", to: "/register" },
       { icon: "help", title: "About", to: "/about" }
     ],
-    expandableItems: [
-      {
-        icon: "devices",
-        title: "Devices",
-        expanded: false,
-        items: [
-          { icon: "apps", title: "All Devices", to: "/regions" },
-          {
-            icon: "this.$vuetify.icons.lightbulb",
-            title: "Lights",
-            to: "/regions/firstFloor"
-          },
-          { title: "AC", to: "/regions/secondFloor" },
-          { icon: "add", title: "New Device", to: "/regions/new" }
-        ]
-      }
-    ],
+    // expandableItems: [
+    //   {
+    //     icon: "devices",
+    //     title: "Devices",
+    //     expanded: false,
+    //     items: [
+    //       { icon: "add", title: "New Device", to: "/regions/new" }
+    //     ]
+    //   }
+    // ],
     title: "Stark Industries"
   }),
   computed: {

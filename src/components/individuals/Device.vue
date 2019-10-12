@@ -9,7 +9,7 @@
       ></DeviceSelector>
     </v-dialog>
 
-    <v-card dark hover style="cursor: default" height="230" width="200">
+    <v-card dark hover style="cursor: default" height="250" width="200">
       <v-card-text @click="onClick" v-ripple style="cursor: pointer">
         <div class="white--text">
           {{

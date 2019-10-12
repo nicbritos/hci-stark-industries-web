@@ -1,4 +1,15 @@
 <template>
+  <v-container>
+    <v-snackbar v-model="openSnackbar" :timeout="5000">
+      The routine {{this.routine.name}} is beign excecuted
+      <v-btn
+              color="blue"
+              text
+              @click="openSnackbar = false"
+      >
+        Dismiss
+      </v-btn>
+    </v-snackbar>
   <v-card hover style="cursor: default" width="350">
     <v-card-text v-ripple style="cursor: pointer">
       <p class="display-1 text--primary">
@@ -35,6 +46,7 @@
       </v-btn>
     </v-card-actions>
   </v-card>
+  </v-container>
 </template>
 
 <script>
@@ -47,10 +59,15 @@ export default {
       required: true
     }
   },
+  data: ()=>({
+    openSnackbar:false,
+  }),
   methods: {
     async Execute() {
       console.log("Executing Routine: " + this.routine.name);
+      this.openSnackbar = true;
       await apiWrapper.routines.execute(this.routine.id);
+
     },
     async UpdateFavoriteState() {
       let data = {
@@ -75,9 +92,3 @@ export default {
 </script>
 
 <style scoped></style>
-
-1. Arreglar Speaker.
-2. Bloquear cambios que no se van a guardar (lamp)
-3. Revisar todos los menues y hacer que este todo bien alineado
-4. Ver por que la miniatura de 'Cortina' en los cuartos es disitnta de los demas
-4. Actualizar todos los dispositivos de un cuarto o de Home luego de que un dispositivo es modificado
