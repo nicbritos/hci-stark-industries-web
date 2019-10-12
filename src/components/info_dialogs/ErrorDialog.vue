@@ -1,11 +1,9 @@
 <template>
+
   <v-dialog v-model="errorDialog" persistent max-width="400px">
-    <template v-slot:activator="{ on }">
-      <v-btn color="primary" dark >Error</v-btn>
-    </template>
     <v-card dark raised>
       <v-card-title>
-        <span class="headline">{{ name }}</span>
+        <span class="headline" >Error</span>
       </v-card-title>
       <v-card-text>
         <v-row align="center">
@@ -29,11 +27,33 @@
 <script>
 export default {
   name: "ErrorDialog",
-  props: ["name", "message"],
+  props:{
+    message:{
+      type: String,
+      required: true
+    },
+    open:{
+      type: Boolean,
+      required: true
+    }
+  },
   data() {
     return {
       errorDialog: false
     };
+  },
+  watch:{
+    open:function (val) {
+      console.log("CAMBIANDO");
+      this.errorDialog = val;
+
+    },
+    errorDialog: function (val) {
+      if(!val){
+        console.log("Emiting Event:")
+        this.$emit("CloseErrorDialog");
+      }
+    }
   }
 };
 </script>

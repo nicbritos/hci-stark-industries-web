@@ -9,7 +9,7 @@ let deviceTypes = {
     image: "/img/devices/lightbulb.svg"
   },
   ac: {
-    image: "/img/devices/air-conditioner.svg"
+    image: "/img/devices/air-conditioner-on.svg"
   }
 };
 

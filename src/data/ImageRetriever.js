@@ -35,8 +35,8 @@ const IMAGES=[
     {
         deviceName:"AC", deviceId:"li6cbv5sdlatti0j",
         images:[
-            {action:ACTIONS.ON, path:"air-conditioner.svg"},
-            {action:ACTIONS.OFF, path:".svg"},
+            {action:ACTIONS.ON, path:"air-conditioner-on.svg"},
+            {action:ACTIONS.OFF, path:"air-conditioner-off.svg"},
         ]
     },
     {
@@ -49,7 +49,7 @@ const IMAGES=[
     {
         deviceName:"Fridge", deviceId:"rnizejqr2di0okho",
         images:[
-            {action:ACTIONS.INVARIANT, path:".svg"},
+            {action:ACTIONS.INVARIANT, path:"fridge.svg"},
         ]
     },
     {
@@ -64,22 +64,22 @@ const IMAGES=[
     {
         deviceName:"Lamp", deviceId:"go46xmbqeomjrsjr",
         images:[
-            {action:ACTIONS.ON, path:".svg"},
-            {action:ACTIONS.OFF, path:".svg"},
+            {action:ACTIONS.ON, path:"lightbulb-on.svg"},
+            {action:ACTIONS.OFF, path:"lightbulb-off.svg"},
         ]
     },
     {
         deviceName:"Oven", deviceId:"im77xxyulpegfmv8",
         images:[
-            {action:ACTIONS.ON, path:".svg"},
-            {action:ACTIONS.OFF, path:".svg"},
+            {action:ACTIONS.ON, path:"oven-on.svg"},
+            {action:ACTIONS.OFF, path:"oven-off.svg"},
         ]
     },
     {
         deviceName:"Speaker", deviceId:"c89b94e8581855bc",
         images:[
-            {action:ACTIONS.ON, path:".svg"},
-            {action:ACTIONS.OFF, path:".svg"},
+            {action:ACTIONS.ON, path:"speaker-on.svg"},
+            {action:ACTIONS.OFF, path:"speaker-off.svg"},
         ]
     },
 ]

@@ -154,8 +154,8 @@
       </v-menu>
     </v-app-bar>
 
-    <v-content >
-
+    <v-content>
+      <ErrorDialog :message="errorModel.message" :open="errorModel.openDialog" v-on:CloseErrorDialog="CloseErrorDialog" />
       <router-view />
     </v-content>
   </v-app>
@@ -164,16 +164,24 @@
 <script>
   import Loader from "@/components/Loader";
 import { mapGetters } from "vuex";
+import apiWrapper from "./data/apiWrapper";
+import ErrorDialog from "./components/info_dialogs/ErrorDialog";
 
 
 export default {
   name: "App",
   components: {
-    Loader,
+    ErrorDialog,
+    Loader
   },
+
   data: () => ({
     fixed: false,
     searchText: "",
+    errorModel:{
+      message:"",
+      openDialog:false
+    },
     noBackButtonRoutes: ["regions", "home", "login", "register", "about"],
     items: [
       { icon: "home", title: "Home", to: "/" },
@@ -250,7 +258,6 @@ export default {
       }
     );
   },
-  methods: {
     logOut() {
       // database.signOut().then(() => {
       //   this.$router.push("/");
@@ -293,9 +300,35 @@ export default {
       }
     },
   },
-  watch:{
 
+
+  errorCaptured(err, vm, info){
+    console.log("HANDLING ERROR");
+    console.log(err);
+    console.log(vm);
+    console.log(info);
+
+    if(err === apiWrapper.ERRORS.NETWORK) {
+      console.log("NETWORK ERROR");
+
+      this.OpenErrorDialog("PEDAZO DE MIERDA");
+
+    }
+    return false;
+  },
+  methods:{
+    OpenErrorDialog(msg){
+      this.errorModel.openDialog = true;
+      this.errorModel.message = msg;
+      console.log("Opening dialog: " + this.errorModel.openDialog);
+    },
+    CloseErrorDialog(){
+      this.errorModel.openDialog = false;
+      this.errorModel.message = "";
+      console.log("Closing Dialog")
+    }
   }
+
 };
 </script>
 
