@@ -314,10 +314,6 @@ export default {
       }
     },
     async setUp() {
-      let APISpeaker = new Speakers(this.deviceId, this.name);
-      await APISpeaker.refreshState();
-      console.log(APISpeaker);
-
       this.PreviousModel = APISpeaker;
       this.LoadModel(APISpeaker);
       console.log(this.SpeakerModel);
@@ -463,6 +459,9 @@ export default {
         window.clearInterval(this.interval);
       }
     }
+  },
+  mounted() {
+    this.resetData()
   }
 };
 </script>
