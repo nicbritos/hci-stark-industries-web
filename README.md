@@ -52,30 +52,30 @@
   - [x] Crear cuarto
   - [x] Editar cuarto
   - [x] Eliminar cuarto
-- [ ] Rutinas
+- [x] Rutinas
   - [x] Ver Rutinas
   - [x] Crear Rutinas
   - [x] Ejecutar Rutinas
   - [x] Marcar/Desmarcar como favoritas a las rutinas
-    -[ ] Reflejar cambios en las listas de rutinas favoritas  
+    -[x] Reflejar cambios en las listas de rutinas favoritas  
   - [ ] Deshacer cambios //Me Parece al pedo
 - [ ] Dispositivos
   - [x] Crear Dispositivos
   - [x] Mostar dispositivos favoritos en home
   - [x] Mostrar rutinas favoritas en home
   - [ ] Editar nombre // No es obligatorio
-  - [ ] Menu de dispositivo
-  - [ ] Deshacer cambios
+  - [ ] Menu de dispositivo             
+  - [ ] Deshacer cambios                // NO
   - [x] Confirmacion de eliminacion
-  - [ ] Vista de todos los dispositivos
-  - [ ] Vista de dispositivos por categoria
-- [ ] Implementar la barra de busqueda
+  - [ ] Vista de todos los dispositivos // NO
+  - [ ] Vista de dispositivos por categoria //NO
+- [x] Implementar la barra de busqueda
 - [ ] Testing
 - [x] HACERLO REACTIVE
     -[x] Cambiar el ancho minimo de ACMenu. Se pisan los circulos
 - [ ] INFORME
 - [ ] Race conditions
-- [ ] Error messages
+- [x] Error messages
 - [ ] Atomic operations (such as delete)
 - [ ] Testing
 

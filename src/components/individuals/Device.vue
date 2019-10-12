@@ -9,7 +9,7 @@
       ></DeviceSelector>
     </v-dialog>
 
-    <v-card dark hover style="cursor: default" width="200">
+    <v-card dark hover style="cursor: default" height="230" width="200">
       <v-card-text @click="onClick" v-ripple style="cursor: pointer">
         <div class="white--text">
           {{
@@ -18,7 +18,7 @@
         </div>
         <v-container fluid>
           <v-row align="start" justify="center">
-            <v-img max-height="100" max-width="100" :src="image"></v-img>
+            <v-img max-height="100" max-width="100"  contain :src="image"></v-img>
           </v-row>
         </v-container>
         <div class="white--text">
