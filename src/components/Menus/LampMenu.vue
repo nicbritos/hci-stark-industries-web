@@ -78,11 +78,7 @@ export default {
     }
   },
   data: () => ({
-    color: {
-      r: 255,
-      g: 255,
-      b: 255
-    },
+    color: "",
     deleteDialog: false,
     isOn: false,
     brightness: 0
@@ -93,9 +89,7 @@ export default {
       return (
               this.device.isOn !== this.isOn ||
               this.device.brightness !== this.brightness ||
-              this.device.colors.red !== this.color.r ||
-              this.device.colors.green !== this.color.g ||
-              this.device.colors.blue !== this.color.b
+              this.device.color !== this.color.substring(1,7)
       );
     }
   },
@@ -117,11 +111,11 @@ export default {
       }
     },
     async resetData() {
+      var hash = "#";
+      var trasparency = "FF";
       if (this.device != null) {
         await this.device.refreshState();
-        this.color.r = this.device.colors.red;
-        this.color.g = this.device.colors.green;
-        this.color.b = this.device.colors.blue;
+        this.color = hash.concat(this.device.color).concat(trasparency);
         this.isOn = this.device.isOn;
         this.brightness = this.device.brightness;
       }
@@ -134,7 +128,7 @@ export default {
           this.isOn ? await this.device.turnOn() : await this.device.turnOff();
         }
         if (this.isOn) {
-          await this.device.setColor(this.color.r, this.color.g, this.color.b);
+          await this.device.setColor(this.color.substring(1,7));
           await this.device.setBrightness(this.brightness);
         }
       }
@@ -151,11 +145,7 @@ export default {
         deviceId: this.device.deviceId,
         id: this.device.id,
         customState: {
-          color:{
-            r: this.color.r,
-            g: this.color.g,
-            b: this.color.b,
-          },
+          color: this.color.substring(1,7),
           isOn: this.isOn,
           brightness: this.brightness
         }
