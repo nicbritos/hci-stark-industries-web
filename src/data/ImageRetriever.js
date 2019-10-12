@@ -66,7 +66,6 @@ export default {
 };
 
 const ACTIONS = {
-  // NEGRADA
   ON: 1,
   OFF: 2,
   OPEN: 3,
@@ -76,69 +75,6 @@ const ACTIONS = {
   INVARIANT: 7
 };
 
-const IMAGES = [
-  {
-    deviceName: "AC",
-    deviceId: "li6cbv5sdlatti0j",
-    images: [
-      { action: ACTIONS.ON, path: "air-conditioner.svg" },
-      { action: ACTIONS.OFF, path: ".svg" }
-    ]
-  },
-  {
-    deviceName: "Curtains",
-    deviceId: "eu0v2xgprrhhg41g",
-    images: [
-      { action: ACTIONS.OPEN, path: "CurtainOpen.svg" },
-      { action: ACTIONS.CLOSE, path: "CurtainClosed.svg" }
-    ]
-  },
-  {
-    deviceName: "Fridge",
-    deviceId: "rnizejqr2di0okho",
-    images: [{ action: ACTIONS.INVARIANT, path: ".svg" }]
-  },
-  {
-    deviceName: "Door",
-    deviceId: "lsf78ly0eqrjbz91",
-    images: [
-      { action: ACTIONS.OPEN, path: "OpenDoor.svg" },
-      { action: ACTIONS.CLOSE, path: "ClosedDoor.svg" },
-      { action: ACTIONS.LOCK, path: "DoorLock.svg" },
-      { action: ACTIONS.UNLOCK, path: "DoorUnlock.svg" }
-    ]
-  },
-  {
-    deviceName: "Lamp",
-    deviceId: "go46xmbqeomjrsjr",
-    images: [
-      { action: ACTIONS.ON, path: ".svg" },
-      { action: ACTIONS.OFF, path: ".svg" }
-    ]
-  },
-  {
-    deviceName: "Oven",
-    deviceId: "im77xxyulpegfmv8",
-    images: [
-      { action: ACTIONS.ON, path: ".svg" },
-      { action: ACTIONS.OFF, path: ".svg" }
-    ]
-  },
-  {
-    deviceName: "Speaker",
-    deviceId: "c89b94e8581855bc",
-    images: [
-      { action: ACTIONS.ON, path: ".svg" },
-      { action: ACTIONS.OFF, path: ".svg" }
-    ]
-  }
-];
-
-}
-
-const ACTIONS={ // NEGRADA
-    ON:1,OFF:2,OPEN:3,CLOSE:4,LOCK:5,UNLOCK:6,INVARIANT:7
-}
 
 const IMAGES=[
     {

@@ -171,7 +171,7 @@ export default {
                   ImageRetriever.ACTIONS.INVARIANT
           );
         case "c89b94e8581855bc": // SPEAKER
-          if (this.device.state.status === "playing")
+          if (this.device.status === "playing")
             return ImageRetriever.GetImages(
                     this.device.deviceId,
                     ImageRetriever.ACTIONS.ON
@@ -182,10 +182,7 @@ export default {
                     ImageRetriever.ACTIONS.OFF
             );
         case "eu0v2xgprrhhg41g": // CURTAINS
-          if (
-                  this.device.state.status === "opened" ||
-                  this.device.state.status === "opening"
-          )
+          if (this.device.isOpen)
             return ImageRetriever.GetImages(
                     this.device.deviceId,
                     ImageRetriever.ACTIONS.OPEN
@@ -196,40 +193,40 @@ export default {
                     ImageRetriever.ACTIONS.CLOSE
             );
         case "go46xmbqeomjrsjr": // LAMP
-          if (this.device.state.status === "off")
+          if (this.device.isOn)
             return ImageRetriever.GetImages(
                     this.device.deviceId,
-                    ImageRetriever.ACTIONS.OFF
+                    ImageRetriever.ACTIONS.ON
             );
           else
             return ImageRetriever.GetImages(
                     this.device.deviceId,
-                    ImageRetriever.ACTIONS.ON
+                    ImageRetriever.ACTIONS.OFF
             );
         case "im77xxyulpegfmv8": //Oven
-          if (this.device.state.status === "off")
+          if (this.device.isOn)
             return ImageRetriever.GetImages(
                     this.device.deviceId,
-                    ImageRetriever.ACTIONS.OFF
+                    ImageRetriever.ACTIONS.ON
             );
           else
             return ImageRetriever.GetImages(
                     this.device.deviceId,
-                    ImageRetriever.ACTIONS.ON
+                    ImageRetriever.ACTIONS.OFF
             );
         case "li6cbv5sdlatti0j": //AC
-          if (this.device.state.status === "off")
-            return ImageRetriever.GetImages(
-                    this.device.deviceId,
-                    ImageRetriever.ACTIONS.OFF
-            );
-          else
+          if (this.device.isOn)
             return ImageRetriever.GetImages(
                     this.device.deviceId,
                     ImageRetriever.ACTIONS.ON
             );
+          else
+            return ImageRetriever.GetImages(
+                    this.device.deviceId,
+                    ImageRetriever.ACTIONS.OFF
+            );
         case "lsf78ly0eqrjbz91": // DOOR
-          if (this.device.isLocked === "locked")
+          if (this.device.isLocked)
             return ImageRetriever.GetImages(
                     this.device.deviceId,
                     ImageRetriever.ACTIONS.LOCK
