@@ -258,17 +258,8 @@ export default {
       }
     );
   },
-    logOut() {
-      // database.signOut().then(() => {
-      //   this.$router.push("/");
-      //   location.reload();
-      // });
-    },
-    ev(event){
-      if(event.keyCode === 13){
-        this.applySearch();
-      }
-    },
+
+
     applySearch(){
       this.$router.push({
         name:"Search",
@@ -281,25 +272,8 @@ export default {
     showLoader() {
       this.$store.state.loading = true;
     },
-    upOneLevel() {
-      if (
-        this.$router.currentRoute.path.match("/regions/") &&
-        this.$router.currentRoute.path.match("/room/")
-      ) {
-        this.$router.push("/regions");
-      } else {
-        let path = this.$router.currentRoute.path.substring(
-          0,
-          this.$router.currentRoute.path.lastIndexOf(
-            "/",
-            this.$router.currentRoute.path.length - 2
-          )
-        );
-        if (path.length > 0) this.$router.push(path);
-        else this.$router.push("/");
-      }
-    },
-  },
+
+
 
 
   errorCaptured(err, vm, info){
@@ -317,6 +291,35 @@ export default {
     return false;
   },
   methods:{
+    upOneLevel() {
+      if (
+              this.$router.currentRoute.path.match("/regions/") &&
+              this.$router.currentRoute.path.match("/room/")
+      ) {
+        this.$router.push("/regions");
+      } else {
+        let path = this.$router.currentRoute.path.substring(
+                0,
+                this.$router.currentRoute.path.lastIndexOf(
+                        "/",
+                        this.$router.currentRoute.path.length - 2
+                )
+        );
+        if (path.length > 0) this.$router.push(path);
+        else this.$router.push("/");
+      }
+    },
+    logOut() {
+      // database.signOut().then(() => {
+      //   this.$router.push("/");
+      //   location.reload();
+      // });
+    },
+    ev(event){
+      if(event.keyCode === 13){
+        this.applySearch();
+      }
+    },
     OpenErrorDialog(msg){
       this.errorModel.openDialog = true;
       this.errorModel.message = msg;
