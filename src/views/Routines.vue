@@ -83,10 +83,9 @@ export default {
       if (item[type]) item[type] = false;
     },
     async reload(){
+      console.log("Loading routines");
         this.routines = await RoutineSchema.getAll();
-        this.favouriteRoutines = this.routines.filter(value => {
-      return value.isFavourite();
-    });
+        this.favouriteRoutines = this.routines.filter(el => {return el.isFavourite()})
     }
   },
   async mounted() {

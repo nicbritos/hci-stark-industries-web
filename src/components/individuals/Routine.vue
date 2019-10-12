@@ -27,7 +27,7 @@
         color="primary"
         @click="UpdateFavoriteState()"
       >
-        <v-icon large v-if="routine.meta.favourited">favorite</v-icon>
+        <v-icon large v-if="routine.meta.favourite">favorite</v-icon>
         <v-icon large v-else>favorite_outline</v-icon>
       </v-btn>
       <v-btn large icon v-blur @click="Execute()">
@@ -59,10 +59,11 @@ export default {
         meta: this.routine.meta
       };
 
-      data.meta.favourited = !data.meta.favourited;
-      this.routine.meta.favourited = data.meta.favourited;
+      data.meta.favourite = !data.meta.favourite;
+      this.routine.meta.favourite = data.meta.favourite;
 
       await apiWrapper.routines.update(this.routine.id, data);
+      console.log("Forcing to reload site");
       this.$emit("reload-site");
     }
   },

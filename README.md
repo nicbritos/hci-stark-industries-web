@@ -30,9 +30,9 @@
 ### No Funcionales
 - [ ] Utilizar HTML, CSS, JS, AJAX
 - [ ] Funcionar en al menos 2: Edge 40+, Firefox 60+, Chrome 64+
-- [ ] * Superar validacion W3C
-- [ ] * Respetar estrategias de separacion entre estructura y presentacion (?)
-- [ ] * Respetar estrategias de separacion entre la estructura y el comportamiento (?)
+- [ ]  Superar validacion W3C
+- [ ]  Respetar estrategias de separacion entre estructura y presentacion (?)
+- [ ]  Respetar estrategias de separacion entre la estructura y el comportamiento (?)
 
 
 
@@ -54,15 +54,16 @@
   - [x] Eliminar cuarto
 - [ ] Rutinas
   - [x] Ver Rutinas
-  - [ ] Crear Rutinas
+  - [x] Crear Rutinas
   - [x] Ejecutar Rutinas
   - [x] Marcar/Desmarcar como favoritas a las rutinas
-  - [ ] Deshacer cambios
+    -[ ] Reflejar cambios en las listas de rutinas favoritas  
+  - [ ] Deshacer cambios //Me Parece al pedo
 - [ ] Dispositivos
   - [x] Crear Dispositivos
   - [x] Mostar dispositivos favoritos en home
   - [x] Mostrar rutinas favoritas en home
-  - [ ] Editar nombre
+  - [ ] Editar nombre // No es obligatorio
   - [ ] Menu de dispositivo
   - [ ] Deshacer cambios
   - [x] Confirmacion de eliminacion
