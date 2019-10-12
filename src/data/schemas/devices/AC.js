@@ -114,7 +114,7 @@ export default class AC extends CommonDeviceSchema {
   }
 
   async setMode(value) {
-    if (!(value in AC.supportedModes())) return false;
+    if (!AC.supportedModes().includes(value)) return false;
     if (this.mode === value) return false;
 
     let result = await apiWrapper.devices.performAction(
@@ -128,7 +128,7 @@ export default class AC extends CommonDeviceSchema {
   }
 
   async setVerticalSwing(value) {
-    if (!(value in AC.supportedVerticalSwings())) return false;
+    if (!AC.supportedVerticalSwings().includes(value)) return false;
     if (this.swing.vertical === value) return false;
 
     let result = await apiWrapper.devices.performAction(
@@ -142,7 +142,7 @@ export default class AC extends CommonDeviceSchema {
   }
 
   async setHorizontalSwing(value) {
-    if (!(value in AC.supportedHorizontalSwings())) return false;
+    if (!AC.supportedHorizontalSwings().includes(value)) return false;
     if (this.swing.horizontal === value) return false;
 
     let result = await apiWrapper.devices.performAction(
@@ -156,7 +156,7 @@ export default class AC extends CommonDeviceSchema {
   }
 
   async setFanSpeed(value) {
-    if (!(value in AC.supportedFanSpeeds())) return false;
+    if (!AC.supportedFanSpeeds().includes(value)) return false;
     if (this.fanSpeed === value) return false;
 
     let result = await apiWrapper.devices.performAction(
