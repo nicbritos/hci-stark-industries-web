@@ -232,54 +232,61 @@ export default {
     },
     async stopMusic() {
         if(this.mode === 'edit') {
-          await this.device.stop();
-          await this.device.refreshState();
-          this.resetData();
+          let APISpeaker = new Speakers(this.deviceId, this.name);
+          await APISpeaker.stop();
+          await APISpeaker.refreshState();
+          this.LoadModel(APISpeaker);
 
           window.clearInterval(this.interval);
         }
     },
     async resumeMusic() {
       if(this.mode === 'edit') {
-        await this.device.resume();
-        await this.device.refreshState();
-        this.resetData();
+
+        let APISpeaker = new Speakers(this.deviceId, this.name);
+        await APISpeaker.resume();
+        await APISpeaker.refreshState();
+        this.LoadModel(APISpeaker);
         this.StartSongTimer();
       }
     },
     async pauseMusic() {
       if(this.mode === 'edit') {
 
-        await this.device.pause();
-        await this.device.refreshState();
+        let APISpeaker = new Speakers(this.deviceId, this.name);
+        await APISpeaker.pause();
+        await APISpeaker.refreshState();
 
-        this.resetData();
+        this.LoadModel(APISpeaker);
 
         window.clearInterval();
       }
     },
     async LoadGenre() {
       if(this.mode === 'edit') {
-        await this.device.selectGenre(this.SelectedDDL);
-        await this.device.play();
-        await this.device.refreshState();
-        this.resetData();
+        let APISpeaker = new Speakers(this.deviceId, this.name);
+        await APISpeaker.selectGenre(this.SelectedDDL);
+        await APISpeaker.play();
+        await APISpeaker.refreshState();
+        this.LoadModel(APISpeaker);
         this.StartSongTimer();
       }
     },
     async previusSong() {
       if(this.mode === 'edit') {
 
-        await this.device.previousSong();
-        await this.device.refreshState();
-        this.resetData();
+        let APISpeaker = new Speakers(this.deviceId, this.name);
+        await APISpeaker.previousSong();
+        await APISpeaker.refreshState();
+        this.LoadModel(APISpeaker);
       }
     },
     async nextSong() {
       if(this.mode === 'edit') {
-        await this.device.nextSong();
-        await this.device.refreshState();
-        this.resetData();
+        let APISpeaker = new Speakers(this.deviceId, this.name);
+        await APISpeaker.nextSong();
+        await APISpeaker.refreshState();
+        this.LoadModel(APISpeaker);
       }
     },
     incrementVolume() {
@@ -291,7 +298,8 @@ export default {
       this.SpeakerModel.volume = this.SelectedVolume;
 
       if(this.mode === 'edit') {
-        await this.device.setVolume(this.SpeakerModel.volume);
+        let APISpeaker = new Speakers(this.deviceId, this.name);
+        await APISpeaker.setVolume(this.SpeakerModel.volume);
       }
     },
     decrementVolume() {
@@ -300,8 +308,11 @@ export default {
       }
     },
     async setUp() {
-      await this.device.refreshState();
-      this.resetData();
+      let APISpeaker = new Speakers(this.deviceId, this.name);
+      await APISpeaker.refreshState();
+
+      this.PreviousModel = APISpeaker;
+      this.LoadModel(APISpeaker);
     },
     ConvertSongModel(APISong) {
       var song = {
@@ -329,25 +340,25 @@ export default {
 
       return song;
     },
-    resetData() {
+    LoadModel(model) {
 
-      this.SpeakerModel.genre = this.device.genre;
+      this.SpeakerModel.genre = model.genre;
 
-      this.SelectedDDL = this.device.genre;
+      this.SelectedDDL = model.genre;
 
-      this.SpeakerModel.volume = this.device.volume;
-      this.SelectedVolume = this.device.volume;
+      this.SpeakerModel.volume = model.volume;
+      this.SelectedVolume = model.volume;
 
-      switch (this.device.status) {
+      switch (model.status) {
         case "playing":
           this.SpeakerModel.isSongLoaded = true;
-          this.SpeakerModel.currentSong = this.ConvertSongModel(this.device.song);
+          this.SpeakerModel.currentSong = this.ConvertSongModel(model.song);
           this.SpeakerModel.currentSong.isPlaying = true;
 
           break;
         case "paused":
           this.SpeakerModel.isSongLoaded = true;
-          this.SpeakerModel.currentSong = this.ConvertSongModel(this.device.song);
+          this.SpeakerModel.currentSong = this.ConvertSongModel(model.song);
           this.SpeakerModel.currentSong.isPlaying = false;
           break;
         case "stopped":
@@ -402,9 +413,6 @@ export default {
         this.deleteDialog = false;
       }
     },
-    onDelete() {
-      this.$emit("delete");
-    }
   },
   watch: {
     SelectedVolume: function(val) {
@@ -421,9 +429,6 @@ export default {
         window.clearInterval(this.interval);
       }
     }
-  },
-  mounted() {
-    this.resetData()
   }
 };
 </script>

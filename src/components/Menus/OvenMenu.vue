@@ -166,8 +166,10 @@ export default {
     },
     async SaveAndExit() {
       this.$store.state.loading = true;
+      console.log("saliendo del menu, el mode es " + this.mode);
       if(this.mode === 'edit') {
         if (this.isOn) {
+          console.log("para el menu, el horno esta prendido.");
           await this.device.turnOn();
           await this.device.setTemperature(this.temperature);
           await this.device.setConvection(this.labelsConvection[this.convection]);

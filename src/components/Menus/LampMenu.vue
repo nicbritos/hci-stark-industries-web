@@ -29,6 +29,7 @@
               v-model="brightness"
               prepend-icon="lightbulb"
               append-icon="lightbulb"
+              :disabled="!isOn" 
             ></v-slider>
           </v-col>
         </v-row>
@@ -43,6 +44,7 @@
             v-model="color"
             mode="hex"
             hide-inputs
+            :disabled="!isOn" 
           ></v-color-picker>
         </v-row>
       </v-container>
@@ -150,6 +152,9 @@ export default {
           brightness: this.brightness
         }
       });
+    },
+    onDelete() {
+      this.$emit("delete");
     }
   },
   watch: {
