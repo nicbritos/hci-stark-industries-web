@@ -11,7 +11,7 @@
 			</v-toolbar>
 		</v-col>
 	</v-row>
-	<v-divider/>
+	
 	<v-expansion-panels  >
 		<div class="expansionContainer">
 			<v-expansion-panel >

@@ -261,15 +261,6 @@ export default {
   },
 
 
-    applySearch(){
-      this.$router.push({
-        name:"Search",
-        params:{
-          query: this.searchText
-        }
-      });
-
-    },
     showLoader() {
       this.$store.state.loading = true;
     },
@@ -282,13 +273,25 @@ export default {
 
     if(err === apiWrapper.ERRORS.NETWORK) {
       console.log("NETWORK ERROR");
-
-      this.OpenErrorDialog("PEDAZO DE MIERDA");
-
+      this.OpenErrorDialog("Hubo un error de conexion. Por favor recargue la pagina o repita la accion");
+    }
+    else if (err === apiWrapper.ERRORS.BAD_REQUEST){
+      console.log("BAD REQUEST");
+      this.OpenErrorDialog("Error de comunicacion con la API");
     }
     return false;
   },
   methods:{
+
+    applySearch(){
+      console.log("Going to Search");
+      this.$router.push({
+        name:"Search",
+        params:{
+          query: this.searchText
+        }
+      });
+    },
     upOneLevel() {
       if (
               this.$router.currentRoute.path.match("/regions/") &&
