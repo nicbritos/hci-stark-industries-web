@@ -428,9 +428,6 @@ export default {
         window.clearInterval(this.interval);
       }
     }
-  },
-  mounted() {
-    this.resetData()
   }
 };
 </script>
