@@ -150,6 +150,9 @@ export default {
           brightness: this.brightness
         }
       });
+    },
+    onDelete() {
+      this.$emit("delete");
     }
   },
   watch: {
