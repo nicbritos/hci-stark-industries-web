@@ -18,10 +18,10 @@
       </v-card-title>
       <v-card-text clas="text-center">
         <v-container>
-          <v-row>
+          <v-row align="center">
             <v-col>
               <v-row class=" mb-6 " justify="center" no-gutters>
-                <v-avatar color="green" size="50">
+                <v-avatar size="100">
                   <v-img :src="this.SecurityRepresentation.image" />
                 </v-avatar>
               </v-row>
