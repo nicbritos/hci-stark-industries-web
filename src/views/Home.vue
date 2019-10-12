@@ -66,16 +66,19 @@ export default {
       } else if (!this.devices.includes(item)) {
         this.devices.push(item);
       }
-    }
-  },
-  async mounted() {
-    this.devices = (await CommonDeviceSchema.getAll()).filter(device => {
+    },
+    async LoadModel(){
+        this.devices = (await CommonDeviceSchema.getAll()).filter(device => {
       return device.isFavourite();
     });
     console.log(this.devices);
     this.routines = (await RoutineSchema.getAll()).filter(routine => {
       return routine.isFavourite();
     });
+    }
+  },
+  async mounted() {
+    await this.LoadModel();
   }
 };
 </script>

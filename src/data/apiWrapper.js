@@ -190,6 +190,7 @@ async function requestQuery(url, method, data) {
   try {
     response = await fetch(url, init);
   } catch (error) {
+    console.log('NETWORK ERROR TRHOWN');
     throw ERRORS.NETWORK;
   }
   console.log(response)
