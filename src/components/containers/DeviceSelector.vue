@@ -1,62 +1,65 @@
 <template>
   <FridgeMenu
     v-if="device.deviceId === 'rnizejqr2di0okho'"
+    :mode="mode"
     :device="device"
     :show="show"
     @delete="ResendEvent('delete', $event)"
-    @CloseMenu="ResendEvent('close', $event)"
+    @CloseMenu="ResendEvent('CloseMenu', $event)"
   />
 
   <SpeakerMenu
     v-else-if="device.deviceId === 'c89b94e8581855bc'"
+    :mode="mode"
     :device="device"
-    :device-id="device.id"
-    :name="device.name"
-    :mode="device.mode"
     :show="show"
     @delete="ResendEvent('delete', $event)"
-    @CloseMenu="ResendEvent('close', $event)"
+    @CloseMenu="ResendEvent('CloseMenu', $event)"
   />
 
   <CurtainsMenu
     v-else-if="device.deviceId === 'eu0v2xgprrhhg41g'"
+    :mode="mode"
     :device="device"
     :show="show"
-    mode="edit"
     @delete="ResendEvent('delete', $event)"
-    @CloseMenu="ResendEvent('close', $event)"
+    @CloseMenu="ResendEvent('CloseMenu', $event)"
   />
 
   <LampMenu
     v-else-if="device.deviceId === 'go46xmbqeomjrsjr'"
+    :mode="mode"
     :device="device"
     :show="show"
     @delete="ResendEvent('delete', $event)"
-    @CloseMenu="ResendEvent('close', $event)"
+    @CloseMenu="ResendEvent('CloseMenu', $event)"
   />
 
   <OvenMenu
     v-else-if="device.deviceId === 'im77xxyulpegfmv8'"
+    :mode="mode"
     :device="device"
     :show="show"
     @delete="ResendEvent('delete', $event)"
-    @CloseMenu="ResendEvent('close', $event)"
+    @CloseMenu="ResendEvent('CloseMenu', $event)"
   />
 
   <ACMenu
     v-else-if="device.deviceId === 'li6cbv5sdlatti0j'"
+    :mode="mode"
     :device="device"
     :show="show"
     @delete="ResendEvent('delete', $event)"
-    @CloseMenu="ResendEvent('close', $event)"
+    @CloseMenu="ResendEvent('CloseMenu', $event)"
   />
 
   <DoorMenu
     v-else-if="device.deviceId === 'lsf78ly0eqrjbz91'"
+    :mode="mode"
     :device="device"
     :show="show"
     @delete="ResendEvent('delete', $event)"
-    @CloseMenu="ResendEvent('close', $event)"
+    @CloseMenu="ResendEvent('CloseMenu', $event)"
   />
 </template>
 
@@ -89,10 +92,25 @@ export default {
     show: {
       type: Boolean,
       required: true
+    },
+    mode: {
+      type: String,
+      required: false,
+      default: "edit"
     }
   },
+		watch: {
+          openMenu: function (val) {
+            console.log("opening Device Selector");
+            this.superOpen = val;
+            console.log("Selected device: " + this.device.name);
+            console.log(this.device);
+            console.log("STate: " + val);
+          }
+        },
   methods: {
     ResendEvent(name, event) {
+      console.log("In Device Selector. Propagating event: " + name);
       this.$emit(name, event);
     }
   },

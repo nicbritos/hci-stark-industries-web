@@ -1,10 +1,11 @@
 <template>
   <v-container>
-    <v-dialog v-model="menu" max-width="600px">
+    <v-dialog v-model="menu" persistent max-width="600px"  >
       <DeviceSelector
         :device="device"
         :show="menu"
-        v-on:CloseMenu="closeMenu()"
+        :mode="mode"
+        @close="closeMenu"
       ></DeviceSelector>
     </v-dialog>
 
@@ -12,7 +13,7 @@
       <v-card-text @click="onClick" v-ripple style="cursor: pointer">
         <div class="white--text">
           {{
-            device.name
+          device.name
           }}
         </div>
         <v-container fluid>
@@ -85,6 +86,11 @@ export default {
       type: CommonDeviceSchema,
       required: true
     },
+    mode: {
+      type: String,
+      required: false,
+      default: "edit"
+    },
     room: {
       type: Boolean,
       required: false,
@@ -118,8 +124,7 @@ export default {
   }),
   methods: {
     async onSwitchUpdate() {
-      console.log(`About to do quick action. Curr state: ${this.isOn}`);
-      await this.quickAction.action(this.device.id, this.isOn);
+      //await this.quickAction.action(this.device.id, this.isOn);
       this.isOn = !this.isOn;
     },
     async applyFavouriteSelection() {
@@ -145,90 +150,97 @@ export default {
       if (this.editable) this.openMenu();
       else this.$emit("click");
     },
-    closeMenu() {
+    closeMenu(ev) {
       this.menu = false;
+      console.log("CLOSING MENUUU");
+      console.log(ev);
+      this.$emit('CloseMenu',ev);
+    },
+    OpenMenu() {
+      console.log("OPENING MENU");
+      this.openMenu = true;
+      console.log("LA PUTA QUE TE PARIO")
     },
     GetImage() {
-      switch (this.device.type.id) {
+      console.log("Getting device for GETIMAGES");
+      console.log(this.device);
+      switch (this.device.deviceId) {
         case "rnizejqr2di0okho": // FRIDGE
           return ImageRetriever.GetImages(
-                  this.device.type.id,
+                  this.device.deviceId,
                   ImageRetriever.ACTIONS.INVARIANT
           );
         case "c89b94e8581855bc": // SPEAKER
-          if (this.device.state.status === "playing")
+          if (this.device.status === "playing")
             return ImageRetriever.GetImages(
-                    this.device.type.id,
+                    this.device.deviceId,
                     ImageRetriever.ACTIONS.ON
             );
           else
             return ImageRetriever.GetImages(
-                    this.device.type.id,
+                    this.device.deviceId,
                     ImageRetriever.ACTIONS.OFF
             );
         case "eu0v2xgprrhhg41g": // CURTAINS
-          if (
-                  this.device.state.status === "opened" ||
-                  this.device.state.status === "opening"
-          )
+          if (this.device.isOpen)
             return ImageRetriever.GetImages(
-                    this.device.type.id,
+                    this.device.deviceId,
                     ImageRetriever.ACTIONS.OPEN
             );
           else
             return ImageRetriever.GetImages(
-                    this.device.type.id,
+                    this.device.deviceId,
                     ImageRetriever.ACTIONS.CLOSE
             );
         case "go46xmbqeomjrsjr": // LAMP
-          if (this.device.state.status === "off")
+          if (this.device.isOn)
             return ImageRetriever.GetImages(
-                    this.device.type.id,
-                    ImageRetriever.ACTIONS.OFF
+                    this.device.deviceId,
+                    ImageRetriever.ACTIONS.ON
             );
           else
             return ImageRetriever.GetImages(
-                    this.device.type.id,
-                    ImageRetriever.ACTIONS.ON
+                    this.device.deviceId,
+                    ImageRetriever.ACTIONS.OFF
             );
         case "im77xxyulpegfmv8": //Oven
-          if (this.device.state.status === "off")
+          if (this.device.isOn)
             return ImageRetriever.GetImages(
-                    this.device.type.id,
-                    ImageRetriever.ACTIONS.OFF
+                    this.device.deviceId,
+                    ImageRetriever.ACTIONS.ON
             );
           else
             return ImageRetriever.GetImages(
-                    this.device.type.id,
-                    ImageRetriever.ACTIONS.ON
+                    this.device.deviceId,
+                    ImageRetriever.ACTIONS.OFF
             );
         case "li6cbv5sdlatti0j": //AC
-          if (this.device.state.status === "off")
+          if (this.device.isOn)
             return ImageRetriever.GetImages(
-                    this.device.type.id,
-                    ImageRetriever.ACTIONS.OFF
+                    this.device.deviceId,
+                    ImageRetriever.ACTIONS.ON
             );
           else
             return ImageRetriever.GetImages(
-                    this.device.type.id,
-                    ImageRetriever.ACTIONS.ON
+                    this.device.deviceId,
+                    ImageRetriever.ACTIONS.OFF
             );
         case "lsf78ly0eqrjbz91": // DOOR
-          if (this.device.state.lock === "locked")
+          if (this.device.isLocked)
             return ImageRetriever.GetImages(
-                    this.device.type.id,
+                    this.device.deviceId,
                     ImageRetriever.ACTIONS.LOCK
             );
           else
             return ImageRetriever.GetImages(
-                    this.device.type.id,
+                    this.device.deviceId,
                     ImageRetriever.ACTIONS.UNLOCK
             );
       }
     }
   },
   async mounted() {
-    this.image = GetImage();
+    this.image = this.GetImage();
 
     // this.hasAction = await QuickActionHelper.hasQuickAction(
     //   this.device.deviceId

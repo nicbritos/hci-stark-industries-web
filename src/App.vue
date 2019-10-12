@@ -116,7 +116,7 @@
         single-line
         class="ml-3"
         placeholder="Start typing to Search"
-        v-model="search"
+        v-model="this.Search"
         clearable
       ></v-text-field>
 
@@ -137,7 +137,7 @@
         </template>
 
         <v-list>
-          <v-list-item ripple @click="">
+          <v-list-item ripple >
             <v-icon v-html="'settings'" />
             <v-list-item-title v-text="'Configuración'" />
           </v-list-item>
@@ -150,6 +150,7 @@
     </v-app-bar>
 
     <v-content>
+      <ErrorDialog :message="errorModel.message" :open="errorModel.openDialog" v-on:CloseErrorDialog="CloseErrorDialog" />
       <router-view />
     </v-content>
   </v-app>
@@ -158,15 +159,24 @@
 <script>
 import Loader from "@/components/Loader";
 import { mapGetters } from "vuex";
+import apiWrapper from "./data/apiWrapper";
+import ErrorDialog from "./components/info_dialogs/ErrorDialog";
 
 export default {
   name: "App",
   components: {
+    ErrorDialog,
     Loader
   },
+
   data: () => ({
+    Search:"",
     fixed: false,
-    noBackButtonRoutes: ["regions", "routines", "home", "login", "register", "about"],
+    errorModel:{
+      message:"",
+      openDialog:false
+    },
+    noBackButtonRoutes: ["regions", "home", "login", "register", "about"],
     items: [
       { icon: "home", title: "Home", to: "/" },
       {
@@ -233,28 +243,7 @@ export default {
     this.$store.dispatch("setWindowWidth");
     this.$store.state.loading = false;
 
-    // database.onAuthStateChanged(async user => {
-    //   if (user) {
-    //     localStorage.loggedIn = true;
-    //     const userData = await database.getUserInformation();
-    //     this.$store.dispatch("setUserData", userData);
-    //     this.$store.state.loading = false;
-    //   } else {
-    //     localStorage.loggedIn = false;
-    //     this.$store.dispatch("resetUserData");
-    //     this.$store.state.loading = false;
-    //   }
-    // });
 
-    // database
-    //   .getStops()
-    //   .then(stops => this.$store.dispatch("setStops", stops))
-    //   .catch(err => console.error(err));
-
-    // database
-    //   .getDefaultTrips()
-    //   .then(trips => this.$store.dispatch("setDefaultTrips", trips))
-    //   .catch(err => alert("No tenés suficiente permisos"));
   },
   mounted() {
     this.$store.watch(
@@ -264,35 +253,62 @@ export default {
       }
     );
   },
-  methods: {
+
+    showLoader() {
+      this.$store.state.loading = true;
+    },
+
+  errorCaptured(err, vm, info){
+    console.log("HANDLING ERROR");
+    console.log(err);
+    console.log(vm);
+    console.log(info);
+
+    if(err === apiWrapper.ERRORS.NETWORK) {
+      console.log("NETWORK ERROR");
+
+      this.OpenErrorDialog("PEDAZO DE MIERDA");
+
+    }
+    return false;
+  },
+  methods:{
+    OpenErrorDialog(msg){
+      this.errorModel.openDialog = true;
+      this.errorModel.message = msg;
+      console.log("Opening dialog: " + this.errorModel.openDialog);
+    },
+    CloseErrorDialog(){
+      this.errorModel.openDialog = false;
+      this.errorModel.message = "";
+      console.log("Closing Dialog")
+    },
+    upOneLevel() {
+      if (
+              this.$router.currentRoute.path.match("/regions/") &&
+              this.$router.currentRoute.path.match("/room/")
+      ) {
+        this.$router.push("/regions");
+      } else {
+        let path = this.$router.currentRoute.path.substring(
+                0,
+                this.$router.currentRoute.path.lastIndexOf(
+                        "/",
+                        this.$router.currentRoute.path.length - 2
+                )
+        );
+        if (path.length > 0) this.$router.push(path);
+        else this.$router.push("/");
+      }
+    },
     logOut() {
       // database.signOut().then(() => {
       //   this.$router.push("/");
       //   location.reload();
       // });
     },
-    showLoader() {
-      this.$store.state.loading = true;
-    },
-    upOneLevel() {
-      if (
-        this.$router.currentRoute.path.match("/regions/") &&
-        this.$router.currentRoute.path.match("/room/")
-      ) {
-        this.$router.push("/regions");
-      } else {
-        let path = this.$router.currentRoute.path.substring(
-          0,
-          this.$router.currentRoute.path.lastIndexOf(
-            "/",
-            this.$router.currentRoute.path.length - 2
-          )
-        );
-        if (path.length > 0) this.$router.push(path);
-        else this.$router.push("/");
-      }
-    }
   }
+
 };
 </script>
 

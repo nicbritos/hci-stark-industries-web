@@ -10,7 +10,7 @@
     <v-card-title>
       <span class="headline">{{ device.name }}</span>
 
-      <v-btn icon absolute right @click="openDeleteDialog()">
+      <v-btn icon absolute right @click="openDeleteDialog()" v-if="mode === 'edit'">
         <v-avatar color="red">
           <v-icon>delete</v-icon>
         </v-avatar>
@@ -20,7 +20,7 @@
       <v-container>
         <v-row justify="space-between">
           <v-col>
-            <img id="image" :src="device.image" />
+            <img id="image" :src="image" />
           </v-col>
           <v-col cols="4">
             <v-row>
@@ -58,8 +58,8 @@
     </v-card-text>
     <v-card-actions>
       <v-spacer></v-spacer>
-      <v-btn v-blur color="red" @click="Exit()">Cancel</v-btn>
-      <v-btn v-blur color="blue" :disabled="!modified" @click="SaveAndExit()">SAVE</v-btn>
+      <v-btn v-blur color="red" @click="Exit(false)">Cancel</v-btn>
+      <v-btn v-blur color="blue" :disabled="mode === 'edit' && !modified" @click="SaveAndExit()">SAVE</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -67,6 +67,7 @@
 <script>
 import Blinds from "../../data/schemas/devices/Blinds";
 import DeleteDialog from "../info_dialogs/DeleteDialog";
+import ImageRetriever from "../../data/ImageRetriever";
 
 export default {
   name: "curtainsMenu",
@@ -79,12 +80,18 @@ export default {
     show: {
       type: Boolean,
       required: true
-    }
+    },
+    mode: {
+      type: String,
+      required: false,
+      default: 'edit'
+    },
   },
   data: () => ({
     deleteDialog: false,
     isOpen: false,
-    level: 0
+    level: 0,
+    image: "",
   }),
   computed: {
     modified() {
@@ -110,23 +117,39 @@ export default {
     },
     async SaveAndExit() {
       this.$store.state.loading = true;
-      if (this.isOpen) {
-        await this.device.open();
-      } else {
-        await this.device.close();
+      if(this.mode === 'edit') {
+        if (this.isOpen) {
+          await this.device.open();
+        } else {
+          await this.device.close();
+        }
       }
       this.$store.state.loading = false;
 
-      this.Exit();
+      this.Exit(true);
     },
-    Exit() {
+    Exit(confirm) {
       console.log("Sending Close Event from Curtains");
-      this.$emit("CloseMenu");
+      this.$emit("CloseMenu", {
+        confirmed: confirm,
+        name: this.device.name,
+        id: this.device.id,
+        customState: {
+          isOpen: this.isOpen
+        }
+
+      });
     },
     async resetData() {
       await this.device.refreshState();
       this.isOpen = this.device.isOpen;
       this.level = this.device.level;
+      if(this.isOpen){
+        this.image = ImageRetriever.GetImages(this.device.deviceId, ImageRetriever.ACTIONS.OPEN);
+      }
+      else{
+        this.image = ImageRetriever.GetImages(this.device.deviceId, ImageRetriever.ACTIONS.CLOSE);
+      }
     },
     onDelete() {
       this.$emit("delete");
@@ -135,6 +158,14 @@ export default {
   watch: {
     show: function(val) {
       if (val) this.resetData();
+    },
+    isOpen:function (val) {
+      if(val){
+        this.image = ImageRetriever.GetImages(this.device.deviceId, ImageRetriever.ACTIONS.OPEN);
+      }
+      else{
+        this.image = ImageRetriever.GetImages(this.device.deviceId, ImageRetriever.ACTIONS.CLOSE);
+      }
     }
   },
   mounted() {

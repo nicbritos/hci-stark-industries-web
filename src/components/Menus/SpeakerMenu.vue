@@ -10,7 +10,7 @@
     <v-card-title>
       <span class="headline">{{ name }}</span>
 
-      <v-btn icon absolute right @click="openDeleteDialog">
+      <v-btn icon absolute right @click="openDeleteDialog" v-if="mode === 'edit'">
         <v-avatar color="red">
           <v-icon>delete</v-icon>
         </v-avatar>
@@ -153,8 +153,8 @@
     </v-card-text>
     <v-card-actions class="justify-center">
       <div class="text-center">
-        <v-btn color="red" @click="Exit()">Cancel</v-btn>
-        <v-btn color="blue" @click="SaveAndExit()">SAVE</v-btn>
+        <v-btn color="red" @click="Exit(false)">Cancel</v-btn>
+        <v-btn color="blue" @click="Exit(true)">SAVE</v-btn>
       </div>
     </v-card-actions>
   </v-card>
@@ -171,19 +171,12 @@ export default {
     device: {
       type: Speakers,
       required: true
-    },/* 
-    deviceId: {
-      type: String,
-      required: true
     },
-    name: {
+    mode:{
       type: String,
-      required: true
+      required: false,
+      default: 'edit'
     },
-    mode: {
-      type: String,
-      required: false
-    }, */
     show: {
       type: Boolean,
       required: true
@@ -216,87 +209,84 @@ export default {
     PreviousModel: undefined
   }),
   methods: {
-    Exit() {
-      console.log("Sending Close Event from Speaker");
-      this.$emit("CloseMenu");
-    },
+      Exit(confirm){
+          console.log("Sending Close Event from Speaker")
+          this.$emit('CloseMenu', {
+            confirmed: confirm,
+            name: this.device.name,
+            id: this.device.id,
+            customState: this.SpeakerModel
+          });
+      },
     playPauseButtonPressed() {
-      if (!this.SpeakerModel.isSongLoaded) return;
+      if (!this.SpeakerModel.isSongLoaded)
+        return;
 
-      console.log("Big Button pressed");
+      this.SpeakerModel.currentSong.isPlaying = !this.SpeakerModel.currentSong.isPlaying;
 
-      this.SpeakerModel.currentSong.isPlaying = !this.SpeakerModel.currentSong
-        .isPlaying;
-      console.log("is playing: " + this.SpeakerModel.currentSong.isPlaying);
-
-      if (this.SpeakerModel.currentSong.isPlaying) this.resumeMusic();
-      else this.pauseMusic();
+      if (this.SpeakerModel.currentSong.isPlaying)
+        this.resumeMusic();
+      else
+        this.pauseMusic();
     },
     async stopMusic() {
-      console.log("STOP Music");
-      let APISpeaker = new Speakers(this.deviceId, this.name);
-      console.log("Executing action");
-      await APISpeaker.stop();
-      console.log("Updating model");
-      await APISpeaker.refreshState();
-      console.log(APISpeaker);
-      console.log("Aplying model");
-      this.LoadModel(APISpeaker);
-      console.log("new Model:");
-      console.log(this.SpeakerModel);
+        if(this.mode === 'edit') {
+          let APISpeaker = new Speakers(this.deviceId, this.name);
+          await APISpeaker.stop();
+          await APISpeaker.refreshState();
+          this.LoadModel(APISpeaker);
 
-      window.clearInterval(this.interval);
+          window.clearInterval(this.interval);
+        }
     },
     async resumeMusic() {
-      console.log("RESUME Music");
-      let APISpeaker = new Speakers(this.deviceId, this.name);
-      console.log("Executing action");
-      await APISpeaker.resume();
-      console.log("Updating model");
-      await APISpeaker.refreshState();
-      console.log(APISpeaker);
-      console.log("Aplying model");
-      this.LoadModel(APISpeaker);
-      console.log("new Model:");
-      console.log(this.SpeakerModel);
-      console.log("Starting Song Timer");
-      this.StartSongTimer();
+      if(this.mode === 'edit') {
+
+        let APISpeaker = new Speakers(this.deviceId, this.name);
+        await APISpeaker.resume();
+        await APISpeaker.refreshState();
+        this.LoadModel(APISpeaker);
+        this.StartSongTimer();
+      }
     },
     async pauseMusic() {
-      console.log("PAUSE Music");
-      let APISpeaker = new Speakers(this.deviceId, this.name);
-      console.log("Executing Pause");
-      await APISpeaker.pause();
-      console.log("Updating Model");
-      await APISpeaker.refreshState();
-      console.log("Updated Model:");
-      console.log(APISpeaker);
-      console.log("Appliying Model");
-      this.LoadModel(APISpeaker);
-      console.log("Model Applied:");
-      console.log(this.SpeakerModel);
-      window.clearInterval();
+      if(this.mode === 'edit') {
+
+        let APISpeaker = new Speakers(this.deviceId, this.name);
+        await APISpeaker.pause();
+        await APISpeaker.refreshState();
+
+        this.LoadModel(APISpeaker);
+
+        window.clearInterval();
+      }
     },
     async LoadGenre() {
-      console.log(this.SelectedDDL);
-      let APISpeaker = new Speakers(this.deviceId, this.name);
-      await APISpeaker.selectGenre(this.SelectedDDL);
-      await APISpeaker.play();
-      await APISpeaker.refreshState();
-      this.LoadModel(APISpeaker);
-      this.StartSongTimer();
+      if(this.mode === 'edit') {
+        let APISpeaker = new Speakers(this.deviceId, this.name);
+        await APISpeaker.selectGenre(this.SelectedDDL);
+        await APISpeaker.play();
+        await APISpeaker.refreshState();
+        this.LoadModel(APISpeaker);
+        this.StartSongTimer();
+      }
     },
     async previusSong() {
-      let APISpeaker = new Speakers(this.deviceId, this.name);
-      await APISpeaker.previousSong();
-      await APISpeaker.refreshState();
-      this.LoadModel(APISpeaker);
+      if(this.mode === 'edit') {
+
+        let APISpeaker = new Speakers(this.deviceId, this.name);
+        await APISpeaker.previousSong();
+        await APISpeaker.refreshState();
+        this.LoadModel(APISpeaker);
+      }
     },
     async nextSong() {
-      let APISpeaker = new Speakers(this.deviceId, this.name);
-      await APISpeaker.nextSong();
-      await APISpeaker.refreshState();
-      this.LoadModel(APISpeaker);
+      if(this.mode === 'edit') {
+        let APISpeaker = new Speakers(this.deviceId, this.name);
+        await APISpeaker.nextSong();
+        await APISpeaker.refreshState();
+        this.LoadModel(APISpeaker);
+      }
     },
     incrementVolume() {
       if (this.SpeakerModel.volume < Speakers.maxVolume()) {
@@ -304,9 +294,12 @@ export default {
       }
     },
     async acknowledgeVolumenChange() {
-      let APISpeaker = new Speakers(this.deviceId, this.name);
       this.SpeakerModel.volume = this.SelectedVolume;
-      await APISpeaker.setVolume(this.SpeakerModel.volume);
+
+      if(this.mode === 'edit') {
+        let APISpeaker = new Speakers(this.deviceId, this.name);
+        await APISpeaker.setVolume(this.SpeakerModel.volume);
+      }
     },
     decrementVolume() {
       if (this.SpeakerModel.volume > Speakers.minVolume()) {
@@ -314,12 +307,13 @@ export default {
       }
     },
     async setUp() {
+      let APISpeaker = new Speakers(this.deviceId, this.name);
+      await APISpeaker.refreshState();
+
       this.PreviousModel = APISpeaker;
       this.LoadModel(APISpeaker);
-      console.log(this.SpeakerModel);
     },
     ConvertSongModel(APISong) {
-      console.log("Creo SONG temporal");
       var song = {
         name: APISong.title,
         artist: APISong.artist,
@@ -329,18 +323,14 @@ export default {
         isPlaying: false,
         progress: 0
       };
-      console.log("duration: " + APISong.duration);
-      console.log("duration: " + APISong.duration);
+
       song.duration =
         Number.parseInt(APISong.duration.match("^(\\d+):.*$")[1]) * 60 +
         Number.parseInt(APISong.duration.match("^.*:(\\d+)$")[1]);
-      console.log("asigno duracion:" + song.duration);
-      console.log("progress: " + APISong.progress);
 
       song.timemark =
         Number.parseInt(APISong.progress.match("^(\\d+):.*$")[1]) * 60 +
         Number.parseInt(APISong.progress.match("^.*:(\\d+)$")[1]);
-      console.log("asigno progreso actual:" + song.timemark);
 
       song.progress =
         100 *
@@ -350,37 +340,27 @@ export default {
       return song;
     },
     LoadModel(model) {
-      console.log("Again Model API: ");
-      console.log(model);
-      console.log("API Genre: " + model.genre);
+
       this.SpeakerModel.genre = model.genre;
-      console.log("DDL: " + this.SpeakerModel.genre);
 
       this.SelectedDDL = model.genre;
-      console.log("DDL: " + this.SelectedDDL);
 
       this.SpeakerModel.volume = model.volume;
       this.SelectedVolume = model.volume;
 
-      console.log("Loading model");
-      console.log(model);
-
       switch (model.status) {
         case "playing":
-          console.log("Case Playing");
           this.SpeakerModel.isSongLoaded = true;
           this.SpeakerModel.currentSong = this.ConvertSongModel(model.song);
           this.SpeakerModel.currentSong.isPlaying = true;
 
           break;
         case "paused":
-          console.log("case Paused");
           this.SpeakerModel.isSongLoaded = true;
           this.SpeakerModel.currentSong = this.ConvertSongModel(model.song);
           this.SpeakerModel.currentSong.isPlaying = false;
           break;
         case "stopped":
-          console.log("case Stopped");
           this.SpeakerModel.isSongLoaded = false;
           this.SpeakerModel.currentSong = {
             isPlaying: false,
@@ -415,18 +395,7 @@ export default {
         }
       }, 1000);
     },
-    async Cancel() {
-      // CREO QUE NO ES NECESARIA
-      this.LoadModel(this.PreviousModel);
-      let APISpeaker = new Speakers(this.deviceId, this.name);
-      await APISpeaker.refreshState();
 
-      if (this.SpeakerModel.volume != APISpeaker.volume)
-        await this.acknowledgeVolumenChange();
-
-      if (this.SpeakerModel.currentSong != undefined) {
-      }
-    },
     openDeleteDialog() {
       this.deleteDialog = true;
     },

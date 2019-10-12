@@ -81,13 +81,17 @@ export default {
     closeDialog(item, type) {
       if (item == null || type == null || item[type] == null) return;
       if (item[type]) item[type] = false;
+    },
+    async reload(){
+        this.routines = await RoutineSchema.getAll();
+        this.favouriteRoutines = this.routines.filter(value => {
+      return value.isFavourite();
+    });
     }
   },
   async mounted() {
-    this.routines = await RoutineSchema.getAll();
-    this.favouriteRoutines = this.routines.filter(value => {
-      return value.isFavourite();
-    });
+
+    await this.reload();
   }
 };
 </script>

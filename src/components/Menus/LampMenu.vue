@@ -9,7 +9,7 @@
     </v-dialog>
     <v-card-title>
       <span class="headline">{{ device.name }}</span>
-      <v-btn icon absolute right @click="openDeleteDialog()">
+      <v-btn icon absolute right @click="openDeleteDialog()" v-if="mode === 'edit'">
         <v-avatar color="red">
           <v-icon>delete</v-icon>
         </v-avatar>
@@ -49,8 +49,8 @@
     </v-card-text>
     <v-card-actions>
       <v-spacer></v-spacer>
-      <v-btn v-blur color="red" @click="Exit()">Cancel</v-btn>
-      <v-btn v-blur color="blue" :disabled="!modified" @click="SaveAndExit()">SAVE</v-btn>
+      <v-btn v-blur color="red" @click="Exit(false)">Cancel</v-btn>
+      <v-btn v-blur color="blue" :disabled="mode === 'edit' &&!modified" @click="SaveAndExit()">SAVE</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -66,6 +66,11 @@ export default {
     device: {
       type: Lamp,
       required: true
+    },
+    mode: {
+      type: String,
+      required: false,
+      default: 'edit'
     },
     show: {
       type: Boolean,
@@ -123,20 +128,37 @@ export default {
     },
     async SaveAndExit() {
       this.$store.state.loading = true;
-      if (this.isOn !== this.device.isOn) {
-        this.isOn ? await this.device.turnOn() : await this.device.turnOff();
-      }
-      if (this.isOn) {
-        await this.device.setColor(this.color.r, this.color.g, this.color.b);
-        await this.device.setBrightness(this.brightness);
+
+      if(this.mode === 'edit') {
+        if (this.isOn !== this.device.isOn) {
+          this.isOn ? await this.device.turnOn() : await this.device.turnOff();
+        }
+        if (this.isOn) {
+          await this.device.setColor(this.color.r, this.color.g, this.color.b);
+          await this.device.setBrightness(this.brightness);
+        }
       }
       this.$store.state.loading = false;
 
-      this.Exit();
+      this.Exit(true);
     },
-    Exit() {
+    Exit(confirm) {
       console.log("Sending Close Event from Lamp");
-      this.$emit("CloseMenu");
+
+      this.$emit("CloseMenu", {
+        confirmed: confirm,
+        name: this.device.name,
+        id: this.device.id,
+        customState: {
+          color:{
+            r: this.color.r,
+            g: this.color.g,
+            b: this.color.b,
+          },
+          isOn: this.isOn,
+          brightness: this.brightness
+        }
+      });
     }
   },
   watch: {

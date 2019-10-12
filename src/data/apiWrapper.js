@@ -2,7 +2,7 @@ import Region from "./schemas/Region";
 
 const TRANSPORT = "http://";
 const BASE_URL = "127.0.0.1";
-const PORT = "9090";
+const PORT = "8080";
 
 const URL = TRANSPORT + BASE_URL + ":" + PORT + "/api";
 
@@ -190,6 +190,7 @@ async function requestQuery(url, method, data) {
   try {
     response = await fetch(url, init);
   } catch (error) {
+    console.log('NETWORK ERROR TRHOWN');
     throw ERRORS.NETWORK;
   }
   console.log(response)

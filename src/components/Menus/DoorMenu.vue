@@ -10,7 +10,7 @@
       <v-card-title>
         <span class="headline">{{ device.name }}</span>
 
-        <v-btn icon absolute right @click="openDeleteDialog">
+        <v-btn icon absolute right @click="openDeleteDialog" v-if="mode === 'edit'">
           <v-avatar color="red">
             <v-icon>delete</v-icon>
           </v-avatar>
@@ -60,8 +60,8 @@
       </v-card-text>
       <v-card-actions class="justify-center">
         <div class="text-center">
-          <v-btn color="red" @click="Exit()">Cancel</v-btn>
-          <v-btn color="blue" :disabled="!modified" @click="SaveAndExit()">SAVE</v-btn>
+          <v-btn color="red" @click="Exit(false)">Cancel</v-btn>
+          <v-btn color="blue" :disabled="mode === 'edit' &&!modified" @click="SaveAndExit()">SAVE</v-btn>
         </div>
       </v-card-actions>
     </v-card>
@@ -83,6 +83,11 @@ export default {
     show: {
       type: Boolean,
       required: true
+    },
+    mode: {
+      type: String,
+      required: false,
+      default: 'edit'
     }
   },
 
@@ -131,9 +136,9 @@ export default {
   }),
   computed: {
     modified() {
-      if (this.device == null) return false;
-      return (this.State.open !== this.device.isOpen
-        || this.State.locked !== this.device.isLocked ) ;
+      if (this.device == null)
+        return false;
+      return (this.State.open !== this.device.isOpen || this.State.locked !== this.device.isLocked ) ;
     }
   },
   methods: {
@@ -210,27 +215,34 @@ export default {
     async SaveAndExit() {
       this.$store.state.loading = true;
 
-      if (this.State.open) {
-        await this.device.open();
-        await this.device.unlock();
-      } else {
-        await this.device.close();
-        if (this.State.locked) {
-          await this.device.lock();
-        } else {
+      if(this.mode === 'edit') {
+        if (this.State.open) {
+          await this.device.open();
           await this.device.unlock();
+        } else {
+          await this.device.close();
+          if (this.State.locked) {
+            await this.device.lock();
+          } else {
+            await this.device.unlock();
+          }
         }
       }
 
-      this.Exit();
+      this.Exit(true);
     },
-    Exit() {
-      console.log("Sending Close Event from Door");
-      this.$emit("CloseMenu");
+    Exit(confirm) {
+      console.log("Sending Close Event from Door")
+      this.$emit('CloseMenu',{
+        confirmed: confirm,
+        name: this.device.name,
+        id: this.device.id,
+        customState: this.State
+      })
     },
-    onDelete() {
+        onDelete() {
       this.$emit("delete");
-    }
+        }
   },
   watch: {
     show: function(val) {

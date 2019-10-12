@@ -9,7 +9,7 @@
       </v-dialog>
       <v-card-title>
         <span class="headline">{{ device.name }}</span>
-        <v-btn icon absolute right @click="openDeleteDialog">
+        <v-btn icon absolute right @click="openDeleteDialog"  v-if="mode === 'edit'">
           <v-avatar color="red">
             <v-icon>delete</v-icon>
           </v-avatar>
@@ -80,8 +80,8 @@
       </v-card-text>
       <v-card-actions class="justify-center">
         <div class="text-center">
-          <v-btn color="red" @click="Exit()">Cancel</v-btn>
-          <v-btn color="blue" :disabled="!modified" @click="SaveAndExit()">SAVE</v-btn>
+          <v-btn color="red" @click="Exit(false)">Cancel</v-btn>
+          <v-btn color="blue" :disabled="mode === 'edit' &&!modified" @click="SaveAndExit()">SAVE</v-btn>
         </div>
       </v-card-actions>
     </v-card>
@@ -98,6 +98,11 @@ export default {
     device: {
       type: Oven,
       required: true
+    },
+    mode: {
+      type: String,
+      required: false,
+      default: 'edit'
     },
     show: {
       type: Boolean,
@@ -121,8 +126,8 @@ export default {
               this.device.temperature !== this.temperature ||
               this.device.isOn !== this.isOn ||
               this.device.heatMode !== this.heat_source ||
-              this.device.convectionMode !== this.labelsConvection.indexOf(convection) ||
-              this.device.grillMode !== this.labelsGrill.indexOf(grill)
+              this.device.convectionMode !== this.labelsConvection.indexOf(this.convection) ||
+              this.device.grillMode !== this.labelsGrill.indexOf(this.grill)
       );
     },
     minTemperature() {
@@ -155,26 +160,39 @@ export default {
         this.isOn = this.device.isOn;
         this.temperature = this.device.temperature;
         this.heat_source = this.device.heatMode;
-        this.grill = labelsGrill.indexOf(this.device.grillMode);
-        this.convection = labelsConvection.indexOf(this.device.convectionMode);
+        this.grill = this.labelsGrill.indexOf(this.device.grillMode);
+        this.convection = this.labelsConvection.indexOf(this.device.convectionMode);
       }
     },
     async SaveAndExit() {
       this.$store.state.loading = true;
-      if(this.isOn) {
-        await this.device.turnOn();
-        await this.device.setTemperature(this.temperature);
-        await this.device.setConvection(this.labelsConvection[this.convection]);
-        await this.device.setGrill(this.labelsGrill[this.grill]);
-        await this.device.setHeat(this.heat_source);
-      } else await this.device.turnOff();
+      if(this.mode === 'edit') {
+        if (this.isOn) {
+          await this.device.turnOn();
+          await this.device.setTemperature(this.temperature);
+          await this.device.setConvection(this.labelsConvection[this.convection]);
+          await this.device.setGrill(this.labelsGrill[this.grill]);
+          await this.device.setHeat(this.heat_source);
+        } else await this.device.turnOff();
+      }
       this.$store.state.loading = false;
 
-      this.Exit();
+      this.Exit(true);
     },
-    Exit() {
-      console.log("Sending Close Event from Oven");
-      this.$emit("CloseMenu");
+    Exit(confirm){
+      console.log("Sending Close Event from Oven")
+      this.$emit('CloseMenu', {
+        confirmed: confirm,
+        name: this.device.name,
+        id: this.device.id,
+        customState: {
+          isOn: this.isOn,
+          temperature: this.temperature,
+          heat_source: this.heat_source,
+          grill: this.grill,
+          convection: this.convection,
+        }
+      })
     },
     onDelete() {
       this.$emit("delete");
