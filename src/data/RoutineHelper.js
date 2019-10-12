@@ -38,15 +38,17 @@ function getActionsAC(device){
 
     if(state.isOn)
         actions.push(getAction(device.id,'turnOn'));
-    else
-        actions.push(getAction(device.id,'turnOff'));
+
     actions.push(getAction(device.id,'setTemperature',state.temperature));
     actions.push(getAction(device.id,'setFanSpeed',state.fanSpeed));
     actions.push(getAction(device.id,'setMode',state.ACmode));
     actions.push(getAction(device.id,'setVerticalSwing',state.vertical_blades));
     actions.push(getAction(device.id,'setHorizontalSwing',state.horizontal_blades));
 
-    actions.forEach(value => { value.device.id = device.id})
+    if(!state.isOn)
+    {
+        actions.push(getAction(device.id,'turnOff'));
+    }
     return actions;
 };
 
@@ -69,8 +71,8 @@ function getActionsFridge(device) {
     let actions =[];
 
     actions.push(getAction(id,'setMode',state.mode));
-    actions.push(getAction((id,'setTemperature',state.temperature)));
-    actions.push(getAction((id,'setFreezerTemperature',state.freezerTemperature)));
+    actions.push(getAction(id,'setTemperature',state.temperature));
+    actions.push(getAction(id,'setFreezerTemperature',state.freezerTemperature));
 
     return actions;
 };
@@ -80,10 +82,18 @@ function getActionsDoor(device) {
     let id = device.id;
     let actions =[];
 
-    actions.push(getAction(id,'open'));
-    actions.push(getAction((id,'close')));
-    actions.push(getAction((id,'lock')));
-    actions.push(getAction((id,'unlock')));
+    if(state.isOpen) {
+        actions.push(getAction(id, 'unlock'));
+        actions.push(getAction(id, 'open'));
+    }
+    else{
+        actions.push(getAction(id,'close'));
+        if(state.isLocked)
+            actions.push(getAction(id,'lock'));
+        else
+            actions.push(getAction(id,'unlock'));
+    }
+
 
     return actions;
 };
@@ -94,12 +104,12 @@ function getActionsLamp(device) {
     let actions =[];
 
     if(state.isOn)
-        actions.push(getAction((id,'turnOn')));
+        actions.push(getAction(id,'turnOn'));
     else
         actions.push(getAction(id,'turnOff'));
 
-    actions.push(getAction((id,'setColor',state.color.r,state.color.g,state.color.b)));
-    actions.push(getAction((id,'setBrightness', state.brightness)));
+    actions.push(getAction(id,'setColor',state.color.r,state.color.g,state.color.b));
+    actions.push(getAction(id,'setBrightness', state.brightness));
 
     return actions;
 };
@@ -111,14 +121,14 @@ function getActionsOven(device) {
     let actions =[];
 
     if(state.isOn)
-        actions.push(getAction((id,'turnOn')));
+        actions.push(getAction(id,'turnOn'));
     else
         actions.push(getAction(id,'turnOff'));
 
-    actions.push(getAction((id,'setTemperature',state.temperature)));
-    actions.push(getAction((id,'setHeat', state.heat_source)));
-    actions.push(getAction((id,'setGrill', state.grill)));
-    actions.push(getAction((id,'setConvection', state.convection)));
+    actions.push(getAction(id,'setTemperature',state.temperature));
+    actions.push(getAction(id,'setHeat', state.heat_source));
+    actions.push(getAction(id,'setGrill', state.grill));
+    actions.push(getAction(id,'setConvection', state.convection));
 
     return actions;
 };
@@ -128,16 +138,16 @@ function getActionsSpeaker(device) {
     let id = device.id;
     let actions =[];
 
-    actions.push(getAction((id,'setGenre',state.genre)));
-    actions.push(getAction((id,'setVolume', state.volume)));
+    actions.push(getAction(id,'setGenre',state.genre));
+    actions.push(getAction(id,'setVolume', state.volume));
 
 
     if(state.currentSong.name === ""){
-        actions.push(getAction((id,'stop')));
+        actions.push(getAction(id,'stop'));
     }else{
-        actions.push(getAction((id,'play')));
+        actions.push(getAction(id,'play'));
         if(!state.currentSong.isPlaying)
-            actions.push(getAction((id,'pause')));
+            actions.push(getAction(id,'pause'));
     }
 
 
@@ -145,6 +155,8 @@ function getActionsSpeaker(device) {
 };
 
 function getAction(deviceId,name,...param) {
+    console.log("deviceID: " + deviceId);
+    console.log("name: " + name);
     let temp = {
         device: {
             id: deviceId

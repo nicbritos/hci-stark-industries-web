@@ -75,3 +75,9 @@ export default {
 </script>
 
 <style scoped></style>
+
+1. Arreglar Speaker.
+2. Bloquear cambios que no se van a guardar (lamp)
+3. Revisar todos los menues y hacer que este todo bien alineado
+4. Ver por que la miniatura de 'Cortina' en los cuartos es disitnta de los demas
+4. Actualizar todos los dispositivos de un cuarto o de Home luego de que un dispositivo es modificado

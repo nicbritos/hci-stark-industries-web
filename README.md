@@ -70,10 +70,9 @@
   - [ ] Vista de todos los dispositivos
   - [ ] Vista de dispositivos por categoria
 - [ ] Implementar la barra de busqueda
-- [ ] Login (select profile)
-- [ ] PIN code
 - [ ] Testing
-- [ ] HACERLO REACTIVE!!!!!!!!!!!!!!!!!!!!!!
+- [x] HACERLO REACTIVE
+    -[x] Cambiar el ancho minimo de ACMenu. Se pisan los circulos
 - [ ] INFORME
 - [ ] Race conditions
 - [ ] Error messages

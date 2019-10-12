@@ -1,6 +1,6 @@
 <template>
-  <v-card dark raised persistent>
-    <v-dialog persistent v-model="deleteDialog" max-width="700">
+  <v-card dark raised persistent min-width="500">
+    <v-dialog persistent v-model="deleteDialog"  max-width="700">
       <DeleteDialog
         :name="device.name"
         :show="deleteDialog"
