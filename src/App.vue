@@ -108,17 +108,22 @@
       >
         <v-icon>arrow_back</v-icon>
       </v-app-bar-nav-icon>
-      <!--      <img id="logo" src="@/assets/logo.png" alt="logo castelar bus" />-->
 
       <v-text-field
         hide-details
-        prepend-icon="search"
         single-line
         class="ml-3"
         placeholder="Start typing to Search"
-        v-model="this.Search"
+        v-model="searchText"
         clearable
-      ></v-text-field>
+        @keyup="ev"
+      >
+        <template v-slot:prepend>
+          <v-icon color="blue" @click="applySearch()" >
+            search
+          </v-icon>
+        </template>
+      </v-text-field>
 
       <v-btn to="/login" light class="nav-btn ml-4" v-if="false" v-blur>
         <v-icon left>exit_to_app</v-icon>
@@ -157,10 +162,11 @@
 </template>
 
 <script>
-import Loader from "@/components/Loader";
+  import Loader from "@/components/Loader";
 import { mapGetters } from "vuex";
 import apiWrapper from "./data/apiWrapper";
 import ErrorDialog from "./components/info_dialogs/ErrorDialog";
+
 
 export default {
   name: "App",
@@ -172,6 +178,7 @@ export default {
   data: () => ({
     Search:"",
     fixed: false,
+    searchText: "",
     errorModel:{
       message:"",
       openDialog:false
@@ -243,7 +250,6 @@ export default {
     this.$store.dispatch("setWindowWidth");
     this.$store.state.loading = false;
 
-
   },
   mounted() {
     this.$store.watch(
@@ -254,6 +260,16 @@ export default {
     );
   },
 
+
+    applySearch(){
+      this.$router.push({
+        name:"Search",
+        params:{
+          query: this.searchText
+        }
+      });
+
+    },
     showLoader() {
       this.$store.state.loading = true;
     },
@@ -273,6 +289,35 @@ export default {
     return false;
   },
   methods:{
+    upOneLevel() {
+      if (
+              this.$router.currentRoute.path.match("/regions/") &&
+              this.$router.currentRoute.path.match("/room/")
+      ) {
+        this.$router.push("/regions");
+      } else {
+        let path = this.$router.currentRoute.path.substring(
+                0,
+                this.$router.currentRoute.path.lastIndexOf(
+                        "/",
+                        this.$router.currentRoute.path.length - 2
+                )
+        );
+        if (path.length > 0) this.$router.push(path);
+        else this.$router.push("/");
+      }
+    },
+    logOut() {
+      // database.signOut().then(() => {
+      //   this.$router.push("/");
+      //   location.reload();
+      // });
+    },
+    ev(event){
+      if(event.keyCode === 13){
+        this.applySearch();
+      }
+    },
     OpenErrorDialog(msg){
       this.errorModel.openDialog = true;
       this.errorModel.message = msg;
@@ -313,6 +358,11 @@ export default {
 </script>
 
 <style lang="scss">
+
+  .expansionContainer{
+
+    width: 90%;
+  }
 body {
   position: relative;
   background-color: #fafafa;

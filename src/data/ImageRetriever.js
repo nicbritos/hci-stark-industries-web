@@ -7,72 +7,49 @@ let BASE_URL =
   "/img/devices/";
 
 export default {
-  ACTIONS: {
+    ACTIONS: {
+        ON: 1,
+        OFF: 2,
+        OPEN: 3,
+        CLOSE: 4,
+        LOCK: 5,
+        UNLOCK: 6,
+        INVARIANT: 7
+    },
+
+    GetImages(deviceId, action) {
+
+
+        if (!IMAGES.some(element => {
+            return element.deviceId === deviceId;
+        }))
+            return new Error("Invalid Argument: deviceId is not valid");
+
+        let element = IMAGES.find(element => {
+            return element.deviceId === deviceId;
+        });
+
+        if (!element.images.some(el => {
+            return el.action === action;
+        }))
+            return new Error("Invalid Argument: action is not valid");
+
+        let retURL = BASE_URL + element.images.find(img => {
+            return img.action === action;
+        }).path;
+        console.log(retURL);
+        return retURL;
+    }
+}
+
+const ACTIONS= {
     ON: 1,
-    OFF: 2,
-    OPEN: 3,
-    CLOSE: 4,
-    LOCK: 5,
-    UNLOCK: 6,
-    INVARIANT: 7
-  },
-
-  GetImages(deviceId, action) {
-    console.log("Inside Imge Getter");
-    console.log(`deviceId: ${deviceId}`);
-    console.log(`action: ${action}`);
-    console.log("Colecction of items:");
-    console.log(IMAGES);
-    console.log("ItemFound");
-    console.log(
-      IMAGES.some(element => {
-        return element.deviceId === deviceId;
-      })
-    );
-
-    if (
-      !IMAGES.some(element => {
-        return element.deviceId === deviceId;
-      })
-    )
-      return new Error("Invalid Argument: deviceId is not valid");
-
-    console.log("DeviceID is valid");
-
-    let element = IMAGES.find(element => {
-      return element.deviceId === deviceId;
-    });
-
-    console.log("Element:");
-    console.log(element);
-
-    if (
-      !element.images.some(el => {
-        return el.action === action;
-      })
-    )
-      return new Error("Invalid Argument: action is not valid");
-
-    console.log("Action is valid");
-
-    let retURL =
-      BASE_URL +
-      element.images.find(img => {
-        return img.action === action;
-      }).path;
-    console.log(retURL);
-    return retURL;
-  }
-};
-
-const ACTIONS = {
-  ON: 1,
-  OFF: 2,
-  OPEN: 3,
-  CLOSE: 4,
-  LOCK: 5,
-  UNLOCK: 6,
-  INVARIANT: 7
+        OFF: 2,
+        OPEN: 3,
+        CLOSE: 4,
+        LOCK: 5,
+        UNLOCK: 6,
+        INVARIANT: 7
 };
 
 
@@ -126,5 +103,5 @@ const IMAGES=[
             {action:ACTIONS.ON, path:"speaker-on.svg"},
             {action:ACTIONS.OFF, path:"speaker-off.svg"},
         ]
-    },
-]
+    }
+     ]

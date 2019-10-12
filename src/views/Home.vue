@@ -35,8 +35,9 @@
           v-on:favourited="processFavourited"
         ></DeviceContainer>
       </v-col>
-    </v-row> </v-container
-></template>
+    </v-row>
+  </v-container>
+</template>
 
 <script>
 import BoxContainer from "@/components/containers/BoxContainer";
@@ -58,7 +59,18 @@ export default {
       routines: []
     };
   },
-  methods: {
+  methods:{
+    async reload(){
+      console.log("LATEST EVENT SEND");
+
+      console.log("'Bout to Update");
+      await this.LoadModel();
+      console.log("LATEST EVENT SEND");
+
+      this.$emit('reloadthings');
+      console.log("LATEST EVENT SEND");
+    },
+
     processFavourited(item, value) {
       if (!value) {
         let index = this.devices.indexOf(item);
