@@ -4,6 +4,7 @@
       <v-col cols="auto" v-for="(item, i) in items" :key="item.id">
         <v-row>
           <v-col align-self="center" v-if="i > 0 && i < items.length">
+            DFSDFD
             <v-img
               src="/img/iconmonstr-arrow-right-thin.svg"
               width="50"

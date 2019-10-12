@@ -19,7 +19,14 @@
 - [ ] * Desasociar los dispositivos registrados de las habitaciones
 - [ ] * Consultar el registro de acciones realizadas JA
 - [ ] * Consultar el consumo electrico para un determinado periodo JA2
-
+- [ ] Dispositivos
+  - [ ] Vista de todos los dispositivos
+  - [ ] Vista de dispositivos por categoria
+- [ ] Login (select profile)
+- [ ] PIN code
+- [ ] About page
+- [ ] Auth/unauth router fix
+  
 ### No Funcionales
 - [ ] Utilizar HTML, CSS, JS, AJAX
 - [ ] Funcionar en al menos 2: Edge 40+, Firefox 60+, Chrome 64+
@@ -31,7 +38,7 @@
 
 ## Falta
 
-- [ ] Buscar imagenes para el resto de los dispositivos
+- [x] Buscar imagenes para el resto de los dispositivos
 - [x] Hacer implementar el wrapper del api en los dispositivos:
   - [x] Horno
   - [x] AC
@@ -49,10 +56,8 @@
   - [x] Ver Rutinas
   - [ ] Crear Rutinas
   - [x] Ejecutar Rutinas
-  - [ ] Editar Rutinas
   - [x] Marcar/Desmarcar como favoritas a las rutinas
   - [ ] Deshacer cambios
-  - [ ] Confirmacion de eliminacion
 - [ ] Dispositivos
   - [x] Crear Dispositivos
   - [x] Mostar dispositivos favoritos en home
@@ -67,10 +72,10 @@
 - [ ] Login (select profile)
 - [ ] PIN code
 - [ ] Testing
-- [ ] About page
-- [ ] Auth/unauth router fix
 - [ ] HACERLO REACTIVE!!!!!!!!!!!!!!!!!!!!!!
 - [ ] INFORME
 - [ ] Race conditions
 - [ ] Error messages
 - [ ] Atomic operations (such as delete)
+- [ ] Testing
+

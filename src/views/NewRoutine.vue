@@ -18,6 +18,8 @@
                   :pick="true"
                   :items="devices"
                   @pick="addDeviceClose"
+                  mode="routine"
+                  v-on:CloseMenu="AddDeviceToList"
                 >
                 </DeviceContainer>
               </v-col>
@@ -51,26 +53,41 @@
                 CONFIGURAR
               </v-col>
             </v-row>
+            <DeviceSelector
+                    :device="selectedDevice"
+                    :show="dialogs.devices.configure"
+                    mode="routine"
+                    v-on:CloseMenu="configureDeviceClose"
+            ></DeviceSelector>
+
+<!--          <Device-->
+<!--                  :editable="true"-->
+<!--                  :selectable="false"-->
+<!--                  :room="true"-->
+<!--                  :device="this.selectedDevice"-->
+<!--                  mode="routine"-->
+<!--                  v-on:CloseMenu="configureDeviceClose"-->
+<!--          ></Device>-->
           </v-container>
         </v-card-text>
 
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            color="blue darken-1"
-            text
-            @click="configureDeviceClose(false)"
-            v-blur
-            >Cancel</v-btn
-          >
-          <v-btn
-            color="blue darken-1"
-            text
-            @click="configureDeviceClose(true)"
-            v-blur
-            >Save</v-btn
-          >
-        </v-card-actions>
+<!--        <v-card-actions>-->
+<!--          <v-spacer></v-spacer>-->
+<!--          <v-btn-->
+<!--            color="blue darken-1"-->
+<!--            text-->
+<!--            @click="configureDeviceClose(false)"-->
+<!--            v-blur-->
+<!--            >Cancel</v-btn-->
+<!--          >-->
+<!--          <v-btn-->
+<!--            color="blue darken-1"-->
+<!--            text-->
+<!--            @click="configureDeviceClose(true)"-->
+<!--            v-blur-->
+<!--            >Save</v-btn-->
+<!--          >-->
+<!--        </v-card-actions>-->
       </v-card>
     </v-dialog>
 
@@ -279,10 +296,11 @@ import OrderedBoxContainer from "@/components/containers/OrderedBoxContainer";
 import DeviceContainer from "@/components/containers/DeviceContainer";
 import Device from "@/components/individuals/Device";
 import CommonDeviceSchema from "../data/schemas/devices/CommonDeviceSchema";
+import DeviceSelector from "../components/containers/DeviceSelector";
 
 export default {
   name: "NewRoutine",
-  components: { OrderedBoxContainer, DeviceContainer, Device },
+  components: { OrderedBoxContainer, DeviceContainer, Device,DeviceSelector },
   model: {
     events: ["cancel", "save"]
   },
@@ -333,14 +351,23 @@ export default {
     this.devices = await CommonDeviceSchema.getAll();
   },
   methods: {
+    AddDeviceToList(ev){
+      console.log("Adding device to list");
+      this.selectedDevices.push(ev);
+      this.addDeviceClose(null);
+      console.log(this.selectedDevices);
+
+    },
     addDeviceOpen() {
       this.openDialog(this.dialogs.devices, "add");
     },
     addDeviceClose(item) {
       // Save to DB
       if (item != null) {
+        console.log("Opening Configure Device")
         this.configureDeviceOpen();
         this.selectedDevice = item;
+        console.log(this.selectedDevice);
       } else {
         this.closeDialog(this.dialogs.devices, "add");
       }
@@ -351,7 +378,9 @@ export default {
     },
     configureDeviceClose(result) {
       // Save to DB
-      if (result) {
+      console.log("CONFIGURE DEVICES CLOSE");
+      console.log(result);
+      if (result.confirmed) { // result
         this.selectedDevices.push(this.selectedDevice);
         this.closeDialog(this.dialogs.devices, "configure");
         this.closeDialog(this.dialogs.devices, "add");
@@ -361,8 +390,12 @@ export default {
     },
 
     openDialog(item, type) {
-      if (item == null || type == null || item[type] == null) return;
-      if (!item[type]) item[type] = true;
+      if (item == null || type == null || item[type] == null)
+        return;
+      if (!item[type])
+        item[type] = true;
+
+      console.log("HOLA");
     },
     closeDialog(item, type) {
       if (item == null || type == null || item[type] == null) return;
