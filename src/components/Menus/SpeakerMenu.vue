@@ -390,10 +390,13 @@ export default {
       this.deleteDialog = true;
     },
     async Delete(value) {
+      console.log("Vamos a borrar: " + value);
       if (value) {
         try {
+          console.log("Intentando de borrar");
           await this.device.room.deleteDevice(this.device);
         } catch (e) {
+          console.log("Hubo un error borrando");
           await this.device.delete();
         }
         this.deleteDialog = false;

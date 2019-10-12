@@ -35,12 +35,14 @@ export default {
   computed: {
     roomQuantityString() {
       return (
-        (this.count === 0 ? "No" : this.count) +
-        (this.count === 1 ? " device" : " devices")
+              (this.count === 0 ? "No" : this.count) +
+              (this.count === 1 ? " device" : " devices")
       );
     }
   },
   methods: {
+
+
     goToRoom() {
       let path = this.$router.currentRoute.path;
       if (!this.$router.currentRoute.params.regionId) {

@@ -287,6 +287,7 @@ import DeviceIds from "../../data/schemas/devices/DeviceIds";
 import Region from "../../data/schemas/Region";
 import Room from "../../data/schemas/Room";
 import DataValidator from "../../data/DataValidator";
+import apiWrapper from "../../data/apiWrapper";
 
 export default {
   name: "NewDevice",
@@ -310,7 +311,8 @@ export default {
   data() {
     return {
       data: {},
-      nameMaxLength: DataValidator.MAX_NAME_LENGTH
+      nameMaxLength: DataValidator.MAX_NAME_LENGTH,
+      allDevices : []
     };
   },
   computed: {
@@ -384,16 +386,11 @@ export default {
       let errorMessages = DataValidator.validateName(this.data.name, "Name");
       if (errorMessages.length === 0) {
         let found = false;
-        // TODO
-        // for (let region of this.regions) {
-        //   if (region !== this.region && region.name === this.data.name) {
-        //     found = true;
-        //     break;
-        //   }
-        // }
-        if (found) {
+
+
+        if(this.allDevices.some(el => {return el.name === this.data.name}))
           errorMessages.push("Name already exists");
-        }
+
       }
 
       return errorMessages;
@@ -474,6 +471,9 @@ export default {
   },
   created() {
     this.resetData();
+  },
+  async mounted() {
+    this.allDevices= await apiWrapper.devices.getAll()
   }
 }
 </script>

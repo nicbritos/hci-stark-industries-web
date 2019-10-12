@@ -195,7 +195,8 @@ async function requestQuery(url, method, data) {
   }
   console.log(response)
   console.log(response.responseText)
-  if (!response.ok) throw new Error(response.statusText); // TODO: Change to known errors
+  if (!response.ok)
+    throw ERRORS.BAD_REQUEST;
   return response.json();
 }
 

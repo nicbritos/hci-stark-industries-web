@@ -131,32 +131,42 @@
 
         let index = this.favouriteDevices.findIndex(el=>{return el.id === ev});
 
-        this.favouriteDevices.splice(index,1);
+        if(index != -1) {
 
-        let rr =  await Room.get(this.room.id);
+          this.favouriteDevices.splice(index, 1);
 
-        let dev = rr.favouriteDevices.find(el=>{return el.id === ev});
+          let rr = await Room.get(this.room.id);
 
-        this.favouriteDevices.splice( index, 0, dev );
+          let dev = rr.favouriteDevices.find(el => {
+            return el.id === ev
+          });
+
+          this.favouriteDevices.splice(index, 0, dev);
+        }
 
       },
       async reloadDevice(ev){
 
         let index = this.devices.findIndex(el=>{return el.id === ev});
+        if(index != -1) {
 
-        this.devices.splice(index,1);
+          this.devices.splice(index, 1);
 
-        let rr =  await Room.get(this.room.id);
+          let rr = await Room.get(this.room.id);
 
-        let dev = rr.devices.find(el=>{return el.id === ev});
+          let dev = rr.devices.find(el => {
+            return el.id === ev
+          });
 
-        this.devices.splice( index, 0, dev );
+          this.devices.splice(index, 0, dev);
+        }
 
       },
       newDeviceOpen() {
         this.openDialog(this.dialogs.devices, "new");
       },
-      newDeviceClose(device) {
+      async newDeviceClose(device) {
+        await this.room.createDevice(device);
         this.dialogs.devices.new = false;
       },
 

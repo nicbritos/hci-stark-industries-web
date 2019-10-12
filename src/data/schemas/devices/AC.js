@@ -47,13 +47,17 @@ export default class AC extends CommonDeviceSchema {
   }
 
   static async create(name, room) {
+    console.log("Creating AC");
     let data = await CommonDeviceSchema._create(
       name,
       DeviceIds.byType["Air Conditioner"],
       undefined,
       room
     );
-    return new AC(data.id, data.name, data.meta, data.room);
+    console.log(data);
+    let temp = new AC(data.id, data.name, data.meta, data.room);
+    console.log(temp);
+    return temp;;
   }
 
   constructor(id, name, meta, room) {
