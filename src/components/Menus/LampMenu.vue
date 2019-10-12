@@ -42,7 +42,6 @@
           <v-color-picker
             light
             v-model="color"
-            mode="hex"
             hide-inputs
             :disabled="!isOn" 
           ></v-color-picker>
@@ -113,6 +112,8 @@ export default {
       }
     },
     async resetData() {
+      console.log(this.color);
+      console.log(this.device.color);
       var hash = "#";
       var trasparency = "FF";
       if (this.device != null) {

@@ -21,7 +21,7 @@
           <v-switch v-model="isOn"></v-switch>
         </v-row>
         <span>Temperature</span>
-        <v-row justify="space-around" class="text-center">
+        <v-row justify="space-around" align="center" class="text-center">
           <v-btn
             icon
             class="justify-center col-md-1"
@@ -151,6 +151,7 @@ export default {
     async resetData() {
       if (this.device != null) {
         await this.device.refreshState();
+        this.isOn = this.device.isOn;
         this.temperature = this.device.temperature;
         this.ACmode = this.device.mode;
         this.vertical_blades = this.device.swing.vertical;
@@ -179,6 +180,7 @@ export default {
       this.$store.state.loading = true;
       if(this.mode === 'edit') {
         if (this.isOn) {
+
           await this.device.turnOn();
           await this.device.setMode(this.ACmode);
           await this.device.setFanSpeed(this.speed);

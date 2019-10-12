@@ -423,7 +423,9 @@ export default {
     }
   },
   mounted() {
-    this.resetData()
+    this.GenresList = Speakers.supportedGenres();
+    this.setUp();
+    this.StartSongTimer();
   }
 };
 </script>
