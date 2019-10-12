@@ -263,11 +263,11 @@ export default {
 
     if(err === apiWrapper.ERRORS.NETWORK) {
       console.log("NETWORK ERROR");
-      this.OpenErrorDialog("Hubo un error de conexion. Por favor recargue la pagina o repita la accion");
+      this.OpenErrorDialog("Conecction Error. Please reload this website");
     }
     else if (err === apiWrapper.ERRORS.BAD_REQUEST){
       console.log("BAD REQUEST");
-      this.OpenErrorDialog("Error de comunicacion con la API");
+      this.OpenErrorDialog("There was an error trying to reach the API. Please reload the website");
     }
     return false;
   },

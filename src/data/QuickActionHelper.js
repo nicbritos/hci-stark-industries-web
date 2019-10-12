@@ -44,9 +44,11 @@ const QUICK_ACTIONS = [
     quickAction: {
       description: "Locks or Unlocks the door",
       action: async function(door, val) {
-        if (val) {
-          console.log("Lock Door");
-          await door.lock();
+        if (val  ) {
+          if(!door.isOpen) {
+            console.log("Lock Door");
+            await door.lock();
+          }
         } else {
           console.log("UnLock Door");
           await door.unlock();

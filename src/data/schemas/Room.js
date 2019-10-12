@@ -61,8 +61,8 @@ export default class Room extends CommonSchema {
     return result;
   }
 
-  async getCount() {
-    return this.meta.count;
+   getCount() {
+    return this.devices.length
   }
 
   async createDevice(data) {

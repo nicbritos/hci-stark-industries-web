@@ -17,7 +17,7 @@
       </v-card-text>
       <v-card-actions class="justify-center">
         <div class="text-center">
-          <v-btn color="blue" @click="errorDialog = false">OK</v-btn>
+          <v-btn color="blue" @click="reloadSite()">Regargar pagina</v-btn>
         </div>
       </v-card-actions>
     </v-card>
@@ -41,6 +41,12 @@ export default {
     return {
       errorDialog: false
     };
+  },
+  methods:{
+    reloadSite(){
+      location.reload();
+      errorDialog = false
+    }
   },
   watch:{
     open:function (val) {

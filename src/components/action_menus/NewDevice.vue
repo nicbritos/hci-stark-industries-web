@@ -385,7 +385,6 @@ export default {
     validateNewName() {
       let errorMessages = DataValidator.validateName(this.data.name, "Name");
       if (errorMessages.length === 0) {
-        let found = false;
 
 
         if(this.allDevices.some(el => {return el.name === this.data.name}))

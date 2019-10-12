@@ -6,6 +6,7 @@
               :room="room"
               :value="dialogs.devices.new"
               @closeClick="newDeviceClose"
+
       ></NewDevice>
     </v-dialog>
     <v-dialog v-model="dialogs.rooms.edit" max-width="700px">
@@ -76,7 +77,7 @@
           >NEW DEVICE</v-btn
           >
         </v-toolbar>
-        <DeviceContainer :items="devices" @reloadall="reload"  @reload="reloadFavDevice"></DeviceContainer>
+        <DeviceContainer :items="devices" @favourited="LoadModel" @reloadall="reload"  @reload="reloadFavDevice"></DeviceContainer>
       </v-col>
     </v-row> </v-container
   ></template>
@@ -166,7 +167,9 @@
         this.openDialog(this.dialogs.devices, "new");
       },
       async newDeviceClose(device) {
-        await this.room.createDevice(device);
+        if(device != null) {
+          await this.room.createDevice(device);
+        }
         this.dialogs.devices.new = false;
       },
 

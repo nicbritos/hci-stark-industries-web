@@ -103,13 +103,18 @@ function getActionsLamp(device) {
     let id = device.id;
     let actions =[];
 
-    if(state.isOn)
-        actions.push(getAction(id,'turnOn'));
-    else
-        actions.push(getAction(id,'turnOff'));
+    if(state.isOn) {
+        actions.push(getAction(id, 'turnOn'));
+        actions.push(getAction(id,'setColor',state.color));
+        actions.push(getAction(id,'setBrightness', state.brightness));
+    }
+    else {
+        actions.push(getAction(id, 'setColor', state.color));
+        actions.push(getAction(id, 'setBrightness', state.brightness));
+        actions.push(getAction(id, 'turnOff'));
+    }
 
-    actions.push(getAction(id,'setColor',state.color.r,state.color.g,state.color.b));
-    actions.push(getAction(id,'setBrightness', state.brightness));
+
 
     return actions;
 };
@@ -120,15 +125,22 @@ function getActionsOven(device) {
     let id = device.id;
     let actions =[];
 
-    if(state.isOn)
-        actions.push(getAction(id,'turnOn'));
-    else
-        actions.push(getAction(id,'turnOff'));
+    if(state.isOn) {
+        actions.push(getAction(id, 'turnOn'));
+        actions.push(getAction(id,'setTemperature',state.temperature));
+        actions.push(getAction(id,'setHeat', state.heat_source));
+        actions.push(getAction(id,'setGrill', state.grill));
+        actions.push(getAction(id,'setConvection', state.convection));
+    }
+    else {
+        actions.push(getAction(id,'setTemperature',state.temperature));
+        actions.push(getAction(id,'setHeat', state.heat_source));
+        actions.push(getAction(id,'setGrill', state.grill));
+        actions.push(getAction(id,'setConvection', state.convection));
+        actions.push(getAction(id, 'turnOff'));
+    }
 
-    actions.push(getAction(id,'setTemperature',state.temperature));
-    actions.push(getAction(id,'setHeat', state.heat_source));
-    actions.push(getAction(id,'setGrill', state.grill));
-    actions.push(getAction(id,'setConvection', state.convection));
+
 
     return actions;
 };

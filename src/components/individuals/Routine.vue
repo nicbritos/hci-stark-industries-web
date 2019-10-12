@@ -24,11 +24,6 @@
       </div>
     </v-card-text>
     <v-card-actions class="mt-n4">
-      <v-btn icon v-blur text>
-        <v-icon>
-          more_horiz
-        </v-icon>
-      </v-btn>
       <v-spacer></v-spacer>
       <v-btn
         large
