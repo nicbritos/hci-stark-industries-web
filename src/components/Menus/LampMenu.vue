@@ -1,79 +1,80 @@
 <template>
-  <v-dialog v-model="SuperMenuOpen" persistent max-width="400px">
-
-    <v-card dark raised>
-      <v-card-title>
-        <span class="headline">{{ name }}</span>
-        <v-btn v-if="mode === 'edit'" icon absolute right @click="Delete()">
-          <v-avatar color="red">
-            <v-icon>delete</v-icon>
-          </v-avatar>
-        </v-btn>
-      </v-card-title>
-      <v-card-text>
-        <v-container>
-          <v-row>
-            <v-switch v-model="enabled"></v-switch>
-          </v-row>
-          <v-row left>
-            <span>Intensity</span>
-          </v-row>
-          <v-row class="justify-center">
-            <v-col cols="12">
-              <v-slider
-                v-model="intensity"
-                prepend-icon="lightbulb"
-                append-icon="lightbulb"
-              ></v-slider>
-            </v-col>
-          </v-row>
-          <hr />
-          <br />
-          <v-row left>
-            <span>Color</span>
-          </v-row>
-          <v-row class="justify-center">
-            <v-color-picker
-              light
-              v-model="color"
-              mode="hex"
-              hide-inputs
-            ></v-color-picker>
-          </v-row>
-        </v-container>
-      </v-card-text>
-      <v-card-actions class="justify-center">
-        <div class="text-center">
-          <v-btn color="red" @click="Exit()">Cancel</v-btn>
-          <v-btn color="blue" @click="SaveAndExit()">Confirm</v-btn>
-        </div>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+  <v-card dark raised>
+    <v-dialog v-model="deleteDialog" max-width="700">
+      <DeleteDialog
+        :name="device.name"
+        :show="deleteDialog"
+        @closeClick="Delete"
+      ></DeleteDialog>
+    </v-dialog>
+    <v-card-title>
+      <span class="headline">{{ device.name }}</span>
+      <v-btn icon absolute right @click="openDeleteDialog()">
+        <v-avatar color="red">
+          <v-icon>delete</v-icon>
+        </v-avatar>
+      </v-btn>
+    </v-card-title>
+    <v-card-text>
+      <v-container>
+        <v-row>
+          <v-switch v-model="isOn"></v-switch>
+        </v-row>
+        <v-row left>
+          <span>Intensity</span>
+        </v-row>
+        <v-row class="justify-center">
+          <v-col cols="12">
+            <v-slider
+              v-model="brightness"
+              prepend-icon="lightbulb"
+              append-icon="lightbulb"
+            ></v-slider>
+          </v-col>
+        </v-row>
+        <hr />
+        <br />
+        <v-row left>
+          <span>Color</span>
+        </v-row>
+        <v-row class="justify-center">
+          <v-color-picker
+            light
+            v-model="color"
+            mode="hex"
+            hide-inputs
+          ></v-color-picker>
+        </v-row>
+      </v-container>
+    </v-card-text>
+    <v-card-actions>
+      <v-spacer></v-spacer>
+      <v-btn v-blur color="red" @click="Exit()">Cancel</v-btn>
+      <v-btn v-blur color="blue" :disabled="!modified" @click="SaveAndExit()">SAVE</v-btn>
+    </v-card-actions>
+  </v-card>
 </template>
 
 <script>
 import Lamp from "../../data/schemas/devices/Lamp";
+import DeleteDialog from "../info_dialogs/DeleteDialog";
+
 export default {
   name: "LampMenu",
+  components: { DeleteDialog },
   props: {
-    name:{
-      type: String,
+    device: {
+      type: Lamp,
       required: true
-    },
-    deviceId:{
-      type:String,
-      required:true
     },
     mode: {
       type: String,
       required: true
     },
-    openMenu:{
+    show: {
       type: Boolean,
-      required:true
+      required: true
     }
-
   },
   data: () => ({
     color: {
@@ -81,75 +82,76 @@ export default {
       g: 255,
       b: 255
     },
-    enabled: false,
-    intensity: 0,
-    SuperMenuOpen: false
+    deleteDialog: false,
+    isOn: false,
+    brightness: 0
   }),
-  methods:{
-    Delete(){
-        console.log("Entrando a DELETE");
-        var APILamp = new Lamp(this.deviceId,this.name);
-        APILamp.delete();
-
-        this.Exit();
-      },
-    async LoadModel(){
-            let APILamp = new Lamp(this.deviceId, this.name);
-            await APILamp.refreshState();
-
-            this.color = APILamp.color;
-            this.enabled = APILamp.isOn;
-            this.intensity = APILamp.brightness;
-        },
-      async SaveAndExit(){
-
-      if(this.mode === 'edit') {
-        var APILamp = new Lamp(this.deviceId, this.name);
-        await APILamp.refreshState();
-        if (APILamp.isOn()) {
-          if (this.enabled) {
-            APILamp.setColor(this.color.r, this.color.g, this.color.b);
-            APILamp.setBrightness(this.intensity);
-          } else {
-            APILamp.turnOff();
-          }
-        } else {
-          if (this.enabled) {
-            APILamp.turnOn();
-            APILamp.setColor(this.color.r, this.color.g, this.color.b);
-            APILamp.setBrightness(this.intensity);
-          }
+  computed: {
+    modified() {
+      if (this.device == null) return false;
+      return (
+              this.device.isOn !== this.isOn ||
+              this.device.brightness !== this.brightness ||
+              this.device.colors.red !== this.color.r ||
+              this.device.colors.green !== this.color.g ||
+              this.device.colors.blue !== this.color.b
+      );
+    }
+  },
+  methods: {
+    openDeleteDialog() {
+      this.deleteDialog = true;
+    },
+    async Delete(value) {
+      if (value) {
+        try {
+          await this.device.room.deleteDevice(this.device);
+        } catch (e) {
+          await this.device.delete();
         }
+        this.deleteDialog = false;
+        this.onDelete();
+      } else {
+        this.deleteDialog = false;
       }
+    },
+    async resetData() {
+      if (this.device != null) {
+        await this.device.refreshState();
+        this.color.r = this.device.colors.red;
+        this.color.g = this.device.colors.green;
+        this.color.b = this.device.colors.blue;
+        this.isOn = this.device.isOn;
+        this.brightness = this.device.brightness;
+      }
+    },
+    async SaveAndExit() {
+      this.$store.state.loading = true;
+      if (this.isOn !== this.device.isOn) {
+        this.isOn ? await this.device.turnOn() : await this.device.turnOff();
+      }
+      if (this.isOn) {
+        await this.device.setColor(this.color.r, this.color.g, this.color.b);
+        await this.device.setBrightness(this.brightness);
+      }
+      this.$store.state.loading = false;
 
       this.Exit();
-        },
-    Exit(){
-      console.log("Sending Close Event from Lamp")
-      this.$emit('CloseMenu', {
-        name: this.name,
-        id: this.deviceId,
-        state: {
-          color: {
-            r: this.color.r,
-            g: this.color.g,
-            b: this.color.b
-          },
-          enabled: this.enabled,
-          intensity: this.intensity,
-        }
-      })
+    },
+    Exit() {
+      console.log("Sending Close Event from Lamp");
+      this.$emit("CloseMenu");
     }
-
   },
-  watch:{
-     openMenu:function (val) {
-          this.SuperMenuOpen= val;
-          if(val){
-
-              this.LoadModel();
-          }
-      },
+  watch: {
+    show: function(val) {
+      if (val) {
+        this.resetData();
+      }
+    }
+  },
+  mounted() {
+    this.resetData();
   }
 };
 </script>

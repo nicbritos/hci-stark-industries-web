@@ -35,7 +35,7 @@
 
 <script>
 export default {
-  name: "ErrorDialog",
+  name: "DeleteDialog",
   events: ["closeClick"],
   props: {
     name: {

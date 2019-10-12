@@ -49,7 +49,7 @@ export default class AC extends CommonDeviceSchema {
   static async create(name, room) {
     let data = await CommonDeviceSchema._create(
       name,
-      DeviceIds.byType.AC,
+      DeviceIds.byType["Air Conditioner"],
       undefined,
       room
     );
@@ -57,7 +57,7 @@ export default class AC extends CommonDeviceSchema {
   }
 
   constructor(id, name, meta, room) {
-    super(id, name, meta, DeviceIds.byType.AC, room);
+    super(id, name, meta, DeviceIds.byType["Air Conditioner"], room);
 
     this.isOn = false;
     this.mode = AC.supportedModes()[0];

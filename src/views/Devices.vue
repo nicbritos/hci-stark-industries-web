@@ -88,6 +88,7 @@ import NewDevice from "@/components/action_menus/NewDevice";
 import Room from "../data/schemas/Room";
 import DeleteDialog from "../components/info_dialogs/DeleteDialog";
 import EditRoom from "../components/action_menus/rooms/EditRoom";
+import DeviceCreator from "../data/schemas/devices/DeviceCreator";
 
 export default {
   name: "Devices",
@@ -124,7 +125,20 @@ export default {
     newDeviceOpen() {
       this.openDialog(this.dialogs.devices, "new");
     },
-    newDeviceClose(device) {
+    async newDeviceClose(data) {
+      if (data) {
+        this.$store.state.loading = true;
+
+        let deviceData = {
+          typeId: data.device.id,
+          name: data.device.name,
+          room: data.room
+        };
+        await this.room.createDevice(deviceData);
+
+        this.$store.state.loading = false;
+      }
+
       this.dialogs.devices.new = false;
     },
 
@@ -187,7 +201,9 @@ export default {
         disabled: true
       }
     ];
-    this.roomBreadcrumbItem = this.breadcrumbsItems[this.breadcrumbsItems.length - 1];
+    this.roomBreadcrumbItem = this.breadcrumbsItems[
+      this.breadcrumbsItems.length - 1
+    ];
   }
 };
 </script>

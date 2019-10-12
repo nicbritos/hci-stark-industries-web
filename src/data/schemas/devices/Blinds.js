@@ -54,6 +54,10 @@ export default class Blinds extends CommonDeviceSchema {
     return !!result.result;
   }
 
+  isOpening() {
+    return this.status === "opening";
+  }
+
   async refreshState() {
     console.log("Entre a reflesh state");
     let state = await this._getState();

@@ -4,9 +4,9 @@
 ##### * son opcionales
 - [ ] Soportar 7 dispositivos
 - [x] Crear dispositivos
-- [ ] Editar dispositivos
-- [ ] Eliminar dispositivos
-- [ ] Consultar estado de dispositivos
+- [x] Editar dispositivos
+- [x] Eliminar dispositivos
+- [x] Consultar estado de dispositivos
 - [ ] Ejecutar acciones sobre dispositivos
 - [ ] Crear rutinas
 - [ ] Ejecutar rutinas
@@ -53,11 +53,12 @@
   - [ ] Deshacer cambios
 - [ ] Dispositivos
   - [x] Crear Dispositivos
-  - [ ] Editar Dispositivos
-  - [ ] Eliminar dispositivos
   - [x] Mostar dispositivos favoritos en home
   - [x] Mostrar rutinas favoritas en home
+  - [ ] Editar nombre
+  - [ ] Menu de dispositivo
   - [ ] Deshacer cambios
+  - [x] Confirmacion de eliminacion
   - [ ] Vista de todos los dispositivos
   - [ ] Vista de dispositivos por categoria
 - [ ] Implementar la barra de busqueda

@@ -56,7 +56,7 @@ const URLS = {
       method: METHODS.PUT
     },
     addToRoom: {
-      url: composeURL(URL, "devices"),
+      url: composeURL(URL, "rooms"),
       method: METHODS.POST
     },
     deleteFromRoom: {
@@ -186,11 +186,14 @@ async function requestQuery(url, method, data) {
     };
   }
 
+  console.log(init)
   try {
     response = await fetch(url, init);
   } catch (error) {
     throw ERRORS.NETWORK;
   }
+  console.log(response)
+  console.log(response.responseText)
   if (!response.ok) throw new Error(response.statusText); // TODO: Change to known errors
   return response.json();
 }
@@ -289,7 +292,7 @@ export default {
     },
     addToRoom: async (deviceId, roomId) => {
       let response = await requestQuery(
-        composeURL(URLS.devices.addToRoom.url, deviceId, "rooms", roomId),
+        composeURL(URLS.devices.addToRoom.url, roomId, "devices", deviceId),
         URLS.devices.addToRoom.method
       );
 

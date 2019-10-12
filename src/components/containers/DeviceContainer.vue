@@ -8,6 +8,7 @@
         :device="item"
         @update="processSelection(item, $event)"
         @click="processClick(item)"
+        @favourited="processFavourited(item, $event)"
         v-on:reload="propagateReload"
         :mode="mode"
         v-on:CloseMenu="CloseMenu"
@@ -24,7 +25,7 @@ export default {
   name: "DeviceContainer",
   components: { Device, BoxContainer },
   model: {
-    events: ["pick"]
+    events: ["pick", "favourited"]
   },
   props: {
     items: {
@@ -78,13 +79,9 @@ export default {
       if (this.pick) this.$emit("pick", item);
       else console.log("Open its menu");
     },
-    propagateReload(){
-      console.log("Propagating");
-      this.$emit('reload')
+    processFavourited(item, newValue) {
+      this.$emit("favourited", item, newValue);
     }
-  },
-  mounted() {
-    console.log("En DEVICE CONTAINER")
   }
 };
 </script>

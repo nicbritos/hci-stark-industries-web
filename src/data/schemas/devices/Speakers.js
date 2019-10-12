@@ -41,17 +41,18 @@ export default class Speakers extends CommonDeviceSchema {
   }
 
   static async create(name, room) {
-    let data = await CommonDeviceSchema._create(name, DeviceIds.byType.Speakers, undefined, room);
+    let data = await CommonDeviceSchema._create(name, DeviceIds.byType["Speakers"], undefined, room);
     return new Speakers(data.id, data.name, data.meta, data.room);
   }
 
   constructor(id, name, meta, room) {
-    super(id, name, meta, DeviceIds.byType.Speakers, room);
+    super(id, name, meta, DeviceIds.byType["Speakers"], room);
 
     this.volume = Speakers.maxVolume();
     this.genre = Speakers.supportedGenres()[0];
     this.status = "stop";
     this.song = undefined;
+    this.playlist = null;
   }
 
   async setVolume(value) {

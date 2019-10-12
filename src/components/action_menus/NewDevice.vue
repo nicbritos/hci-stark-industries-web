@@ -128,7 +128,7 @@
           :rules="[() => data.stepper !== deviceStep || !data.error]"
           :complete="data.stepper > deviceStep && !data.error"
         >
-          Select Device
+          Select Device Type
         </v-stepper-step>
 
         <v-stepper-content :step="deviceStep">
@@ -159,14 +159,13 @@
           <v-row dense>
             <v-col>
               <v-select
-                v-model="data.device.id"
+                v-model="data.deviceId"
                 :items="devices"
-                label="Select Device"
+                label="Select Device Type"
                 item-value="id"
                 item-text="name"
                 clearable
                 menu-props="offsetY, offsetOverflow"
-                no-data-text="Room not found"
                 :error="data.error"
                 :error-messages="data.errorMessages"
                 @change="validateDevice"
@@ -190,7 +189,7 @@
                 v-blur
                 color="primary"
                 @click="data.stepper++"
-                :disabled="data.error || data.device.id == null"
+                :disabled="data.error || data.deviceId == null"
                 >Continue</v-btn
               >
             </v-col>
@@ -229,10 +228,8 @@
                 </span>
               </span>
               <span class="text--secondary">
-                and Device:
-                <span class="blue--text">
-                  '{{ getDeviceName(data.device) }}'
-                </span>
+                and Device Type:
+                <span class="blue--text"> '{{ getDeviceName }}' </span>
               </span>
             </v-col>
           </v-row>
@@ -323,7 +320,7 @@ export default {
         selectedRegion: null,
         selectedRoom: null,
         name: null,
-        device: { id: null, name: null },
+        deviceId: null,
         error: false,
         errorMessages: []
       };
@@ -358,7 +355,17 @@ export default {
         });
       }
       return data;
-    }
+    },
+
+    getDeviceName() {
+      if (this.data.deviceId != null) {
+        return this.devices.find(el => {
+          return this.data.deviceId === el.id;
+        }).name;
+      }
+
+      return "";
+    },
   },
   watch: {
     value: function(val) {
@@ -392,7 +399,7 @@ export default {
       return errorMessages;
     },
     resetData() {
-      this.data = Object.assign({}, this.defaultData);
+      this.data = Object.assign({}, this.defaultData); // deep copy
     },
     backOneStep() {
       if (this.data.stepper === 4) {
@@ -426,15 +433,6 @@ export default {
     getRoomName(room) {
       return room.name;
     },
-    getDeviceName() {
-      if (this.data.device.id != null) {
-        this.data.device.name = this.devices.find(el => {
-          return this.data.device.id === el.id;
-        }).name;
-      }
-
-      return this.data.device.name;
-    },
 
     validateRegion() {
       let messages = [];
@@ -451,9 +449,9 @@ export default {
       this.data.error = messages.length > 0;
     },
     validateDevice() {
-      console.log(this.data.device);
       let messages = [];
-      if (this.data.device == null) messages.push("Please, select a Device");
+      if (this.data.deviceId == null)
+        messages.push("Please, select a Device Type");
       this.data.errorMessages = messages;
       this.data.error = messages.length > 0;
     },
@@ -465,8 +463,10 @@ export default {
       let newDevice = {
         region: this.region != null ? this.region : this.data.selectedRegion,
         room: this.room != null ? this.room : this.data.selectedRoom,
-        device: this.data.device,
-        name: this.data.name
+        device: {
+          id: this.data.deviceId,
+          name: this.data.name
+        }
       };
       this.data.loading = true;
       this.$emit("closeClick", newDevice);
@@ -475,7 +475,7 @@ export default {
   created() {
     this.resetData();
   }
-};
+}
 </script>
 
 <style scoped></style>

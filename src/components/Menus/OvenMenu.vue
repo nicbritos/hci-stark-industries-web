@@ -1,9 +1,15 @@
 <template>
-  <v-dialog v-model="OvenMenu" persistent max-width="400px">
     <v-card dark raised>
+      <v-dialog v-model="deleteDialog" max-width="700">
+        <DeleteDialog
+                :name="device.name"
+                :show="deleteDialog"
+                @closeClick="Delete"
+        ></DeleteDialog>
+      </v-dialog>
       <v-card-title>
-        <span class="headline">{{ name }}</span>
-        <v-btn v-if="mode === 'edit'" icon absolute right @click="Delete()">
+        <span class="headline">{{ device.name }}</span>
+        <v-btn icon absolute right @click="openDeleteDialog">
           <v-avatar color="red">
             <v-icon>delete</v-icon>
           </v-avatar>
@@ -11,13 +17,14 @@
       </v-card-title>
       <v-card-text>
         <v-row>
-          <v-switch v-model="enabled"></v-switch>
+          <v-switch v-model="isOn"></v-switch>
         </v-row>
         <span>Temperature</span>
         <v-row justify="space-around" class="text-center">
           <v-btn
             icon
             class="justify-center col-md-1"
+            :disabled="temperature <= minTemperature || !isOn"
             @click="temperature = temperature - 1"
           >
             <v-avatar color="blue">
@@ -32,6 +39,7 @@
           <v-btn
             icon
             class="justify-center col-md-1"
+            :disabled="temperature >= maxTemperature || !isOn"
             @click="temperature = 1 + temperature"
           >
             <v-avatar color="blue">
@@ -73,88 +81,101 @@
       <v-card-actions class="justify-center">
         <div class="text-center">
           <v-btn color="red" @click="Exit()">Cancel</v-btn>
-          <v-btn color="blue" @click="SaveAndExit()">Confirm</v-btn>
+          <v-btn color="blue" :disabled="!modified" @click="SaveAndExit()">SAVE</v-btn>
         </div>
       </v-card-actions>
     </v-card>
-  </v-dialog>
 </template>
 
 <script>
 import Oven from "../../data/schemas/devices/Oven";
+import DeleteDialog from "../info_dialogs/DeleteDialog";
+
 export default {
   name: "OvenMenu",
+  components: { DeleteDialog },
   props: {
-    name: {
-      type: String,
+    device: {
+      type: Oven,
       required: true
     },
     mode: {
       type: String,
       required: true
     },
-    deviceId: {
-      type: String,
-      required: true
-    },
-    openMenu: {
+    show: {
       type: Boolean,
       required: true
-    },
+    }
   },
   data: () => ({
-      enabled: false,
-      temperature: 100,
-      heat_source: "conventional",
-      grill: 0,
-      convection: 0,
-      labelsConvection: ["normal","eco","off"],
-      labelsGrill: ["large","eco","off"],
-      OvenMenu: false
-    }),
-  methods:{
-    Delete(){
-        var APIOven= new Oven(this.deviceId,this.name);
-        APIOven.delete();
-
-        this.Exit();
-      },
-    async LoadModel(){
-            let APIOven = new Oven(this.deviceId, this.name);
-            await APIOven.refreshState();
-
-            this.enabled = APIOven.isOn;
-            this.temperature = APIOven.temperature;
-            this.heat_source = APIOven.heatMode;
-            this.grill = this.labelsGrill.indexOf(APIOven.grillMode);
-            this.convection = this.labelsConvection.indexOf(APIOven.convectionMode);
-        },
-      async SaveAndExit() {
-        if (this.mode === 'edit') {
-          var APIOven = new Oven(this.deviceId, this.name);
-
-          await APIOven.refreshState();
-          if (APIOven.isOn()) {
-            if (this.enabled) {
-              APIOven.setTemperature(this.temperature);
-              APIOven.setConvection(this.labelsConvection[this.convection]);
-              APIOven.setGrill(this.labelsGrill[this.grill]);
-              APIOven.setHeat(this.heat_source);
-            } else {
-              APIOven.turnOff();
-            }
-          } else if (this.enabled) {
-            APIOven.turnOn();
-            APIOven.setTemperature(this.temperature);
-            APIOven.setConvection(this.labelsConvection[this.convection]);
-            APIOven.setGrill(this.labelsGrill[this.grill]);
-            APIOven.setHeat(this.heat_source);
-          }
+    isOn: false,
+    temperature: 100,
+    heat_source: "conventional",
+    grill: 0,
+    convection: 0,
+    labelsConvection: ["normal", "eco", "off"],
+    labelsGrill: ["large", "eco", "off"],
+    deleteDialog: false
+  }),
+  computed: {
+    modified() {
+      if (this.device == null) return false;
+      return (
+              this.device.temperature !== this.temperature ||
+              this.device.isOn !== this.isOn ||
+              this.device.heatMode !== this.heat_source ||
+              this.device.convectionMode !== this.labelsConvection.indexOf(convection) ||
+              this.device.grillMode !== this.labelsGrill.indexOf(grill)
+      );
+    },
+    minTemperature() {
+      return Oven.minTemperature();
+    },
+    maxTemperature() {
+      return Oven.maxTemperature();
+    }
+  },
+  methods: {
+    openDeleteDialog() {
+      this.deleteDialog = true;
+    },
+    async Delete(value) {
+      if (value) {
+        try {
+          await this.device.room.deleteDevice(this.device);
+        } catch (e) {
+          await this.device.delete();
         }
+        this.deleteDialog = false;
+        this.onDelete();
+      } else {
+        this.deleteDialog = false;
+      }
+    },
+    async resetData() {
+      if (this.device != null) {
+        await this.device.refreshState();
+        this.isOn = this.device.isOn;
+        this.temperature = this.device.temperature;
+        this.heat_source = this.device.heatMode;
+        this.grill = labelsGrill.indexOf(this.device.grillMode);
+        this.convection = labelsConvection.indexOf(this.device.convectionMode);
+      }
+    },
+    async SaveAndExit() {
+      this.$store.state.loading = true;
+      if(this.isOn) {
+        await this.device.turnOn();
+        await this.device.setTemperature(this.temperature);
+        await this.device.setConvection(this.labelsConvection[this.convection]);
+        await this.device.setGrill(this.labelsGrill[this.grill]);
+        await this.device.setHeat(this.heat_source);
+      } else await this.device.turnOff();
+      this.$store.state.loading = false;
 
-
-        this.Exit();
-        },
+      this.Exit();
+    },
     Exit(){
       console.log("Sending Close Event from Oven")
       this.$emit('CloseMenu', {
@@ -168,19 +189,22 @@ export default {
           convection: this.convection,
         }
       })
+    },
+    onDelete() {
+      this.$emit("delete");
     }
-
   },
-  watch:{
-     openMenu:function (val) {
-          this.OvenMenu= val;
-          if(val){
-
-              this.LoadModel();
-          }
-      },
+  watch: {
+    show: function(val) {
+      if (val) {
+        this.resetData();
+      }
+    }
+  },
+  mounted() {
+    this.resetData()
   }
-}
+};
 </script>
 
 <style scoped></style>

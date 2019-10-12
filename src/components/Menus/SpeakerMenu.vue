@@ -1,165 +1,177 @@
 <template>
-  <v-dialog v-model="SuperMenuOpen" persistent max-width="500px">
-    <v-card dark raised>
-      <v-card-title>
-        <span class="headline">{{ name }}</span>
+  <v-card dark raised>
+    <v-dialog v-model="deleteDialog" max-width="700">
+      <DeleteDialog
+              :name="device.name"
+              :show="deleteDialog"
+              @closeClick="Delete"
+      ></DeleteDialog>
+    </v-dialog>
+    <v-card-title>
+      <span class="headline">{{ name }}</span>
 
-        <v-btn v-if="mode === 'edit'" icon absolute right @click="Delete()">
-          <v-avatar  color="red">
-            <v-icon>delete</v-icon>
-          </v-avatar>
-        </v-btn>
-      </v-card-title>
-      <v-card-text>
-        <v-container>
-          <v-row>
-            <span v-show="SpeakerModel.isSongLoaded">
-              Playing <b>{{ SpeakerModel.currentSong.name }}</b> by
-              <b>{{ SpeakerModel.currentSong.artist }}</b>
+      <v-btn icon absolute right @click="openDeleteDialog">
+        <v-avatar color="red">
+          <v-icon>delete</v-icon>
+        </v-avatar>
+      </v-btn>
+    </v-card-title>
+    <v-card-text>
+      <v-container>
+        <v-row>
+          <span v-show="SpeakerModel.isSongLoaded">
+            Playing <b>{{ SpeakerModel.currentSong.name }}</b> by
+            <b>{{ SpeakerModel.currentSong.artist }}</b>
+          </span>
+          <span v-show="!SpeakerModel.isSongLoaded">
+            No song
+          </span>
+        </v-row>
+        <v-row>
+          <div class="progressContainer">
+            <span class="firstTimeMark">
+              {{ Math.floor(SpeakerModel.currentSong.timemark / 60) }}:{{
+                this.SpeakerModel.currentSong.timemark % 60
+              }}
             </span>
-            <span v-show="!SpeakerModel.isSongLoaded">
-              No song
+
+            <v-progress-linear
+              top
+              class=""
+              color="light-blue"
+              rounded
+              :value="SpeakerModel.currentSong.progress"
+              buffer-value="100"
+            />
+            <span class="lastTimeMark">
+              {{ Math.floor(this.SpeakerModel.currentSong.duration / 60) }}:{{
+                this.SpeakerModel.currentSong.duration % 60
+              }}
             </span>
-          </v-row>
-          <v-row>
-            <div class="progressContainer">
-              <span class="firstTimeMark">
-                {{ Math.floor(SpeakerModel.currentSong.timemark / 60) }}:{{
-                  this.SpeakerModel.currentSong.timemark % 60
-                }}
-              </span>
-
-              <v-progress-linear
-                top
-                class=""
-                color="light-blue"
-                rounded
-                :value="SpeakerModel.currentSong.progress"
-                buffer-value="100"
-              />
-              <span class="lastTimeMark">
-                {{ Math.floor(this.SpeakerModel.currentSong.duration / 60) }}:{{
-                  this.SpeakerModel.currentSong.duration % 60
-                }}
-              </span>
-            </div>
-          </v-row>
-          <v-row>
-            <div class="buttonsContainer ">
-              <v-btn
-                icon
-                height="50"
-                width="50"
-                class="prevButton"
-                @click="previusSong()"
-              >
-                <v-avatar size="50" color="blue">
-                  <v-icon>
-                    fast_rewind
-                  </v-icon>
-                </v-avatar>
-              </v-btn>
-
-              <v-btn
-                width="80"
-                height="80"
-                icon
-                @click="playPauseButtonPressed()"
-              >
-                <v-avatar size="80" color="blue">
-                  <v-icon
-                    size="50"
-                    v-show="!this.SpeakerModel.currentSong.isPlaying"
-                  >
-                    play_arrow
-                  </v-icon>
-                  <v-icon
-                    size="50"
-                    v-show="this.SpeakerModel.currentSong.isPlaying"
-                  >
-                    pause
-                  </v-icon>
-                </v-avatar>
-              </v-btn>
-
-              <v-btn
-                icon
-                height="50"
-                width="50"
-                class="nextButton"
-                @click="nextSong()"
-              >
-                <v-avatar size="50" color="blue">
-                  <v-icon>
-                    fast_forward
-                  </v-icon>
-                </v-avatar>
-              </v-btn>
-            </div>
-            <v-btn icon class="stopButton" @click="stopMusic()">
-              <v-avatar color="blue">
+          </div>
+        </v-row>
+        <v-row>
+          <div class="buttonsContainer ">
+            <v-btn
+              icon
+              height="50"
+              width="50"
+              class="prevButton"
+              @click="previusSong()"
+            >
+              <v-avatar size="50" color="blue">
                 <v-icon>
-                  stop
+                  fast_rewind
                 </v-icon>
               </v-avatar>
             </v-btn>
-          </v-row>
-          <v-row>
-            <v-slider
-              class="volumeContainer"
-              v-model="SelectedVolume"
-              color="blue"
-              track-color="white"
-              always-dirty
-              min="0"
-              max="10"
+
+            <v-btn
+              width="80"
+              height="80"
+              icon
+              @click="playPauseButtonPressed()"
             >
-              <template v-slot:prepend>
-                <v-icon color="blue" @click="decrementVolume()">
-                  remove
-                </v-icon>
-              </template>
-
-              <template v-slot:append>
-                <v-icon color="blue" @click="incrementVolume()">
-                  add
-                </v-icon>
-              </template>
-            </v-slider>
-          </v-row>
-          <v-row>
-            <div class="genresContainer">
-              <v-overflow-btn
-                class=" ddl"
-                :items="GenresList"
-                v-model="SelectedDDL"
-              >
-              </v-overflow-btn>
-
-              <v-avatar color="blue" @click="LoadGenre()">
-                <v-icon>
+              <v-avatar size="80" color="blue">
+                <v-icon
+                  size="50"
+                  v-show="!this.SpeakerModel.currentSong.isPlaying"
+                >
                   play_arrow
                 </v-icon>
+                <v-icon
+                  size="50"
+                  v-show="this.SpeakerModel.currentSong.isPlaying"
+                >
+                  pause
+                </v-icon>
               </v-avatar>
-            </div>
-          </v-row>
-        </v-container>
-      </v-card-text>
-      <v-card-actions class="justify-center">
-        <div class="text-center">
-          <v-btn color="red" @click="Exit()">Cancel</v-btn>
-          <v-btn color="blue" @click="Exit()">Confirm</v-btn>
-        </div>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+            </v-btn>
+
+            <v-btn
+              icon
+              height="50"
+              width="50"
+              class="nextButton"
+              @click="nextSong()"
+            >
+              <v-avatar size="50" color="blue">
+                <v-icon>
+                  fast_forward
+                </v-icon>
+              </v-avatar>
+            </v-btn>
+          </div>
+          <v-btn icon class="stopButton" @click="stopMusic()">
+            <v-avatar color="blue">
+              <v-icon>
+                stop
+              </v-icon>
+            </v-avatar>
+          </v-btn>
+        </v-row>
+        <v-row>
+          <v-slider
+            class="volumeContainer"
+            v-model="SelectedVolume"
+            color="blue"
+            track-color="white"
+            always-dirty
+            min="0"
+            max="10"
+          >
+            <template v-slot:prepend>
+              <v-icon color="blue" @click="decrementVolume()">
+                remove
+              </v-icon>
+            </template>
+
+            <template v-slot:append>
+              <v-icon color="blue" @click="incrementVolume()">
+                add
+              </v-icon>
+            </template>
+          </v-slider>
+        </v-row>
+        <v-row>
+          <div class="genresContainer">
+            <v-overflow-btn
+              class=" ddl"
+              :items="GenresList"
+              v-model="SelectedDDL"
+            >
+            </v-overflow-btn>
+
+            <v-avatar color="blue" @click="LoadGenre()">
+              <v-icon>
+                play_arrow
+              </v-icon>
+            </v-avatar>
+          </div>
+        </v-row>
+      </v-container>
+    </v-card-text>
+    <v-card-actions class="justify-center">
+      <div class="text-center">
+        <v-btn color="red" @click="Exit()">Cancel</v-btn>
+        <v-btn color="blue" @click="SaveAndExit()">SAVE</v-btn>
+      </div>
+    </v-card-actions>
+  </v-card>
 </template>
 
 <script>
 import Speakers from "../../data/schemas/devices/Speakers";
+import DeleteDialog from "../info_dialogs/DeleteDialog";
+
 export default {
   name: "SpeakerMenu",
+  components: { DeleteDialog },
   props: {
+    device: {
+      type: Speakers,
+      required: true
+    },/* 
     deviceId: {
       type: String,
       required: true
@@ -171,15 +183,15 @@ export default {
     mode:{
       type: String,
       required: true
-    },
-    openMenu: {
+    }, */
+    show: {
       type: Boolean,
       required: true
     }
   },
   data: () => ({
-    SuperMenuOpen: false,
-    interval:undefined,
+    interval: undefined,
+    deleteDialog: false,
 
     SpeakerModel: {
       genre: "",
@@ -204,6 +216,7 @@ export default {
     PreviousModel: undefined
   }),
   methods: {
+    },
       Exit(){
           console.log("Sending Close Event from Speaker")
           this.$emit('CloseMenu', {
@@ -366,14 +379,17 @@ export default {
       }
     },
     StartSongTimer() {
-        window.clearInterval(this.interval);
+      window.clearInterval(this.interval);
       this.interval = window.setInterval(() => {
         if (this.SpeakerModel.isSongLoaded) {
           if (this.SpeakerModel.currentSong.isPlaying) {
             this.SpeakerModel.currentSong.timemark++;
             console.log("aumento el timer");
 
-            this.SpeakerModel.currentSong.progress = 100 * (this.SpeakerModel.currentSong.timemark / this.SpeakerModel.currentSong.duration);
+            this.SpeakerModel.currentSong.progress =
+              100 *
+              (this.SpeakerModel.currentSong.timemark /
+                this.SpeakerModel.currentSong.duration);
 
             if (
               this.SpeakerModel.currentSong.timemark >=
@@ -387,6 +403,22 @@ export default {
       }, 1000);
     },
 
+    openDeleteDialog() {
+      this.deleteDialog = true;
+    },
+    async Delete(value) {
+      if (value) {
+        try {
+          await this.device.room.deleteDevice(this.device);
+        } catch (e) {
+          await this.device.delete();
+        }
+        this.deleteDialog = false;
+        this.onDelete();
+      } else {
+        this.deleteDialog = false;
+      }
+    },
   },
   watch: {
     SelectedVolume: function(val) {
@@ -394,8 +426,7 @@ export default {
       console.log("Detecting new volume: " + val);
       this.acknowledgeVolumenChange();
     },
-    openMenu: function(val) {
-      this.SuperMenuOpen = val;
+    show: function(val) {
       if (val) {
         this.GenresList = Speakers.supportedGenres();
         this.setUp();

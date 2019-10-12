@@ -27,16 +27,16 @@ export default class CommonDeviceSchema extends CommonSchema {
     let result = await CommonSchema._create(
       name,
       meta,
-      { typeId: deviceId },
+      { type: { id: deviceId } },
       "devices",
-      "device"
+      "result"
     );
 
     return { id: result.id, name: name, meta: meta, room: room };
   }
 
   constructor(id, name, meta, deviceId, room) {
-    super(id, name, meta, "devices", "device");
+    super(id, name, meta, "devices", "result");
 
     this.deviceId = deviceId;
     this.room = room;
@@ -54,8 +54,6 @@ export default class CommonDeviceSchema extends CommonSchema {
     metaCopy.favourite = nextValue;
     let result = await apiWrapper.devices.update(this.id, {
       name: this.name,
-      typeId: this.deviceId,
-      id: this.id,
       meta: CommonDeviceSchema._formatMeta(metaCopy)
     });
 
@@ -65,7 +63,7 @@ export default class CommonDeviceSchema extends CommonSchema {
 
   async changeName(newName) {
     return CommonSchema._changeName(newName, {
-      typeId: this.deviceId
+      meta: CommonDeviceSchema._formatMeta(this.meta)
     });
   }
 

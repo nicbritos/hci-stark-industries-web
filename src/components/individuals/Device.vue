@@ -1,21 +1,30 @@
 <template>
   <v-container>
-    <DeviceSelector
-      :device="device"
+    <v-dialog v-model="menu" max-width="600px">
+      <DeviceSelector
+        :device="device"
+        :show="menu"
       :mode="mode"
-      :openMenu="openMenu"
-      v-on:CloseMenu="CloseMenu"
-    ></DeviceSelector>
-    <v-card hover style="cursor: default" width="200">
-      <v-card-text @click="OpenMenu()" v-ripple style="cursor: pointer">
-        <div class="text--secondary">
-          {{ device.name + (room ? " from " + device.room.name : "") }}
+        v-on:CloseMenu="closeMenu()"
+      ></DeviceSelector>
+    </v-dialog>
+
+    <v-card dark hover style="cursor: default" width="200">
+      <v-card-text @click="onClick" v-ripple style="cursor: pointer">
+        <div class="white--text">
+          {{
+          }}
+            device.name
         </div>
         <v-container fluid>
           <v-row align="start" justify="center">
             <v-img max-height="100" max-width="100" :src="image"></v-img>
           </v-row>
         </v-container>
+        <div class="white--text">
+          {{(room && device.room ? device.room.name : "")
+          }}
+        </div>
       </v-card-text>
       <v-card-actions v-if="selectable || editable">
         <v-checkbox
@@ -29,11 +38,6 @@
           class="ml-2 mt-n1"
         >
         </v-checkbox>
-        <v-btn v-if="editable" icon v-blur text @click="OpenMenu()">
-          <v-icon>
-            more_horiz
-          </v-icon>
-        </v-btn>
         <v-spacer></v-spacer>
         <v-btn
           v-if="editable"
@@ -42,9 +46,10 @@
           v-blur
           text
           color="primary"
-          @click="applyFavouriteSelection()"
+          :loading="loadingFav"
+          @click="applyFavouriteSelection"
         >
-          <v-icon large v-if="this.device.meta.favourited">favorite</v-icon>
+          <v-icon large v-if="this.device.isFavourite()">favorite</v-icon>
           <v-icon large v-else>favorite_outline</v-icon>
         </v-btn>
         <v-switch
@@ -52,6 +57,7 @@
           class="ml-4 mb-n6 pb-0 pa-0 mt-0"
           v-model="isOn"
           v-blur
+          :loading="loadingToggle"
           @change="onSwitchUpdate()"
           color="primary"
         >
@@ -66,16 +72,18 @@ import ImageRetriever from "../../data/ImageRetriever";
 import DeviceSelector from "../containers/DeviceSelector";
 import apiWrapper from "../../data/apiWrapper";
 import QuickActionHelper from "../../data/QuickActionHelper";
+import CommonDeviceSchema from "../../data/schemas/devices/CommonDeviceSchema";
+import Room from "../../data/schemas/Room";
 
 export default {
-  name: "Routine",
+  name: "Device",
   components: { DeviceSelector },
   model: {
-    events: ["selectUpdate", "click"]
+    events: ["update", "click", "favourited"]
   },
   props: {
     device: {
-      type: Object,
+      type: CommonDeviceSchema,
       required: true
     },
     mode: {
@@ -105,11 +113,13 @@ export default {
     }
   },
   data: () => ({
-    openMenu: false,
+    menu: false,
     image: "",
     fav: false,
     isOn: false,
     hasAction: true,
+    loadingFav: false,
+    loadingToggle: false,
     quickAction: null
   }),
   methods: {
@@ -118,139 +128,132 @@ export default {
       this.isOn = !this.isOn;
     },
     async applyFavouriteSelection() {
-      this.device.meta.favourited = !this.device.meta.favourited;
-      let data = {
-        name: this.device.name,
-        meta: {
-          favourite: this.device.meta.favourited
-        }
-      };
-      this.fav = this.device.meta.favourited;
-      await apiWrapper.devices.update(this.device.id, data);
-      this.$emit("reload");
+      this.loadingFav = true;
+      try {
+        await this.device.room.setFavourite(
+          this.device,
+          !this.device.isFavourite()
+        );
+      } catch (e) {
+        await this.device.setFavourite(!this.device.isFavourite());
+      }
+      this.loadingFav = false;
+      this.$emit("favourited", this.device.isFavourite());
     },
     onSelectUpdate(value) {
       this.$emit("selectUpdate", value);
     },
-    onClick() {
-      this.$emit("click");
+    openMenu() {
+      this.menu = true;
     },
-    CloseMenu(ev) {
-      this.openMenu = false;
+    onClick() {
+      if (this.editable) this.openMenu();
+      else this.$emit("click");
+    },
+    closeMenu() {
+      this.menu = false;
       console.log("CLOSING MENUUU");
       console.log(ev);
       this.$emit('CloseMenu',ev);
-
     },
     OpenMenu() {
       console.log("OPENING MENU");
-      console.log("LA PUTA QUE TE PARIO")
       this.openMenu = true;
-    },
-    GetFavourite() {
-      console.log("BEFORE APPLYING");
-      console.log(
-        `device: ${this.device.name} is fav: ${this.fav} and in DB is: ${
-          this.device.meta.favourited
-        }`
-      );
-      return this.device.meta.favourited;
+      console.log("LA PUTA QUE TE PARIO")
     },
     GetImage() {
       console.log(this.device);
       switch (this.device.deviceId) {
         case "rnizejqr2di0okho": // FRIDGE
           return ImageRetriever.GetImages(
-            this.device.type.id,
-            ImageRetriever.ACTIONS.INVARIANT
+                  this.device.type.id,
+                  ImageRetriever.ACTIONS.INVARIANT
           );
         case "c89b94e8581855bc": // SPEAKER
           if (this.device.state.status === "playing")
             return ImageRetriever.GetImages(
-              this.device.type.id,
-              ImageRetriever.ACTIONS.ON
+                    this.device.type.id,
+                    ImageRetriever.ACTIONS.ON
             );
           else
             return ImageRetriever.GetImages(
-              this.device.type.id,
-              ImageRetriever.ACTIONS.OFF
+                    this.device.type.id,
+                    ImageRetriever.ACTIONS.OFF
             );
         case "eu0v2xgprrhhg41g": // CURTAINS
           if (
-            this.device.state.status === "opened" ||
-            this.device.state.status === "opening"
+                  this.device.state.status === "opened" ||
+                  this.device.state.status === "opening"
           )
             return ImageRetriever.GetImages(
-              this.device.type.id,
-              ImageRetriever.ACTIONS.OPEN
+                    this.device.type.id,
+                    ImageRetriever.ACTIONS.OPEN
             );
           else
             return ImageRetriever.GetImages(
-              this.device.type.id,
-              ImageRetriever.ACTIONS.CLOSE
+                    this.device.type.id,
+                    ImageRetriever.ACTIONS.CLOSE
             );
         case "go46xmbqeomjrsjr": // LAMP
           if (this.device.state.status === "off")
             return ImageRetriever.GetImages(
-              this.device.type.id,
-              ImageRetriever.ACTIONS.OFF
+                    this.device.type.id,
+                    ImageRetriever.ACTIONS.OFF
             );
           else
             return ImageRetriever.GetImages(
-              this.device.type.id,
-              ImageRetriever.ACTIONS.ON
+                    this.device.type.id,
+                    ImageRetriever.ACTIONS.ON
             );
         case "im77xxyulpegfmv8": //Oven
           if (this.device.state.status === "off")
             return ImageRetriever.GetImages(
-              this.device.type.id,
-              ImageRetriever.ACTIONS.OFF
+                    this.device.type.id,
+                    ImageRetriever.ACTIONS.OFF
             );
           else
             return ImageRetriever.GetImages(
-              this.device.type.id,
-              ImageRetriever.ACTIONS.ON
+                    this.device.type.id,
+                    ImageRetriever.ACTIONS.ON
             );
         case "li6cbv5sdlatti0j": //AC
           if (this.device.state.status === "off")
             return ImageRetriever.GetImages(
-              this.device.type.id,
-              ImageRetriever.ACTIONS.OFF
+                    this.device.type.id,
+                    ImageRetriever.ACTIONS.OFF
             );
           else
             return ImageRetriever.GetImages(
-              this.device.type.id,
-              ImageRetriever.ACTIONS.ON
+                    this.device.type.id,
+                    ImageRetriever.ACTIONS.ON
             );
         case "lsf78ly0eqrjbz91": // DOOR
           if (this.device.state.lock === "locked")
             return ImageRetriever.GetImages(
-              this.device.type.id,
-              ImageRetriever.ACTIONS.LOCK
+                    this.device.type.id,
+                    ImageRetriever.ACTIONS.LOCK
             );
           else
             return ImageRetriever.GetImages(
-              this.device.type.id,
-              ImageRetriever.ACTIONS.UNLOCK
+                    this.device.type.id,
+                    ImageRetriever.ACTIONS.UNLOCK
             );
       }
     }
   },
   async mounted() {
-    this.image = this.GetImage();
-    this.fav = this.GetFavourite();
+    this.image = GetImage();
 
-
-    this.hasAction = await QuickActionHelper.hasQuickAction(
-      this.device.type.id
-    );
-
-    if (this.hasAction) {
-      this.quickAction = await QuickActionHelper.getQuickAction(
-        this.device.type.id
-      );
-     // this.isOn = this.quickAction.checkState(this.device);
-    }
+    // this.hasAction = await QuickActionHelper.hasQuickAction(
+    //   this.device.deviceId
+    // );
+    //
+    // if (this.hasAction) {
+    //   this.quickAction = await QuickActionHelper.getQuickAction(
+    //     this.device.deviceId
+    //   );
+    //   this.isOn = this.quickAction.checkState(this.device);
+    // }
   }
 };
 </script>

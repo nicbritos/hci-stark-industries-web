@@ -5,7 +5,7 @@ const byType = {
   Lamp: "go46xmbqeomjrsjr",
   Refrigerator: "rnizejqr2di0okho",
   Oven: "im77xxyulpegfmv8",
-  Speaker: "c89b94e8581855bc"
+  Speakers: "c89b94e8581855bc"
 };
 
 let byId = {};

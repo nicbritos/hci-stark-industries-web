@@ -1,80 +1,100 @@
-
-
 <template>
-	<v-container>
+  <FridgeMenu
+    v-if="device.deviceId === 'rnizejqr2di0okho'"
+    :device="device"
+    :show="show"
+    @delete="ResendEvent('delete', $event)"
+    @CloseMenu="ResendEvent('close', $event)"
+  />
 
-<!--		DONE-->
-		<FridgeMenu v-if="device.deviceId === 'rnizejqr2di0okho'"
-					v-on:CloseMenu="ResendEvent" :openMenu="superOpen" :mode="mode" :name="device.name" :device-id="device.id"/>
-<!--		DONE-->
-		<SpeakerMenu v-else-if="device.deviceId === 'c89b94e8581855bc'"
-					 v-on:CloseMenu="ResendEvent" :openMenu="superOpen" :mode="mode" :name="device.name" :device-id="device.id"/>
-<!--		DONE-->
-		<CurtainsMenu v-else-if="device.deviceId === 'eu0v2xgprrhhg41g'"
-					  v-on:CloseMenu="ResendEvent" :openMenu="superOpen" :mode="mode"  :name="device.name" :device-id="device.id"/>
-<!--		DONE-->
-		<LampMenu v-else-if="device.deviceId === 'go46xmbqeomjrsjr'"
-			  v-on:CloseMenu="ResendEvent" :openMenu="superOpen"  :mode="mode" :name="device.name" :device-id="device.id"/>
-<!--		DONE-->
-		<OvenMenu v-else-if="device.deviceId === 'im77xxyulpegfmv8'"
-				  v-on:CloseMenu="ResendEvent" :openMenu="superOpen" :mode="mode" :name="device.name" :device-id="device.id"/>
-<!--		DONE-->
-		<ACMenu v-else-if="device.deviceId === 'li6cbv5sdlatti0j'"
-					  v-on:CloseMenu="ResendEvent" :openMenu="superOpen" :mode="mode" :name="device.name" :device-id="device.id"/>
-<!--		DONE-->
-		<DoorMenu v-else-if="device.deviceId === 'lsf78ly0eqrjbz91'"
-					  v-on:CloseMenu="ResendEvent" :openMenu="superOpen" :mode="mode" :name="device.name" :device-id="device.id"/>
+  <SpeakerMenu
+    v-else-if="device.deviceId === 'c89b94e8581855bc'"
+    :device="device"
+    :device-id="device.id"
+    :name="device.name"
+    :mode="device.mode"
+    :show="show"
+    @delete="ResendEvent('delete', $event)"
+    @CloseMenu="ResendEvent('close', $event)"
+  />
 
-	</v-container>
-	
+  <CurtainsMenu
+    v-else-if="device.deviceId === 'eu0v2xgprrhhg41g'"
+    :device="device"
+    :show="show"
+    mode="edit"
+    @delete="ResendEvent('delete', $event)"
+    @CloseMenu="ResendEvent('close', $event)"
+  />
+
+  <LampMenu
+    v-else-if="device.deviceId === 'go46xmbqeomjrsjr'"
+    :device="device"
+    :show="show"
+    @delete="ResendEvent('delete', $event)"
+    @CloseMenu="ResendEvent('close', $event)"
+  />
+
+  <OvenMenu
+    v-else-if="device.deviceId === 'im77xxyulpegfmv8'"
+    :device="device"
+    :show="show"
+    @delete="ResendEvent('delete', $event)"
+    @CloseMenu="ResendEvent('close', $event)"
+  />
+
+  <ACMenu
+    v-else-if="device.deviceId === 'li6cbv5sdlatti0j'"
+    :device="device"
+    :show="show"
+    @delete="ResendEvent('delete', $event)"
+    @CloseMenu="ResendEvent('close', $event)"
+  />
+
+  <DoorMenu
+    v-else-if="device.deviceId === 'lsf78ly0eqrjbz91'"
+    :device="device"
+    :show="show"
+    @delete="ResendEvent('delete', $event)"
+    @CloseMenu="ResendEvent('close', $event)"
+  />
 </template>
 
-
 <script>
-    import FridgeMenu from "../Menus/FridgeMenu";
-    import DoorMenu from "../Menus/DoorMenu";
-    import CurtainsMenu from "../Menus/CurtainsMenu";
-    import SpeakerMenu from "../Menus/SpeakerMenu";
-    import ACMenu from "../Menus/ACMenu";
-    import LampMenu from "../Menus/LampMenu";
-    import OvenMenu from "../Menus/OvenMenu";
+import FridgeMenu from "../Menus/FridgeMenu";
+import DoorMenu from "../Menus/DoorMenu";
+import CurtainsMenu from "../Menus/CurtainsMenu";
+import SpeakerMenu from "../Menus/SpeakerMenu";
+import ACMenu from "../Menus/ACMenu";
+import LampMenu from "../Menus/LampMenu";
+import OvenMenu from "../Menus/OvenMenu";
+import CommonDeviceSchema from "../../data/schemas/devices/CommonDeviceSchema";
 
-    export default {
-        name: "DeviceSelector",
-        components: {OvenMenu,ACMenu,LampMenu,DoorMenu, SpeakerMenu, CurtainsMenu, FridgeMenu},
-        props:{
-            device:{
-                type: Object,
-                required: true
-            },
-            openMenu:{
-                type: Boolean,
-				required: true
+export default {
+  name: "DeviceSelector",
+  components: {
+    OvenMenu,
+    ACMenu,
+    LampMenu,
+    DoorMenu,
+    SpeakerMenu,
+    CurtainsMenu,
+    FridgeMenu
+  },
+  props: {
+    device: {
+      type: CommonDeviceSchema,
+      required: true
+    },
+    show: {
+      type: Boolean,
+      required: true
 			},
 			mode:{
                 type: String,
 				required: false,
 				default: "edit"
 			}
-        },
-		data:()=>({
-
-			superOpen:false,
-		}),
-
-		methods:{
-            ResendEvent(ev){
-                console.log("Sending Close Event from Device Selector")
-                this.superOpen = false;
-                console.log(ev);
-                ev.deviceId = this.device.deviceId;
-                this.$emit('CloseMenu',ev)
-            }
-
-		},
-		mounted() {
-            //console.log(this.device);
-        },
 		watch: {
             openMenu: function (val) {
                 console.log("opening Device Selector");
@@ -85,9 +105,16 @@
             }
         }
     }
+  },
+  methods: {
+    ResendEvent(name, event) {
+      this.$emit(name, event);
+    }
+  },
+  mounted() {
+    console.log(this.device);
+  }
+};
 </script>
 
-
-<style scoped>
-
-</style>
+<style scoped></style>

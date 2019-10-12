@@ -1,176 +1,144 @@
 <template>
-  <v-dialog v-model="CurtainsMenu" persistent max-width="400px">
-dsfsddsfas
-    <v-card dark raised>
-      <v-card-title>
-        <span class="headline">{{ name }}</span>
+  <v-card dark raised>
+    <v-dialog v-model="deleteDialog" max-width="700">
+      <DeleteDialog
+        :name="device.name"
+        :show="deleteDialog"
+        @closeClick="Delete"
+      ></DeleteDialog>
+    </v-dialog>
+    <v-card-title>
+      <span class="headline">{{ device.name }}</span>
 
-        <v-btn v-if="mode === 'edit'" icon absolute right @click="Delete()">
-            <v-avatar  color="red">
-                <v-icon>delete</v-icon>
-            </v-avatar>
-        </v-btn>
-      </v-card-title>
-      <v-card-text>
-        <v-container>
-          <v-row justify="space-between">
-            <v-col>
-              <img id="image" :src="ImageCurrent" />
-            </v-col>
-            <v-col cols="4">
-              <v-row>
-                <v-btn
-                  :disabled="this.ButtonUp.disabled"
-                  width="50"
-                  height="60"
-                  color="blue"
-                  @click="OpenCurtain()"
-                >
-                  <v-icon>
-                    keyboard_arrow_up
-                  </v-icon>
-                </v-btn>
-              </v-row>
-              <v-row>
-<!--                CANCER-->
-                <br />
-              </v-row>
-              <v-row>
-                <v-btn
-                  :disabled="this.ButtonDown.disabled"
-                  width="50"
-                  height="60"
-                  color="blue"
-                  @click="CloseCurtain()"
-                >
-                  <v-icon>
-                    keyboard_arrow_down
-                  </v-icon>
-                </v-btn>
-              </v-row>
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-card-text>
-      <v-card-actions class="justify-center">
-        <div class="text-center">
-          <v-btn color="red" @click="Exit()">Cancel</v-btn>
-          <v-btn color="blue" @click="SaveAndExit()">Confirm</v-btn>
-        </div>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+      <v-btn icon absolute right @click="openDeleteDialog()">
+        <v-avatar color="red">
+          <v-icon>delete</v-icon>
+        </v-avatar>
+      </v-btn>
+    </v-card-title>
+    <v-card-text>
+      <v-container>
+        <v-row justify="space-between">
+          <v-col>
+            <img id="image" :src="device.image" />
+          </v-col>
+          <v-col cols="4">
+            <v-row>
+              <v-btn
+                :disabled="isOpen"
+                width="50"
+                height="60"
+                color="blue"
+                @click="isOpen = true"
+              >
+                <v-icon>
+                  keyboard_arrow_up
+                </v-icon>
+              </v-btn>
+            </v-row>
+            <v-row>
+              <br />
+            </v-row>
+            <v-row>
+              <v-btn
+                :disabled="!isOpen"
+                width="50"
+                height="60"
+                color="blue"
+                @click="isOpen = false"
+              >
+                <v-icon>
+                  keyboard_arrow_down
+                </v-icon>
+              </v-btn>
+            </v-row>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-card-text>
+    <v-card-actions>
+      <v-spacer></v-spacer>
+      <v-btn v-blur color="red" @click="Exit()">Cancel</v-btn>
+      <v-btn v-blur color="blue" :disabled="!modified" @click="SaveAndExit()">SAVE</v-btn>
+    </v-card-actions>
+  </v-card>
 </template>
 
 <script>
-  import ImageRetriever from "../../data/ImageRetriever";
-  import Blinds from "../../data/schemas/devices/Blinds";
+import Blinds from "../../data/schemas/devices/Blinds";
+import DeleteDialog from "../info_dialogs/DeleteDialog";
+
 export default {
   name: "curtainsMenu",
+  components: { DeleteDialog },
   props: {
-    deviceId: {
-      type: String,
+    device: {
+      type: Blinds,
       required: false
     },
-    mode: {
-      type: String,
+    show: {
+      type: Boolean,
       required: true
-    },
-      name:{
-        type: String,
-        required: true
-      },
-    openMenu:{
-      type:Boolean,
-      required:true
     }
   },
   data: () => ({
-    ButtonUp: {
-      disabled: true,
-      ImageToSet: ImageRetriever.GetImages("eu0v2xgprrhhg41g",ImageRetriever.ACTIONS.OPEN)
-    },
-
-    ButtonDown: {
-      disabled: false,
-      ImageToSet: ImageRetriever.GetImages("eu0v2xgprrhhg41g",ImageRetriever.ACTIONS.CLOSE)
-    },
-
-    CurtainsMenu: false,
-    ImageCurrent: "",
+    deleteDialog: false,
+    isOpen: false,
+    level: 0
   }),
+  computed: {
+    modified() {
+      return this.isOpen !== this.device.isOpen;
+    }
+  },
   methods: {
-      Delete(){
-        console.log("Entrando a DELETE");
-        var APIBlinds = new Blinds(this.deviceId,this.name);
-        APIBlinds.delete();
-
-        this.Exit();
-      },
+    openDeleteDialog() {
+      this.deleteDialog = true;
+    },
+    async Delete(value) {
+      if (value) {
+        try {
+          await this.device.room.deleteDevice(this.device);
+        } catch (e) {
+          await this.device.delete();
+        }
+        this.deleteDialog = false;
+        this.onDelete();
+      } else {
+        this.deleteDialog = false;
+      }
+    },
     async SaveAndExit() {
+      this.$store.state.loading = true;
+      if (this.isOpen) {
+        await this.device.open();
+      } else {
+        await this.device.close();
+      }
+      this.$store.state.loading = false;
 
       this.Exit();
-
     },
-      Exit(){
-        console.log("Sending Close Event from Curtains");
-        this.$emit('CloseMenu',
-                {
-                    name: this.name,
-                    id: this.deviceId,
-                    state: {
-                        curtainUp: this.ButtonUp.disabled
-                    }
-                });
-      },
-    async OpenCurtain() {
-      this.ButtonUp.disabled = true;
-      this.ButtonDown.disabled = false;
-      this.ImageCurrent = this.ButtonUp.ImageToSet;
-        if(this.mode === 'edit') {
-            var APIBlinds = new Blinds(this.deviceId, this.name);
-            await APIBlinds.refreshState();
-            await APIBlinds.open();
-        }
+    Exit() {
+      console.log("Sending Close Event from Curtains");
+      this.$emit("CloseMenu");
     },
-    async CloseCurtain() {
-      this.ButtonUp.disabled = false;
-      this.ButtonDown.disabled = true;
-      this.ImageCurrent = this.ButtonDown.ImageToSet;
-      if(this.mode === 'edit') {
-
-          var APIBlinds = new Blinds(this.deviceId, this.name);
-          await APIBlinds.refreshState();
-          await APIBlinds.close();
-      }
-
+    async resetData() {
+      await this.device.refreshState();
+      this.isOpen = this.device.isOpen;
+      this.level = this.device.level;
     },
-    SetUp() {
-      this.ImageCurrent = this.ButtonUp.ImageToSet;
-    },
-    async LoadModel() {
-
-      let APIBlinds = new Blinds(this.deviceId,this.name);
-      await APIBlinds.refreshState();
-      console.log("Sali de refreshState");
-      console.log(APIBlinds);
-      if (APIBlinds.isOpen) {
-        this.OpenCurtain();
-      } else {
-        this.CloseCurtain();
-      }
+    onDelete() {
+      this.$emit("delete");
     }
-
   },
   watch: {
-    openMenu: function(val) {
-      this.CurtainsMenu = val;
-      console.log("ENTRANDO");
-      if ( val) {
-        console.log("entrando al modo editar");
-        this.LoadModel();
-      }
+    show: function(val) {
+      if (val) this.resetData();
     }
+  },
+  mounted() {
+    this.resetData();
   }
 };
 </script>
