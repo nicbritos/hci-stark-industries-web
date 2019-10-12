@@ -13,12 +13,13 @@ export default class Routine extends CommonSchema {
   static async getAll() {
     let routines = await apiWrapper.routines.getAll();
     let output = [];
+    console.log(routines);
     for (let routine of routines) {
       let routineInstance = new Routine(
         routine.id,
         routine.name,
         routine.actions,
-        routine.result.meta
+        routine.meta
       );
       output.push(routineInstance);
     }
