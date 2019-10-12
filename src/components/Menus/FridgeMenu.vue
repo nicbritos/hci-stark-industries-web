@@ -5,9 +5,9 @@
       <v-card-title>
         <span class="headline">{{ name }}</span>
 
-        <v-btn icon absolute right @click="open = false">
+        <v-btn v-if="mode === 'edit'" icon absolute right @click="Delete()">
 
-          <v-avatar color="red">
+          <v-avatar  color="red">
             <v-icon>delete</v-icon>
           </v-avatar>
         </v-btn>
@@ -98,6 +98,10 @@ export default {
       openMenu:{
           type:Boolean,
           required: true
+      },
+      mode:{
+          type: String,
+          required: true
       }
   },
   data:()=> ({
@@ -122,22 +126,28 @@ export default {
         },
         async SaveAndExit(){
 
-            let APIFridge = new Fridge(this.deviceId,this.name);
-            await APIFridge.refreshState();
+            if(this.mode === 'edit') {
+                let APIFridge = new Fridge(this.deviceId, this.name);
+                await APIFridge.refreshState();
 
-            console.log(this.FridgeModel);
+                console.log(this.FridgeModel);
 
-            console.log("Ento a SetFreezerTemp");
-            APIFridge.setFreezerTemperature(this.FridgeModel.freezerTemperature);
-            APIFridge.setMode(this.FridgeModel.mode);
-            APIFridge.setTemperature(this.FridgeModel.temperature);
+                console.log("Ento a SetFreezerTemp");
+                APIFridge.setFreezerTemperature(this.FridgeModel.freezerTemperature);
+                APIFridge.setMode(this.FridgeModel.mode);
+                APIFridge.setTemperature(this.FridgeModel.temperature);
+            }
 
             this.Exit();
 
         },
         Exit(){
             console.log("Sending Close Event from Fridge")
-            this.$emit('CloseMenu')
+            this.$emit('CloseMenu',{
+                    name: this.name,
+                    id: this.deviceId,
+                    state : this.FridgeModel
+            });
         }
 
     },

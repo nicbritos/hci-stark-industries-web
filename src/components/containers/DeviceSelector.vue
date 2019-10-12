@@ -4,27 +4,26 @@
 	<v-container>
 
 <!--		DONE-->
-		<FridgeMenu v-if="device.type.id === 'rnizejqr2di0okho'"
-					v-on:CloseMenu="ResendEvent()" :openMenu="superOpen" :name="device.name" :device-id="device.id"/>
+		<FridgeMenu v-if="device.deviceId === 'rnizejqr2di0okho'"
+					v-on:CloseMenu="ResendEvent" :openMenu="superOpen" :mode="mode" :name="device.name" :device-id="device.id"/>
 <!--		DONE-->
-		<SpeakerMenu v-else-if="device.type.id === 'c89b94e8581855bc'"
-					 v-on:CloseMenu="ResendEvent()" :openMenu="superOpen" :name="device.name" :device-id="device.id"/>
+		<SpeakerMenu v-else-if="device.deviceId === 'c89b94e8581855bc'"
+					 v-on:CloseMenu="ResendEvent" :openMenu="superOpen" :mode="mode" :name="device.name" :device-id="device.id"/>
 <!--		DONE-->
-		<CurtainsMenu v-else-if="device.type.id === 'eu0v2xgprrhhg41g'"
-					  v-on:CloseMenu="ResendEvent()" :openMenu="superOpen" mode="edit" :name="device.name" :device-id="device.id"/>
+		<CurtainsMenu v-else-if="device.deviceId === 'eu0v2xgprrhhg41g'"
+					  v-on:CloseMenu="ResendEvent" :openMenu="superOpen" :mode="mode"  :name="device.name" :device-id="device.id"/>
 <!--		DONE-->
-		<LampMenu v-else-if="device.type.id === 'go46xmbqeomjrsjr'"
-			  v-on:CloseMenu="ResendEvent()" :openMenu="superOpen" :name="device.name" :device-id="device.id"/>
+		<LampMenu v-else-if="device.deviceId === 'go46xmbqeomjrsjr'"
+			  v-on:CloseMenu="ResendEvent" :openMenu="superOpen"  :mode="mode" :name="device.name" :device-id="device.id"/>
 <!--		DONE-->
-		<OvenMenu v-else-if="device.type.id === 'im77xxyulpegfmv8'"
-				  v-on:CloseMenu="ResendEvent()" :openMenu="superOpen" :name="device.name" :device-id="device.id"/>
+		<OvenMenu v-else-if="device.deviceId === 'im77xxyulpegfmv8'"
+				  v-on:CloseMenu="ResendEvent" :openMenu="superOpen" :mode="mode" :name="device.name" :device-id="device.id"/>
 <!--		DONE-->
-		<ACMenu v-else-if="device.type.id === 'li6cbv5sdlatti0j'"
-					  v-on:CloseMenu="ResendEvent()" :openMenu="superOpen" :name="device.name" :device-id="device.id"/>
+		<ACMenu v-else-if="device.deviceId === 'li6cbv5sdlatti0j'"
+					  v-on:CloseMenu="ResendEvent" :openMenu="superOpen" :mode="mode" :name="device.name" :device-id="device.id"/>
 <!--		DONE-->
-		<DoorMenu v-else-if="device.type.id === 'lsf78ly0eqrjbz91'"
-					  v-on:CloseMenu="ResendEvent()" :openMenu="superOpen" :name="device.name" :device-id="device.id"/>
-
+		<DoorMenu v-else-if="device.deviceId === 'lsf78ly0eqrjbz91'"
+					  v-on:CloseMenu="ResendEvent" :openMenu="superOpen" :mode="mode" :name="device.name" :device-id="device.id"/>
 
 	</v-container>
 	
@@ -51,6 +50,11 @@
             openMenu:{
                 type: Boolean,
 				required: true
+			},
+			mode:{
+                type: String,
+				required: false,
+				default: "edit"
 			}
         },
 		data:()=>({
@@ -59,22 +63,25 @@
 		}),
 
 		methods:{
-            ResendEvent(){
+            ResendEvent(ev){
                 console.log("Sending Close Event from Device Selector")
                 this.superOpen = false;
-                console.log("openMenu: "+ this.openMenu);
-                this.$emit('CloseMenu')
+                console.log(ev);
+                ev.deviceId = this.device.deviceId;
+                this.$emit('CloseMenu',ev)
             }
 
 		},
 		mounted() {
-            console.log("Entre en DEVICE SELECTOR");
-            console.log(this.device);
+            //console.log(this.device);
         },
 		watch: {
             openMenu: function (val) {
-                console.log("Changing variable in Device Selector");
+                console.log("opening Device Selector");
                 this.superOpen = val;
+                console.log("Selected device: " + this.device.name);
+                console.log(this.device);
+                console.log("STate: " + val);
             }
         }
     }

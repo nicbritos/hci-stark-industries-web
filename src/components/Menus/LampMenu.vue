@@ -4,7 +4,7 @@
     <v-card dark raised>
       <v-card-title>
         <span class="headline">{{ name }}</span>
-        <v-btn icon absolute right @click="Delete()">
+        <v-btn v-if="mode === 'edit'" icon absolute right @click="Delete()">
           <v-avatar color="red">
             <v-icon>delete</v-icon>
           </v-avatar>
@@ -65,6 +65,10 @@ export default {
       type:String,
       required:true
     },
+    mode: {
+      type: String,
+      required: true
+    },
     openMenu:{
       type: Boolean,
       required:true
@@ -85,8 +89,6 @@ export default {
     Delete(){
         console.log("Entrando a DELETE");
         var APILamp = new Lamp(this.deviceId,this.name);
-
-
         APILamp.delete();
 
         this.Exit();
@@ -95,12 +97,13 @@ export default {
             let APILamp = new Lamp(this.deviceId, this.name);
             await APILamp.refreshState();
 
-
             this.color = APILamp.color;
             this.enabled = APILamp.isOn;
             this.intensity = APILamp.brightness;
         },
       async SaveAndExit(){
+
+      if(this.mode === 'edit') {
         var APILamp = new Lamp(this.deviceId, this.name);
         await APILamp.refreshState();
         if (APILamp.isOn()) {
@@ -112,17 +115,30 @@ export default {
           }
         } else {
           if (this.enabled) {
-           APILamp.turnOn();
-           APILamp.setColor(this.color.r, this.color.g, this.color.b);
-           APILamp.setBrightness(this.intensity);
+            APILamp.turnOn();
+            APILamp.setColor(this.color.r, this.color.g, this.color.b);
+            APILamp.setBrightness(this.intensity);
           }
+        }
       }
 
       this.Exit();
         },
     Exit(){
       console.log("Sending Close Event from Lamp")
-      this.$emit('CloseMenu')
+      this.$emit('CloseMenu', {
+        name: this.name,
+        id: this.deviceId,
+        state: {
+          color: {
+            r: this.color.r,
+            g: this.color.g,
+            b: this.color.b
+          },
+          enabled: this.enabled,
+          intensity: this.intensity,
+        }
+      })
     }
 
   },

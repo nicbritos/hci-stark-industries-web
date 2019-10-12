@@ -3,8 +3,7 @@
     <v-card dark raised>
       <v-card-title>
         <span class="headline">{{ name }}</span>
-
-        <v-btn icon absolute right @click="DeleteAndExit()">
+        <v-btn v-if="mode === 'edit'" icon absolute right @click="DeleteAndExit()">
           <v-avatar color="red">
             <v-icon>delete</v-icon>
           </v-avatar>
@@ -73,6 +72,10 @@ export default {
       required: true
     },
     deviceId: {
+      type: String,
+      required: true
+    },
+    mode: {
       type: String,
       required: true
     },
@@ -176,21 +179,23 @@ export default {
       }
     },
     async SaveAndExit() {
-      var APIDoor = new Door(this.deviceId,this.name);
-      await  APIDoor.refreshState();
-      console.log(APIDoor);
+      if(this.mode === 'edit') {
+        var APIDoor = new Door(this.deviceId, this.name);
+        await APIDoor.refreshState();
+        console.log(APIDoor);
 
-      if (this.State.open) {
-        console.log("Open Door");
-        APIDoor.open();
-        APIDoor.unlock();
-
-      } else {
-        APIDoor.close();
-        if (this.State.locked) {
-          APIDoor.lock();
-        } else {
+        if (this.State.open) {
+          console.log("Open Door");
+          APIDoor.open();
           APIDoor.unlock();
+
+        } else {
+          APIDoor.close();
+          if (this.State.locked) {
+            APIDoor.lock();
+          } else {
+            APIDoor.unlock();
+          }
         }
       }
 
@@ -198,7 +203,15 @@ export default {
     },
     Exit() {
       console.log("Sending Close Event from Door")
-      this.$emit('CloseMenu')    },
+      this.$emit('CloseMenu',{
+        name: this.name,
+        id: this.deviceId,
+        state: {
+          locked: this.State.locked,
+          open: this.State.open,
+        }
+      })
+    },
     DeleteAndExit() {
 
       var APIDoor = new Door(this.deviceId,this.name);

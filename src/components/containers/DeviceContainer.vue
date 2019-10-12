@@ -9,6 +9,8 @@
         @update="processSelection(item, $event)"
         @click="processClick(item)"
         v-on:reload="propagateReload"
+        :mode="mode"
+        v-on:CloseMenu="CloseMenu"
       ></Device>
     </template>
   </BoxContainer>
@@ -44,6 +46,11 @@ export default {
       required: false,
       default: true
     },
+    mode:{
+      type:String,
+      required: false,
+      default:'edit'
+    },
     pick: {
       type: Boolean,
       required: false,
@@ -56,6 +63,13 @@ export default {
     }
   },
   methods: {
+    CloseMenu(ev) {
+      this.openMenu = false;
+      console.log("CLOSING MENUUU");
+      console.log(ev);
+      this.$emit('CloseMenu',ev);
+
+    },
     processSelection(item, isSelected) {
       if (isSelected) this.selectedItems.push(item);
       else this.selectedItems = this.selectedItems.filter(i => i !== item);

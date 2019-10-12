@@ -1,17 +1,14 @@
 <template>
   <v-dialog v-model="CurtainsMenu" persistent max-width="400px">
-<!--    <template v-slot:activator="{ on }">-->
-<!--      <v-btn color="primary" dark >Open Curtain</v-btn>-->
-<!--    </template>-->
-
+dsfsddsfas
     <v-card dark raised>
       <v-card-title>
         <span class="headline">{{ name }}</span>
 
-        <v-btn icon absolute right @click="Delete()">
-          <v-avatar color="red">
-            <v-icon>delete</v-icon>
-          </v-avatar>
+        <v-btn v-if="mode === 'edit'" icon absolute right @click="Delete()">
+            <v-avatar  color="red">
+                <v-icon>delete</v-icon>
+            </v-avatar>
         </v-btn>
       </v-card-title>
       <v-card-text>
@@ -35,6 +32,7 @@
                 </v-btn>
               </v-row>
               <v-row>
+<!--                CANCER-->
                 <br />
               </v-row>
               <v-row>
@@ -105,42 +103,47 @@ export default {
       Delete(){
         console.log("Entrando a DELETE");
         var APIBlinds = new Blinds(this.deviceId,this.name);
-
-
         APIBlinds.delete();
 
         this.Exit();
       },
     async SaveAndExit() {
 
-      console.log("Saving");
-      var APIBlinds = new Blinds(this.deviceId,this.name);
-      await APIBlinds.refreshState();
-      if (this.ButtonDown.disabled === true) {
-        console.log("Closing blind")
-        APIBlinds.close();
-      }
-      else if(this.ButtonUp.disabled === true) {
-        console.log("Opening blind")
-        APIBlinds.open();
-      }
-
       this.Exit();
 
     },
       Exit(){
-        console.log("Sending Close Event from Curtains")
-        this.$emit('CloseMenu')
+        console.log("Sending Close Event from Curtains");
+        this.$emit('CloseMenu',
+                {
+                    name: this.name,
+                    id: this.deviceId,
+                    state: {
+                        curtainUp: this.ButtonUp.disabled
+                    }
+                });
       },
-    OpenCurtain() {
+    async OpenCurtain() {
       this.ButtonUp.disabled = true;
       this.ButtonDown.disabled = false;
       this.ImageCurrent = this.ButtonUp.ImageToSet;
+        if(this.mode === 'edit') {
+            var APIBlinds = new Blinds(this.deviceId, this.name);
+            await APIBlinds.refreshState();
+            await APIBlinds.open();
+        }
     },
-    CloseCurtain() {
+    async CloseCurtain() {
       this.ButtonUp.disabled = false;
       this.ButtonDown.disabled = true;
       this.ImageCurrent = this.ButtonDown.ImageToSet;
+      if(this.mode === 'edit') {
+
+          var APIBlinds = new Blinds(this.deviceId, this.name);
+          await APIBlinds.refreshState();
+          await APIBlinds.close();
+      }
+
     },
     SetUp() {
       this.ImageCurrent = this.ButtonUp.ImageToSet;
@@ -162,7 +165,8 @@ export default {
   watch: {
     openMenu: function(val) {
       this.CurtainsMenu = val;
-      if (this.mode === "edit" && val) {
+      console.log("ENTRANDO");
+      if ( val) {
         console.log("entrando al modo editar");
         this.LoadModel();
       }

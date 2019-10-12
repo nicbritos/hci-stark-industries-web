@@ -18,6 +18,8 @@
                   :pick="true"
                   :items="devices"
                   @pick="addDeviceClose"
+                  mode="routine"
+                  v-on:CloseMenu="AddDeviceToList"
                 >
                 </DeviceContainer>
               </v-col>
@@ -333,6 +335,12 @@ export default {
     this.devices = await CommonDeviceSchema.getAll();
   },
   methods: {
+    AddDeviceToList(ev){
+      this.selectedDevices.push(ev);
+      this.addDeviceClose(null);
+      console.log(this.selectedDevices);
+
+    },
     addDeviceOpen() {
       this.openDialog(this.dialogs.devices, "add");
     },
@@ -361,8 +369,12 @@ export default {
     },
 
     openDialog(item, type) {
-      if (item == null || type == null || item[type] == null) return;
-      if (!item[type]) item[type] = true;
+      if (item == null || type == null || item[type] == null)
+        return;
+      if (!item[type])
+        item[type] = true;
+
+      console.log("HOLA");
     },
     closeDialog(item, type) {
       if (item == null || type == null || item[type] == null) return;

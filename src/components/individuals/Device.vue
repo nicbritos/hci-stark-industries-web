@@ -2,8 +2,9 @@
   <v-container>
     <DeviceSelector
       :device="device"
+      :mode="mode"
       :openMenu="openMenu"
-      v-on:CloseMenu="CloseMenu()"
+      v-on:CloseMenu="CloseMenu"
     ></DeviceSelector>
     <v-card hover style="cursor: default" width="200">
       <v-card-text @click="OpenMenu()" v-ripple style="cursor: pointer">
@@ -77,6 +78,11 @@ export default {
       type: Object,
       required: true
     },
+    mode: {
+      type: String,
+      required: false,
+      default: "edit"
+    },
     room: {
       type: Boolean,
       required: false,
@@ -108,8 +114,7 @@ export default {
   }),
   methods: {
     async onSwitchUpdate() {
-      console.log(`About to do quick action. Curr state: ${this.isOn}`);
-      await this.quickAction.action(this.device.id, this.isOn);
+      //await this.quickAction.action(this.device.id, this.isOn);
       this.isOn = !this.isOn;
     },
     async applyFavouriteSelection() {
@@ -117,12 +122,11 @@ export default {
       let data = {
         name: this.device.name,
         meta: {
-          favourited: this.device.meta.favourited
+          favourite: this.device.meta.favourited
         }
       };
       this.fav = this.device.meta.favourited;
       await apiWrapper.devices.update(this.device.id, data);
-      console.log("Sending Reload Event");
       this.$emit("reload");
     },
     onSelectUpdate(value) {
@@ -131,10 +135,16 @@ export default {
     onClick() {
       this.$emit("click");
     },
-    CloseMenu() {
+    CloseMenu(ev) {
       this.openMenu = false;
+      console.log("CLOSING MENUUU");
+      console.log(ev);
+      this.$emit('CloseMenu',ev);
+
     },
     OpenMenu() {
+      console.log("OPENING MENU");
+      console.log("LA PUTA QUE TE PARIO")
       this.openMenu = true;
     },
     GetFavourite() {
@@ -147,7 +157,8 @@ export default {
       return this.device.meta.favourited;
     },
     GetImage() {
-      switch (this.device.type.id) {
+      console.log(this.device);
+      switch (this.device.deviceId) {
         case "rnizejqr2di0okho": // FRIDGE
           return ImageRetriever.GetImages(
             this.device.type.id,
@@ -229,12 +240,7 @@ export default {
     this.image = this.GetImage();
     this.fav = this.GetFavourite();
 
-    console.log("AFTER APPLYING");
-    console.log(
-      `device: ${this.device.name} is fav: ${this.fav} and in DB is: ${
-        this.device.meta.favourited
-      }`
-    );
+
     this.hasAction = await QuickActionHelper.hasQuickAction(
       this.device.type.id
     );
@@ -243,7 +249,7 @@ export default {
       this.quickAction = await QuickActionHelper.getQuickAction(
         this.device.type.id
       );
-      this.isOn = this.quickAction.checkState(this.device);
+     // this.isOn = this.quickAction.checkState(this.device);
     }
   }
 };

@@ -3,7 +3,7 @@
     <v-card dark raised>
       <v-card-title>
         <span class="headline">{{ name }}</span>
-        <v-btn icon absolute right @click="Delete()">
+        <v-btn v-if="mode === 'edit'" icon absolute right @click="Delete()">
           <v-avatar color="red">
             <v-icon>delete</v-icon>
           </v-avatar>
@@ -89,6 +89,10 @@ export default {
       type: String,
       required: true
     },
+    mode: {
+      type: String,
+      required: true
+    },
     deviceId: {
       type: String,
       required: true
@@ -111,8 +115,6 @@ export default {
   methods:{
     Delete(){
         var APIOven= new Oven(this.deviceId,this.name);
-
-
         APIOven.delete();
 
         this.Exit();
@@ -121,29 +123,27 @@ export default {
             let APIOven = new Oven(this.deviceId, this.name);
             await APIOven.refreshState();
 
-
             this.enabled = APIOven.isOn;
             this.temperature = APIOven.temperature;
             this.heat_source = APIOven.heatMode;
-            this.grill = labelsGrill.indexOf(APIOven.grillMode);
-            this.convection = labelsConvection.indexOf(APIOven.convectionMode);
+            this.grill = this.labelsGrill.indexOf(APIOven.grillMode);
+            this.convection = this.labelsConvection.indexOf(APIOven.convectionMode);
         },
-      async SaveAndExit(){
-        var APIOven = new Oven(this.deviceId, this.name);
-        await APIOven.refreshState();
-        if( APIOven.isOn() ){
-          if( this.enabled ) {
-            APIOven.setTemperature(this.temperature);
-            APIOven.setConvection(this.labelsConvection[this.convection]);
-            APIOven.setGrill(this.labelsGrill[this.grill]);
-            APIOven.setHeat(this.heat_source);
-          }
-          else {
-            APIOven.turnOff();
-          }
-        }
-        else {
-          if(this.enabled) {
+      async SaveAndExit() {
+        if (this.mode === 'edit') {
+          var APIOven = new Oven(this.deviceId, this.name);
+
+          await APIOven.refreshState();
+          if (APIOven.isOn()) {
+            if (this.enabled) {
+              APIOven.setTemperature(this.temperature);
+              APIOven.setConvection(this.labelsConvection[this.convection]);
+              APIOven.setGrill(this.labelsGrill[this.grill]);
+              APIOven.setHeat(this.heat_source);
+            } else {
+              APIOven.turnOff();
+            }
+          } else if (this.enabled) {
             APIOven.turnOn();
             APIOven.setTemperature(this.temperature);
             APIOven.setConvection(this.labelsConvection[this.convection]);
@@ -152,11 +152,22 @@ export default {
           }
         }
 
+
         this.Exit();
         },
     Exit(){
       console.log("Sending Close Event from Oven")
-      this.$emit('CloseMenu')
+      this.$emit('CloseMenu', {
+        name: this.name,
+        id: this.deviceId,
+        state: {
+          enabled: this.enabled,
+          temperature: this.temperature,
+          heat_source: this.heat_source,
+          grill: this.grill,
+          convection: this.convection,
+        }
+      })
     }
 
   },

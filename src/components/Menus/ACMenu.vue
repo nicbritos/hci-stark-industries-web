@@ -3,7 +3,7 @@
     <v-card dark raised>
       <v-card-title>
         <span class="headline">{{ name }}</span>
-        <v-btn icon absolute right @click="Delete()">
+        <v-btn v-if="mode === 'edit'" icon absolute right @click="Delete()">
           <v-avatar color="red">
             <v-icon>delete</v-icon>
           </v-avatar>
@@ -42,7 +42,7 @@
           </v-row>
           <span>Mode</span>
           <v-row justify="space-around" align="center">
-            <v-radio-group v-model="mode" row>
+            <v-radio-group v-model="ACmode" row>
               <v-radio label="cool" value="cool"></v-radio>
               <v-radio label="fan" value="fan"></v-radio>
               <v-radio label="heat" value="heat"></v-radio>
@@ -92,6 +92,7 @@
 </template>
 
 <script>
+  import AC from "../../data/schemas/devices/AC";
 export default {
   name: "ACMenu",
   props: {
@@ -103,6 +104,10 @@ export default {
       type: String,
       required: true
     },
+    mode: {
+      type: String,
+      required: true
+    },
     openMenu: {
       type: Boolean,
       required: true
@@ -111,7 +116,7 @@ export default {
   data: () => ({
       enabled: false,
       temperature: 18,
-      mode: "cool",
+      ACmode: "cool",
       vertical_blades: "auto",
       horizontal_blades: "auto",
       speed: "auto",
@@ -120,7 +125,6 @@ export default {
   methods:{
     Delete(){
         var APIAC= new AC(this.deviceId,this.name);
-
 
         APIAC.delete();
 
@@ -132,18 +136,20 @@ export default {
 
 
             this.enabled = APIAC.isOn;
-            this.mode = APIAC.mode;
+            this.ACmode = APIAC.mode;
             this.temperature = APIAC.temperature;
             this.vertical_blades = APIAC.swing.vertical;
             this.horizontal_blades = APIAC.swing.horizontal;
             this.speed = APIAC.fanSpeed;
         },
       async SaveAndExit(){
+
+      if(this.mode === 'edit') {
         var APIAC = new AC(this.deviceId, this.name);
         await APIAC.refreshState();
         if (APIAC.isOn()) {
           if (this.enabled) {
-            APIAC.setMode(this.mode);
+            APIAC.setMode(this.ACmode);
             APIAC.setFanSpeed(this.speed);
             APIAC.setHorizontalSwing(this.horizontal_blades);
             APIAC.setVerticalSwing(this.vertical_blades);
@@ -154,19 +160,31 @@ export default {
         } else {
           if (this.enabled) {
             APIAC.turnOn();
-            APIAC.setMode(this.mode);
+            APIAC.setMode(this.ACmode);
             APIAC.setFanSpeed(this.speed);
             APIAC.setHorizontalSwing(this.horizontal_blades);
             APIAC.setVerticalSwing(this.vertical_blades);
             APIAC.setTemperature(this.temperature);
           }
         }
+      }
 
         this.Exit();
       },
     Exit(){
       console.log("Sending Close Event from AC")
-      this.$emit('CloseMenu')
+      this.$emit('CloseMenu',{
+        name: this.name,
+        id: this.deviceId,
+        state: {
+          enabled: this.enabled,
+          temperature: this.temperature,
+          ACmode: this.ACmode,
+          vertical_blades: "auto",
+          horizontal_blades: "auto",
+          speed: "auto",
+        }
+      })
     }
 
   },
