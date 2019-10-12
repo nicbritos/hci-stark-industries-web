@@ -20,7 +20,7 @@
       <v-container>
         <v-row justify="space-between">
           <v-col>
-            <img id="image" :src="device.image" />
+            <img id="image" :src="image" />
           </v-col>
           <v-col cols="4">
             <v-row>
@@ -67,6 +67,7 @@
 <script>
 import Blinds from "../../data/schemas/devices/Blinds";
 import DeleteDialog from "../info_dialogs/DeleteDialog";
+import ImageRetriever from "../../data/ImageRetriever";
 
 export default {
   name: "curtainsMenu",
@@ -89,7 +90,8 @@ export default {
   data: () => ({
     deleteDialog: false,
     isOpen: false,
-    level: 0
+    level: 0,
+    image: "",
   }),
   computed: {
     modified() {
@@ -141,6 +143,12 @@ export default {
       await this.device.refreshState();
       this.isOpen = this.device.isOpen;
       this.level = this.device.level;
+      if(this.isOpen){
+        this.image = ImageRetriever.GetImages(this.device.deviceId, ImageRetriever.ACTIONS.OPEN);
+      }
+      else{
+        this.image = ImageRetriever.GetImages(this.device.deviceId, ImageRetriever.ACTIONS.CLOSE);
+      }
     },
     onDelete() {
       this.$emit("delete");
@@ -149,6 +157,14 @@ export default {
   watch: {
     show: function(val) {
       if (val) this.resetData();
+    },
+    isOpen:function (val) {
+      if(val){
+        this.image = ImageRetriever.GetImages(this.device.deviceId, ImageRetriever.ACTIONS.OPEN);
+      }
+      else{
+        this.image = ImageRetriever.GetImages(this.device.deviceId, ImageRetriever.ACTIONS.CLOSE);
+      }
     }
   },
   mounted() {
