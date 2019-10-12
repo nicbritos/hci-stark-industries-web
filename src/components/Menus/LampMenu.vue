@@ -9,7 +9,7 @@
     </v-dialog>
     <v-card-title>
       <span class="headline">{{ device.name }}</span>
-      <v-btn icon absolute right @click="openDeleteDialog()">
+      <v-btn icon absolute right @click="openDeleteDialog()" v-if="mode === 'edit'">
         <v-avatar color="red">
           <v-icon>delete</v-icon>
         </v-avatar>
@@ -69,7 +69,8 @@ export default {
     },
     mode: {
       type: String,
-      required: true
+      required: false,
+      default: 'edit'
     },
     show: {
       type: Boolean,
@@ -127,12 +128,15 @@ export default {
     },
     async SaveAndExit() {
       this.$store.state.loading = true;
-      if (this.isOn !== this.device.isOn) {
-        this.isOn ? await this.device.turnOn() : await this.device.turnOff();
-      }
-      if (this.isOn) {
-        await this.device.setColor(this.color.r, this.color.g, this.color.b);
-        await this.device.setBrightness(this.brightness);
+
+      if(this.mode === 'edit') {
+        if (this.isOn !== this.device.isOn) {
+          this.isOn ? await this.device.turnOn() : await this.device.turnOff();
+        }
+        if (this.isOn) {
+          await this.device.setColor(this.color.r, this.color.g, this.color.b);
+          await this.device.setBrightness(this.brightness);
+        }
       }
       this.$store.state.loading = false;
 
@@ -140,7 +144,20 @@ export default {
     },
     Exit() {
       console.log("Sending Close Event from Lamp");
-      this.$emit("CloseMenu");
+
+      this.$emit("CloseMenu", {
+        name: this.device.name,
+        id: this.device.id,
+        customState: {
+          color:{
+            r: this.color.r,
+            g: this.color.g,
+            b: this.color.b,
+          },
+          isOn: this.isOn,
+          brightness: this.brightness
+        }
+      });
     }
   },
   watch: {

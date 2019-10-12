@@ -10,7 +10,7 @@
     <v-card-title>
       <span class="headline">{{ device.name }}</span>
 
-      <v-btn icon absolute right @click="openDeleteDialog">
+      <v-btn icon absolute right @click="openDeleteDialog" v-if="mode === 'edit'">
         <v-avatar color="red">
           <v-icon>delete</v-icon>
         </v-avatar>
@@ -96,7 +96,7 @@
             label="Mode"
             :items="dropdownFridgeMode"
             menu-props="offsetOverflow, offsetY"
-            v-model="mode"
+            v-model="fridgeMode"
           >
           </v-select>
         </v-row>
@@ -130,11 +130,12 @@ export default {
       },
       mode:{
           type: String,
-          required: true
+          required: false,
+        default: 'edit'
       }
   },
   data: () => ({
-    mode: "",
+    fridgeMode: "",
     temperature: 8,
     deleteDialog: false,
     freezerTemperature: 0
@@ -173,7 +174,7 @@ export default {
       if (this.device == null) return false;
       return (
         this.device.temperature !== this.temperature ||
-        this.device.mode !== this.mode ||
+        this.device.mode !== this.fridgeMode ||
         this.device.freezerTemperature !== this.freezerTemperature
       );
     }
@@ -183,7 +184,7 @@ export default {
       if (this.device != null) {
         await this.device.refreshState();
         this.temperature = this.device.temperature;
-        this.mode = this.device.mode;
+        this.fridgeMode = this.device.mode;
         this.freezerTemperature = this.device.freezerTemperature;
       }
     },
@@ -205,15 +206,25 @@ export default {
     },
     async SaveAndExit() {
       this.$store.state.loading = true;
-      await this.device.setMode(this.mode);
-      await this.device.setTemperature(this.temperature);
-      await this.device.setFreezerTemperature(this.freezerTemperature);
+      if (this.mode === 'edit') {
+        await this.device.setMode(this.fridgeMode);
+        await this.device.setTemperature(this.temperature);
+        await this.device.setFreezerTemperature(this.freezerTemperature);
+      }
       this.$store.state.loading = false;
       this.Exit();
     },
     Exit() {
       console.log("Sending Close Event from Fridge");
-      this.$emit("CloseMenu");
+      this.$emit("CloseMenu", {
+        name: this.device.name,
+        id: this.device.id,
+        customState: {
+          mode: this.fridgeMode,
+          temperature: this.temperature,
+          freezerTemperature: this.freezerTemperature
+        }
+      });
     },
     onDelete() {
       this.$emit("delete");

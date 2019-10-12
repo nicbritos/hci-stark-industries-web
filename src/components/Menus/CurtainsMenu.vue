@@ -10,7 +10,7 @@
     <v-card-title>
       <span class="headline">{{ device.name }}</span>
 
-      <v-btn icon absolute right @click="openDeleteDialog()">
+      <v-btn icon absolute right @click="openDeleteDialog()" v-if="mode === 'edit'">
         <v-avatar color="red">
           <v-icon>delete</v-icon>
         </v-avatar>
@@ -79,7 +79,12 @@ export default {
     show: {
       type: Boolean,
       required: true
-    }
+    },
+    mode: {
+      type: String,
+      required: false,
+      default: 'edit'
+    },
   },
   data: () => ({
     deleteDialog: false,
@@ -110,10 +115,12 @@ export default {
     },
     async SaveAndExit() {
       this.$store.state.loading = true;
-      if (this.isOpen) {
-        await this.device.open();
-      } else {
-        await this.device.close();
+      if(this.mode === 'edit') {
+        if (this.isOpen) {
+          await this.device.open();
+        } else {
+          await this.device.close();
+        }
       }
       this.$store.state.loading = false;
 
@@ -121,7 +128,14 @@ export default {
     },
     Exit() {
       console.log("Sending Close Event from Curtains");
-      this.$emit("CloseMenu");
+      this.$emit("CloseMenu", {
+        name: this.device.name,
+        id: this.device.id,
+        customState: {
+          isOpen: this.isOpen
+        }
+
+      });
     },
     async resetData() {
       await this.device.refreshState();

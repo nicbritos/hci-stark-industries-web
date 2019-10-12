@@ -13,8 +13,8 @@
       <v-card-text @click="onClick" v-ripple style="cursor: pointer">
         <div class="white--text">
           {{
+          device.name
           }}
-            device.name
         </div>
         <v-container fluid>
           <v-row align="start" justify="center">
@@ -150,7 +150,7 @@ export default {
       if (this.editable) this.openMenu();
       else this.$emit("click");
     },
-    closeMenu() {
+    closeMenu(ev) {
       this.menu = false;
       console.log("CLOSING MENUUU");
       console.log(ev);
@@ -162,22 +162,23 @@ export default {
       console.log("LA PUTA QUE TE PARIO")
     },
     GetImage() {
+      console.log("Getting device for GETIMAGES");
       console.log(this.device);
       switch (this.device.deviceId) {
         case "rnizejqr2di0okho": // FRIDGE
           return ImageRetriever.GetImages(
-                  this.device.type.id,
+                  this.device.deviceId,
                   ImageRetriever.ACTIONS.INVARIANT
           );
         case "c89b94e8581855bc": // SPEAKER
           if (this.device.state.status === "playing")
             return ImageRetriever.GetImages(
-                    this.device.type.id,
+                    this.device.deviceId,
                     ImageRetriever.ACTIONS.ON
             );
           else
             return ImageRetriever.GetImages(
-                    this.device.type.id,
+                    this.device.deviceId,
                     ImageRetriever.ACTIONS.OFF
             );
         case "eu0v2xgprrhhg41g": // CURTAINS
@@ -186,63 +187,63 @@ export default {
                   this.device.state.status === "opening"
           )
             return ImageRetriever.GetImages(
-                    this.device.type.id,
+                    this.device.deviceId,
                     ImageRetriever.ACTIONS.OPEN
             );
           else
             return ImageRetriever.GetImages(
-                    this.device.type.id,
+                    this.device.deviceId,
                     ImageRetriever.ACTIONS.CLOSE
             );
         case "go46xmbqeomjrsjr": // LAMP
           if (this.device.state.status === "off")
             return ImageRetriever.GetImages(
-                    this.device.type.id,
+                    this.device.deviceId,
                     ImageRetriever.ACTIONS.OFF
             );
           else
             return ImageRetriever.GetImages(
-                    this.device.type.id,
+                    this.device.deviceId,
                     ImageRetriever.ACTIONS.ON
             );
         case "im77xxyulpegfmv8": //Oven
           if (this.device.state.status === "off")
             return ImageRetriever.GetImages(
-                    this.device.type.id,
+                    this.device.deviceId,
                     ImageRetriever.ACTIONS.OFF
             );
           else
             return ImageRetriever.GetImages(
-                    this.device.type.id,
+                    this.device.deviceId,
                     ImageRetriever.ACTIONS.ON
             );
         case "li6cbv5sdlatti0j": //AC
           if (this.device.state.status === "off")
             return ImageRetriever.GetImages(
-                    this.device.type.id,
+                    this.device.deviceId,
                     ImageRetriever.ACTIONS.OFF
             );
           else
             return ImageRetriever.GetImages(
-                    this.device.type.id,
+                    this.device.deviceId,
                     ImageRetriever.ACTIONS.ON
             );
         case "lsf78ly0eqrjbz91": // DOOR
-          if (this.device.state.lock === "locked")
+          if (this.device.isLocked === "locked")
             return ImageRetriever.GetImages(
-                    this.device.type.id,
+                    this.device.deviceId,
                     ImageRetriever.ACTIONS.LOCK
             );
           else
             return ImageRetriever.GetImages(
-                    this.device.type.id,
+                    this.device.deviceId,
                     ImageRetriever.ACTIONS.UNLOCK
             );
       }
     }
   },
   async mounted() {
-    this.image = GetImage();
+    this.image = this.GetImage();
 
     // this.hasAction = await QuickActionHelper.hasQuickAction(
     //   this.device.deviceId

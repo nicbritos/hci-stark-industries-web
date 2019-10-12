@@ -10,7 +10,7 @@
     <v-card-title>
       <span class="headline">{{ name }}</span>
 
-      <v-btn icon absolute right @click="openDeleteDialog">
+      <v-btn icon absolute right @click="openDeleteDialog" v-if="mode === 'edit'">
         <v-avatar color="red">
           <v-icon>delete</v-icon>
         </v-avatar>
@@ -171,19 +171,12 @@ export default {
     device: {
       type: Speakers,
       required: true
-    },/* 
-    deviceId: {
-      type: String,
-      required: true
-    },
-    name: {
-      type: String,
-      required: true
     },
     mode:{
       type: String,
-      required: true
-    }, */
+      required: false,
+      default: 'edit'
+    },
     show: {
       type: Boolean,
       required: true
@@ -216,13 +209,12 @@ export default {
     PreviousModel: undefined
   }),
   methods: {
-    },
       Exit(){
           console.log("Sending Close Event from Speaker")
           this.$emit('CloseMenu', {
-            name: this.name,
-            id: this.deviceId,
-            state: this.SpeakerModel
+            name: this.device.name,
+            id: this.device.id,
+            customState: this.SpeakerModel
           });
       },
     playPauseButtonPressed() {

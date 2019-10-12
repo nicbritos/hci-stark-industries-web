@@ -9,7 +9,7 @@
     </v-dialog>
     <v-card-title>
       <span class="headline">{{ device ? device.name : "" }}</span>
-      <v-btn icon absolute right @click="openDeleteDialog">
+      <v-btn icon absolute right @click="openDeleteDialog" v-if="this.mode === 'edit'">
         <v-avatar color="red">
           <v-icon>delete</v-icon>
         </v-avatar>
@@ -50,7 +50,7 @@
         </v-row>
         <span>Mode</span>
         <v-row justify="space-around" align="center">
-          <v-radio-group :disabled="!isOn" v-model="mode" row>
+          <v-radio-group :disabled="!isOn" v-model="ACmode" row>
             <v-radio label="Cool" value="cool"></v-radio>
             <v-radio label="Fan" value="fan"></v-radio>
             <v-radio label="Heat" value="heat"></v-radio>
@@ -111,7 +111,8 @@ export default {
     },
     mode: {
       type: String,
-      required: true
+      required: false,
+      default: 'edit'
     },
     show: {
       type: Boolean,
@@ -121,7 +122,7 @@ export default {
   data: () => ({
     isOn: false,
     temperature: 18,
-    mode: "cool",
+    ACmode: "cool",
     vertical_blades: "auto",
     horizontal_blades: "auto",
     deleteDialog: false,
@@ -132,7 +133,7 @@ export default {
       if (this.device == null) return false;
       return (
         this.device.isOn !== this.isOn ||
-        this.device.mode !== this.mode ||
+        this.device.mode !== this.ACmode ||
         this.device.swing.vertical !== this.vertical_blades ||
         this.device.swing.horizontal !== this.horizontal_blades ||
         this.device.speed !== this.speed
@@ -151,7 +152,7 @@ export default {
       if (this.device != null) {
         await this.device.refreshState();
         this.temperature = this.device.temperature;
-        this.mode = this.device.mode;
+        this.ACmode = this.device.mode;
         this.vertical_blades = this.device.swing.vertical;
         this.horizontal_blades = this.device.swing.horizontal;
         this.speed = this.device.fanSpeed;
@@ -176,21 +177,35 @@ export default {
     },
     async SaveAndExit() {
       this.$store.state.loading = true;
-      if (this.isOn) {
-        await this.device.turnOn();
-        await this.device.setMode(this.mode);
-        await this.device.setFanSpeed(this.speed);
-        await this.device.setTemperature(this.temperature);
-        await this.device.setVerticalSwing(this.vertical_blades);
-        await this.device.setHorizontalSwing(this.horizontal_blades);
-      } else await this.device.turnOff();
+      if(this.mode === 'edit') {
+        if (this.isOn) {
+          await this.device.turnOn();
+          await this.device.setMode(this.ACmode);
+          await this.device.setFanSpeed(this.speed);
+          await this.device.setTemperature(this.temperature);
+          await this.device.setVerticalSwing(this.vertical_blades);
+          await this.device.setHorizontalSwing(this.horizontal_blades);
+        } else
+          await this.device.turnOff();
+      }
       this.$store.state.loading = false;
 
       this.Exit();
     },
     Exit() {
       console.log("Sending Close Event from AC");
-      this.$emit("CloseMenu");
+      this.$emit("CloseMenu", {
+        name: this.device.name,
+        id: this.device.id,
+        customState: {
+          isOn: this.device.isOn,
+          temperature: this.device.temperature,
+          ACmode: this.device.mode,
+          vertical_blades: this.device.swing.vertical,
+          horizontal_blades: this.device.swing.horizontal,
+          speed: this.device.fanSpeed
+        }
+      });
     },
     onDelete() {
       this.$emit("delete");

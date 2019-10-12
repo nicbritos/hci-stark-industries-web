@@ -71,6 +71,10 @@ export default {
       this.$emit('CloseMenu',ev);
 
     },
+    propagateReload(ev){
+      console.log("Propagating Reload Event");
+      this.$emit('reload',ev);
+    },
     processSelection(item, isSelected) {
       if (isSelected) this.selectedItems.push(item);
       else this.selectedItems = this.selectedItems.filter(i => i !== item);
