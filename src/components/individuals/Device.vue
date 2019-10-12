@@ -10,7 +10,7 @@
     </v-dialog>
 
     <v-card dark hover style="cursor: default" height="250" width="200">
-      <v-card-text @click="onClick" v-ripple style="cursor: pointer">
+      <v-card-text  @click="onClick" v-ripple style="cursor: pointer">
         <div class="white--text">
           {{
           device.name
@@ -26,7 +26,7 @@
           }}
         </div>
       </v-card-text>
-      <v-card-actions v-if="selectable || editable">
+      <v-card-actions   v-if="selectable || editable">
         <v-checkbox
           v-if="selectable"
           color="primary"
@@ -124,8 +124,11 @@ export default {
   }),
   methods: {
     async onSwitchUpdate() {
-      //await this.quickAction.action(this.device.id, this.isOn);
-      this.isOn = !this.isOn;
+      await this.quickAction.action(this.device, this.isOn);
+
+      await this.LoadModel();
+      this.$emit('reload',this.device.id);
+
     },
     async applyFavouriteSelection() {
       this.loadingFav = true;
@@ -151,10 +154,15 @@ export default {
       else this.$emit("click");
     },
     closeMenu(ev) {
+
       this.menu = false;
       console.log("CLOSING MENUUU");
-      console.log(ev);
+
       this.$emit('CloseMenu',ev);
+
+        this.$emit('reloadall', this.device.id);
+
+
     },
     OpenMenu() {
       console.log("OPENING MENU");
@@ -226,6 +234,7 @@ export default {
                     ImageRetriever.ACTIONS.OFF
             );
         case "lsf78ly0eqrjbz91": // DOOR
+          console.log(this.device.isLocked);
           if (this.device.isLocked)
             return ImageRetriever.GetImages(
                     this.device.deviceId,
@@ -237,23 +246,35 @@ export default {
                     ImageRetriever.ACTIONS.UNLOCK
             );
       }
+    },
+    async LoadModel(){
+      await this.device.refreshState();
+
+      console.log("LOADING: " + this.device.name);
+      this.image = this.GetImage();
+
+
+      this.hasAction = await QuickActionHelper.hasQuickAction(
+              this.device.deviceId
+      );
+      console.log("has action: " + this.hasAction);
+
+      if (this.hasAction) {
+        this.quickAction = await QuickActionHelper.getQuickAction(
+                this.device.deviceId
+        );
+        this.isOn = this.quickAction.checkState(this.device);
+      }
     }
   },
   async mounted() {
-    this.image = this.GetImage();
+    await this.LoadModel();
+  },
 
-    // this.hasAction = await QuickActionHelper.hasQuickAction(
-    //   this.device.deviceId
-    // );
-    //
-    // if (this.hasAction) {
-    //   this.quickAction = await QuickActionHelper.getQuickAction(
-    //     this.device.deviceId
-    //   );
-    //   this.isOn = this.quickAction.checkState(this.device);
-    // }
-  }
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+
+
+</style>

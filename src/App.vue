@@ -36,50 +36,50 @@
           <v-spacer />
         </v-list-item>
 
-        <v-list-group
-          v-for="(item, i) in expandableItems"
-          :key="800 + i + items.length + item.items.length"
-          ripple
-          :prepend-icon="item.icon"
-          dense
-          v-model="item.expanded"
-        >
-          <template v-slot:activator>
-            <v-list-item-content>
-              <v-list-item-title v-text="item.title" />
-            </v-list-item-content>
-          </template>
+<!--        <v-list-group-->
+<!--          v-for="(item, i) in expandableItems"-->
+<!--          :key="800 + i + items.length + item.items.length"-->
+<!--          ripple-->
+<!--          :prepend-icon="item.icon"-->
+<!--          dense-->
+<!--          v-model="item.expanded"-->
+<!--        >-->
+<!--          <template v-slot:activator>-->
+<!--            <v-list-item-content>-->
+<!--              <v-list-item-title v-text="item.title" />-->
+<!--            </v-list-item-content>-->
+<!--          </template>-->
 
-          <v-divider v-if="item.expanded && item.items.length > 0"></v-divider>
-          <v-list-item
-            v-for="(expandableItem, j) in item.items"
-            :key="500 +(1 + i) * j + items.length"
-            router
-            :to="expandableItem.to"
-            exact
-            ripple
-            class="inner-drawer"
-          >
-            <v-list-item-action>
-              <v-icon
-                v-html="expandableItem.icon"
-                v-if="expandableItem.icon !== undefined"
-              />
-              <v-icon>
-                <v-img
-                  :src="expandableItem.image"
-                  v-if="expandableItem.image !== undefined"
-                ></v-img>
-              </v-icon>
-            </v-list-item-action>
-            <v-list-item-content>
-              <v-list-item-title v-text="expandableItem.title" />
-            </v-list-item-content>
-            <v-spacer />
-          </v-list-item>
+<!--          <v-divider v-if="item.expanded && item.items.length > 0"></v-divider>-->
+<!--          <v-list-item-->
+<!--            v-for="(expandableItem, j) in item.items"-->
+<!--            :key="500 +(1 + i) * j + items.length"-->
+<!--            router-->
+<!--            :to="expandableItem.to"-->
+<!--            exact-->
+<!--            ripple-->
+<!--            class="inner-drawer"-->
+<!--          >-->
+<!--            <v-list-item-action>-->
+<!--              <v-icon-->
+<!--                v-html="expandableItem.icon"-->
+<!--                v-if="expandableItem.icon !== undefined"-->
+<!--              />-->
+<!--              <v-icon>-->
+<!--                <v-img-->
+<!--                  :src="expandableItem.image"-->
+<!--                  v-if="expandableItem.image !== undefined"-->
+<!--                ></v-img>-->
+<!--              </v-icon>-->
+<!--            </v-list-item-action>-->
+<!--            <v-list-item-content>-->
+<!--              <v-list-item-title v-text="expandableItem.title" />-->
+<!--            </v-list-item-content>-->
+<!--            <v-spacer />-->
+<!--          </v-list-item>-->
 
-          <v-divider v-if="item.expanded && item.items.length > 0"></v-divider>
-        </v-list-group>
+<!--          <v-divider v-if="item.expanded && item.items.length > 0"></v-divider>-->
+<!--        </v-list-group>-->
 
         <v-list-item
           v-for="(item, i) in items2"

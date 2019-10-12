@@ -57,7 +57,7 @@
             </h2>
           </v-toolbar-title>
         </v-toolbar>
-        <DeviceContainer :items="favouriteDevices"></DeviceContainer>
+        <DeviceContainer :items="favouriteDevices" @reloadall="reload" @reload="reloadDevice" ></DeviceContainer>
         <v-divider></v-divider>
       </v-col>
     </v-row>
@@ -76,7 +76,7 @@
           >NEW DEVICE</v-btn
           >
         </v-toolbar>
-        <DeviceContainer :items="devices"></DeviceContainer>
+        <DeviceContainer :items="devices" @reloadall="reload"  @reload="reloadFavDevice"></DeviceContainer>
       </v-col>
     </v-row> </v-container
   ></template>
@@ -121,6 +121,38 @@
       };
     },
     methods: {
+      async reload(ev){
+        console.log("Reloading Devices");
+         this.reloadDevice(ev);
+        console.log("Reloading FAV devices");
+         this.reloadFavDevice(ev);
+      },
+      async reloadFavDevice(ev){
+
+        let index = this.favouriteDevices.findIndex(el=>{return el.id === ev});
+
+        this.favouriteDevices.splice(index,1);
+
+        let rr =  await Room.get(this.room.id);
+
+        let dev = rr.favouriteDevices.find(el=>{return el.id === ev});
+
+        this.favouriteDevices.splice( index, 0, dev );
+
+      },
+      async reloadDevice(ev){
+
+        let index = this.devices.findIndex(el=>{return el.id === ev});
+
+        this.devices.splice(index,1);
+
+        let rr =  await Room.get(this.room.id);
+
+        let dev = rr.devices.find(el=>{return el.id === ev});
+
+        this.devices.splice( index, 0, dev );
+
+      },
       newDeviceOpen() {
         this.openDialog(this.dialogs.devices, "new");
       },
@@ -168,15 +200,18 @@
       closeDialog(item, type) {
         if (item == null || type == null || item[type] == null) return;
         if (item[type]) item[type] = false;
+      },
+      async LoadModel(){
+        let roomId = this.$route.params.rid;
+
+        this.room = await Room.get(roomId);
+        this.region = this.room.parentRegion;
+        this.devices = this.room.devices;
+        this.favouriteDevices = this.room.favouriteDevices;
       }
     },
     async mounted() {
-      let roomId = this.$route.params.rid;
-
-      this.room = await Room.get(roomId);
-      this.region = this.room.parentRegion;
-      this.devices = this.room.devices;
-      this.favouriteDevices = this.room.favouriteDevices;
+      await this.LoadModel();
 
       this.breadcrumbsItems = [
         { to: "/regions", text: "Regions" },

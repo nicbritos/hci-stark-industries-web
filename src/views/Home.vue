@@ -31,6 +31,7 @@
 
         <DeviceContainer
           :room="true"
+
           :items="devices"
           v-on:favourited="processFavourited"
         ></DeviceContainer>
@@ -60,14 +61,13 @@ export default {
     };
   },
   methods:{
-    async reload(){
+     async reload(){
       console.log("LATEST EVENT SEND");
 
       console.log("'Bout to Update");
       await this.LoadModel();
       console.log("LATEST EVENT SEND");
 
-      this.$emit('reloadthings');
       console.log("LATEST EVENT SEND");
     },
 

@@ -6,12 +6,14 @@ const QUICK_ACTIONS = [
     deviceId: "li6cbv5sdlatti0j",
     quickAction: {
       description: "Turns ON or OFF the AC",
-      action: async function(deviceId, val) {
-        if (val) await apiWrapper.devices.performAction(deviceId, "turnOn");
-        else await apiWrapper.devices.performAction(deviceId, "turnOff");
+      action: async function(AC, val) {
+        if (val)
+          await AC.turnOn();
+        else
+          await AC.turnOff();
       },
       checkState: function(device) {
-        return device.state.status === "on";
+        return device.isOn;
       }
     }
   },
@@ -20,13 +22,13 @@ const QUICK_ACTIONS = [
     deviceId: "eu0v2xgprrhhg41g",
     quickAction: {
       description: "Opens or closes the curtains",
-      action: async function(deviceId, val) {
-        if (val) await apiWrapper.devices.performAction(deviceId, "open");
-        else await apiWrapper.devices.performAction(deviceId, "close");
+      action: async function(Curt, val) {
+        if (val) await Curt.open();
+        else await Curt.close();
       },
       checkState: function(device) {
         return (
-          device.state.status === "opened" || device.state.status === "opening"
+          device.isOpen
         );
       }
     }
@@ -41,18 +43,17 @@ const QUICK_ACTIONS = [
     deviceId: "lsf78ly0eqrjbz91",
     quickAction: {
       description: "Locks or Unlocks the door",
-      action: async function(deviceId, val) {
+      action: async function(door, val) {
         if (val) {
           console.log("Lock Door");
-          await apiWrapper.devices.performAction(deviceId, "lock");
+          await door.lock();
         } else {
           console.log("UnLock Door");
-          await apiWrapper.devices.performAction(deviceId, "unlock");
+          await door.unlock();
         }
       },
       checkState: function(device) {
-        console.log(device.state.lock);
-        return device.state.lock === "locked";
+        return device.isLocked;
       }
     }
   },
@@ -61,12 +62,14 @@ const QUICK_ACTIONS = [
     deviceId: "go46xmbqeomjrsjr",
     quickAction: {
       description: "Turns ON or OFF the lamp",
-      action: async function(deviceId, val) {
-        if (val) await apiWrapper.devices.performAction(deviceId, "turnOn");
-        else await apiWrapper.devices.performAction(deviceId, "turnOff");
+      action: async function(lamp, val) {
+        if (val)
+          await lamp.turnOn();
+        else
+          await lamp.turnOff();
       },
       checkState: function(device) {
-        return device.state.status === "on";
+        return device.isOn;
       }
     }
   },
@@ -75,12 +78,14 @@ const QUICK_ACTIONS = [
     deviceId: "im77xxyulpegfmv8",
     quickAction: {
       description: "Turns ON or OFF the oven",
-      action: async function(deviceId, val) {
-        if (val) await apiWrapper.devices.performAction(deviceId, "turnOn");
-        else await apiWrapper.devices.performAction(deviceId, "turnOff");
+      action: async function(oven, val) {
+        if (val)
+          await oven.turnOn();
+        else
+          await oven.turnOff();
       },
       checkState: function(device) {
-        return device.state.status === "on";
+        return device.isOn;
       }
     }
   },
@@ -89,12 +94,18 @@ const QUICK_ACTIONS = [
     deviceId: "c89b94e8581855bc",
     quickAction: {
       description: "Pauses or Resumes the music",
-      action: async function(deviceId, val) {
-        if (val) await apiWrapper.devices.performAction(deviceId, "resume");
-        else await apiWrapper.devices.performAction(deviceId, "pause");
+      action: async function(speaker, val) {
+        if (val) {
+          if (speaker.status === 'paused')
+            await speaker.resume();
+          else if (speaker.status === 'stopped')
+            await speaker.play();
+        }
+        else
+          await speaker.pause();
       },
       checkState: function(device) {
-        return device.state.status === "playing";
+        return device.status === "playing";
       }
     }
   }

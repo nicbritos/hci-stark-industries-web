@@ -10,6 +10,7 @@
         @click="processClick(item)"
         @favourited="processFavourited(item, $event)"
         v-on:reload="propagateReload"
+        v-on:reloadall="propagateReloadAll"
         :mode="mode"
         v-on:CloseMenu="CloseMenu"
       ></Device>
@@ -74,6 +75,10 @@ export default {
     propagateReload(ev){
       console.log("Propagating Reload Event");
       this.$emit('reload',ev);
+    },
+    propagateReloadAll(ev){
+      console.log("Propagating RELOADALL Event");
+      this.$emit('reloadall',ev);
     },
     processSelection(item, isSelected) {
       if (isSelected) this.selectedItems.push(item);
