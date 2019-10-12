@@ -38,7 +38,7 @@
 
         <v-list-group
           v-for="(item, i) in expandableItems"
-          :key="1 + i + items.length + item.items.length"
+          :key="800 + i + items.length + item.items.length"
           ripple
           :prepend-icon="item.icon"
           dense
@@ -53,7 +53,7 @@
           <v-divider v-if="item.expanded && item.items.length > 0"></v-divider>
           <v-list-item
             v-for="(expandableItem, j) in item.items"
-            :key="(1 + i) * j + items.length"
+            :key="500 +(1 + i) * j + items.length"
             router
             :to="expandableItem.to"
             exact
@@ -83,7 +83,7 @@
 
         <v-list-item
           v-for="(item, i) in items2"
-          :key="i"
+          :key="i*30 + 909090"
           router
           :to="item.to"
           exact

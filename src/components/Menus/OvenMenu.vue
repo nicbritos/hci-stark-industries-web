@@ -184,6 +184,7 @@ export default {
       this.$emit('CloseMenu', {
         confirmed: confirm,
         name: this.device.name,
+        deviceId: this.device.deviceId,
         id: this.device.id,
         customState: {
           isOn: this.isOn,
