@@ -104,8 +104,8 @@
     </v-card-text>
     <v-card-actions>
       <v-spacer></v-spacer>
-      <v-btn v-blur color="red" @click="Exit()">Cancel</v-btn>
-      <v-btn v-blur color="blue" :disabled="!modified" @click="SaveAndExit()"
+      <v-btn v-blur color="red" @click="Exit(false)">Cancel</v-btn>
+      <v-btn v-blur color="blue" :disabled="mode === 'edit' &&!modified" @click="SaveAndExit()"
         >SAVE</v-btn
       >
     </v-card-actions>
@@ -212,11 +212,12 @@ export default {
         await this.device.setFreezerTemperature(this.freezerTemperature);
       }
       this.$store.state.loading = false;
-      this.Exit();
+      this.Exit(true);
     },
-    Exit() {
+    Exit(confirm) {
       console.log("Sending Close Event from Fridge");
       this.$emit("CloseMenu", {
+        confirmed: confirm,
         name: this.device.name,
         id: this.device.id,
         customState: {

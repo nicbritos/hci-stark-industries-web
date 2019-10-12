@@ -49,8 +49,8 @@
     </v-card-text>
     <v-card-actions>
       <v-spacer></v-spacer>
-      <v-btn v-blur color="red" @click="Exit()">Cancel</v-btn>
-      <v-btn v-blur color="blue" :disabled="!modified" @click="SaveAndExit()">SAVE</v-btn>
+      <v-btn v-blur color="red" @click="Exit(false)">Cancel</v-btn>
+      <v-btn v-blur color="blue" :disabled="mode === 'edit' &&!modified" @click="SaveAndExit()">SAVE</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -140,12 +140,13 @@ export default {
       }
       this.$store.state.loading = false;
 
-      this.Exit();
+      this.Exit(true);
     },
-    Exit() {
+    Exit(confirm) {
       console.log("Sending Close Event from Lamp");
 
       this.$emit("CloseMenu", {
+        confirmed: confirm,
         name: this.device.name,
         id: this.device.id,
         customState: {

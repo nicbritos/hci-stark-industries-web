@@ -5,7 +5,7 @@
     :device="device"
     :show="show"
     @delete="ResendEvent('delete', $event)"
-    @CloseMenu="ResendEvent('close', $event)"
+    @CloseMenu="ResendEvent('CloseMenu', $event)"
   />
 
   <SpeakerMenu
@@ -14,7 +14,7 @@
     :device="device"
     :show="show"
     @delete="ResendEvent('delete', $event)"
-    @CloseMenu="ResendEvent('close', $event)"
+    @CloseMenu="ResendEvent('CloseMenu', $event)"
   />
 
   <CurtainsMenu
@@ -23,7 +23,7 @@
     :device="device"
     :show="show"
     @delete="ResendEvent('delete', $event)"
-    @CloseMenu="ResendEvent('close', $event)"
+    @CloseMenu="ResendEvent('CloseMenu', $event)"
   />
 
   <LampMenu
@@ -32,7 +32,7 @@
     :device="device"
     :show="show"
     @delete="ResendEvent('delete', $event)"
-    @CloseMenu="ResendEvent('close', $event)"
+    @CloseMenu="ResendEvent('CloseMenu', $event)"
   />
 
   <OvenMenu
@@ -41,7 +41,7 @@
     :device="device"
     :show="show"
     @delete="ResendEvent('delete', $event)"
-    @CloseMenu="ResendEvent('close', $event)"
+    @CloseMenu="ResendEvent('CloseMenu', $event)"
   />
 
   <ACMenu
@@ -50,7 +50,7 @@
     :device="device"
     :show="show"
     @delete="ResendEvent('delete', $event)"
-    @CloseMenu="ResendEvent('close', $event)"
+    @CloseMenu="ResendEvent('CloseMenu', $event)"
   />
 
   <DoorMenu
@@ -59,7 +59,7 @@
     :device="device"
     :show="show"
     @delete="ResendEvent('delete', $event)"
-    @CloseMenu="ResendEvent('close', $event)"
+    @CloseMenu="ResendEvent('CloseMenu', $event)"
   />
 </template>
 
@@ -110,6 +110,7 @@ export default {
         },
   methods: {
     ResendEvent(name, event) {
+      console.log("In Device Selector. Propagating event: " + name);
       this.$emit(name, event);
     }
   },

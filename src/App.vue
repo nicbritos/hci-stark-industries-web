@@ -116,7 +116,7 @@
         single-line
         class="ml-3"
         placeholder="Start typing to Search"
-        v-model="search"
+        v-model="this.Search"
         clearable
       ></v-text-field>
 
@@ -137,7 +137,7 @@
         </template>
 
         <v-list>
-          <v-list-item ripple @click="">
+          <v-list-item ripple >
             <v-icon v-html="'settings'" />
             <v-list-item-title v-text="'Configuración'" />
           </v-list-item>
@@ -170,6 +170,7 @@ export default {
   },
 
   data: () => ({
+    Search:"",
     fixed: false,
     errorModel:{
       message:"",
@@ -252,33 +253,11 @@ export default {
       }
     );
   },
-    logOut() {
-      // database.signOut().then(() => {
-      //   this.$router.push("/");
-      //   location.reload();
-      // });
-    },
+
     showLoader() {
       this.$store.state.loading = true;
     },
-    upOneLevel() {
-      if (
-        this.$router.currentRoute.path.match("/regions/") &&
-        this.$router.currentRoute.path.match("/room/")
-      ) {
-        this.$router.push("/regions");
-      } else {
-        let path = this.$router.currentRoute.path.substring(
-          0,
-          this.$router.currentRoute.path.lastIndexOf(
-            "/",
-            this.$router.currentRoute.path.length - 2
-          )
-        );
-        if (path.length > 0) this.$router.push(path);
-        else this.$router.push("/");
-      }
-    },
+
   errorCaptured(err, vm, info){
     console.log("HANDLING ERROR");
     console.log(err);
@@ -303,7 +282,31 @@ export default {
       this.errorModel.openDialog = false;
       this.errorModel.message = "";
       console.log("Closing Dialog")
-    }
+    },
+    upOneLevel() {
+      if (
+              this.$router.currentRoute.path.match("/regions/") &&
+              this.$router.currentRoute.path.match("/room/")
+      ) {
+        this.$router.push("/regions");
+      } else {
+        let path = this.$router.currentRoute.path.substring(
+                0,
+                this.$router.currentRoute.path.lastIndexOf(
+                        "/",
+                        this.$router.currentRoute.path.length - 2
+                )
+        );
+        if (path.length > 0) this.$router.push(path);
+        else this.$router.push("/");
+      }
+    },
+    logOut() {
+      // database.signOut().then(() => {
+      //   this.$router.push("/");
+      //   location.reload();
+      // });
+    },
   }
 
 };

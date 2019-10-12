@@ -1,11 +1,11 @@
 <template>
   <v-container>
-    <v-dialog v-model="menu" max-width="600px">
+    <v-dialog v-model="menu" persistent max-width="600px"  >
       <DeviceSelector
         :device="device"
         :show="menu"
-      :mode="mode"
-        v-on:CloseMenu="closeMenu()"
+        :mode="mode"
+        @close="closeMenu"
       ></DeviceSelector>
     </v-dialog>
 

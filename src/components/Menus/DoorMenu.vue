@@ -60,8 +60,8 @@
       </v-card-text>
       <v-card-actions class="justify-center">
         <div class="text-center">
-          <v-btn color="red" @click="Exit()">Cancel</v-btn>
-          <v-btn color="blue" :disabled="!modified" @click="SaveAndExit()">SAVE</v-btn>
+          <v-btn color="red" @click="Exit(false)">Cancel</v-btn>
+          <v-btn color="blue" :disabled="mode === 'edit' &&!modified" @click="SaveAndExit()">SAVE</v-btn>
         </div>
       </v-card-actions>
     </v-card>
@@ -229,11 +229,12 @@ export default {
         }
       }
 
-      this.Exit();
+      this.Exit(true);
     },
-    Exit() {
+    Exit(confirm) {
       console.log("Sending Close Event from Door")
       this.$emit('CloseMenu',{
+        confirmed: confirm,
         name: this.device.name,
         id: this.device.id,
         customState: this.State

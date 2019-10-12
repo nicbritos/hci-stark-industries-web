@@ -153,8 +153,8 @@
     </v-card-text>
     <v-card-actions class="justify-center">
       <div class="text-center">
-        <v-btn color="red" @click="Exit()">Cancel</v-btn>
-        <v-btn color="blue" @click="SaveAndExit()">SAVE</v-btn>
+        <v-btn color="red" @click="Exit(false)">Cancel</v-btn>
+        <v-btn color="blue" @click="Exit(true)">SAVE</v-btn>
       </div>
     </v-card-actions>
   </v-card>
@@ -209,9 +209,10 @@ export default {
     PreviousModel: undefined
   }),
   methods: {
-      Exit(){
+      Exit(confirm){
           console.log("Sending Close Event from Speaker")
           this.$emit('CloseMenu', {
+            confirmed: confirm,
             name: this.device.name,
             id: this.device.id,
             customState: this.SpeakerModel
