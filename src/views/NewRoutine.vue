@@ -231,7 +231,7 @@
 
               <v-row dense>
                 <v-col>
-                  <OrderedBoxContainer :items="selectedDevices">
+                  <OrderedBoxContainer :items="SelectedDevicesToShow">
                     <template v-slot:item="{ item }">
                       <Device
                         :room="true"
@@ -277,7 +277,7 @@
         >
         <v-btn
           :disabled="
-            data.stepper < 3 || data.error || selectedDevices.length === 0
+            data.stepper < 4 || data.error || selectedDevices.length === 0
           "
           color="blue darken-1"
           text
@@ -298,6 +298,8 @@ import Device from "@/components/individuals/Device";
 import CommonDeviceSchema from "../data/schemas/devices/CommonDeviceSchema";
 import DeviceSelector from "../components/containers/DeviceSelector";
 import RoutineHelper from "../data/RoutineHelper";
+import Routine from "../data/schemas/Routine";
+
 export default {
   name: "NewRoutine",
   components: { OrderedBoxContainer, DeviceContainer, Device,DeviceSelector },
@@ -316,6 +318,7 @@ export default {
       devices: [],
       selectedDevice: {},
       selectedDevices: [],
+      SelectedDevicesToShow: [],
       selectedDeviceConfiguration: {}
     };
   },
@@ -382,7 +385,9 @@ export default {
       console.log(result);
       if (result.confirmed) { // result
         console.log("Device added");
-        this.selectedDevices.push(this.selectedDevice);
+        console.log(result);
+        this.selectedDevices.push(result);
+        this.SelectedDevicesToShow.push(this.selectedDevice);
         this.closeDialog(this.dialogs.devices, "configure");
         this.closeDialog(this.dialogs.devices, "add");
       } else {
@@ -460,22 +465,29 @@ export default {
     onCancel() {
       this.$emit("cancel");
     },
-    onSave() {
+    async onSave() {
 
-      let actions = [];
+      console.log(this.selectedDevices);
+      let actions = this.selectedDevices.map(el=> {return RoutineHelper.GetActionsForDevice(el)}).flat(Infinity);
 
-      for (var dev in this.selectedDevices){
-        actions.push(RoutineHelper.GetActionsForDevice(dev));
-      }
+
+      console.log("ACCIONES TRANSFORMADAS")
+      console.log(actions);
 
       this.data.loading = true;
-      this.$emit("save",{
-        name: this.data.name,
-        meta:{
-          favourite: false
-        },
-        actions: actions
+
+      console.log("CREANDO RUTINA");
+      let temp = await Routine.create(this.data.name,this.data.description,actions);
+      console.log(temp);
+
+      this.data.loading = false;
+
+      console.log("GOING TO /ROUTINEs");
+      this.$router.push({
+        name:"routines"
       });
+
+
     }
   }
 };

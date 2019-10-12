@@ -28,16 +28,20 @@ export default class Routine extends CommonSchema {
 
   static async create(name, description, actions) {
     let meta = {
-      description: description
+      description: description,
+      favourite: false
     };
 
     let result = await CommonSchema._create(
       name,
       meta,
-      { actions: JSON.stringify(actions) },
+      { actions: actions },
       "routines",
       "routine"
     );
+
+    console.log("RESULT");
+    console.log(result);
 
     return new Routine(result.id, name, actions, meta);
   }

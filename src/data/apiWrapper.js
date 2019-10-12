@@ -421,6 +421,7 @@ export default {
         URLS.routines.create.method,
         data
       );
+      console.log(res.result);
       return res.result;
     },
     update: async (routineId, data) => {

@@ -11,10 +11,14 @@ export default class CommonSchema {
       meta: this._formatMeta(meta)
     };
     if (customData != null) {
-      output = Object.assign(output, customData);
-    }
 
-    return (await apiWrapper[type].create(output))[serverReturnTypeName];
+      output =  Object.assign(output, customData);
+    }
+    let temp =(await apiWrapper[type].create(output));
+    if(serverReturnTypeName != 'routine')
+      temp = temp[serverReturnTypeName];
+
+    return temp;
   }
 
   constructor(id, name, meta, type, serverReturnTypeName) {
