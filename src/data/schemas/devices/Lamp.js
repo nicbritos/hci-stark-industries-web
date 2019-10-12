@@ -50,6 +50,7 @@ export default class Lamp extends CommonDeviceSchema {
       blue: 0xff,
       green: 0xff
     };
+    this.color = "FFFFFF";
   }
 
   async turnOn() {
@@ -76,7 +77,7 @@ export default class Lamp extends CommonDeviceSchema {
     return !!result.result;
   }
 
-  async setColor(red, green, blue) {
+  /* async setColor(red, green, blue) {
     if (!this.meta.supportsColors) return false;
 
     if (
@@ -109,6 +110,23 @@ export default class Lamp extends CommonDeviceSchema {
       this.colors.green = green;
     }
     return !!result.result;
+  } */
+
+  async setColor(new_color) {
+    console.log(typeof new_color);
+    if (typeof new_color != "string")
+      throw new Error("Invalid argument. Color should be string");
+
+    if (this.color === new_color) return false;
+
+    let result = await apiWrapper.devices.performAction(
+      this.id,
+      ACTION_NAMES.setColor,
+      [new_color]
+    );
+
+    if (result.result) this.color = new_color;
+    return !!result.result;
   }
 
   async setBrightness(value) {
@@ -121,7 +139,7 @@ export default class Lamp extends CommonDeviceSchema {
 
     let result = await apiWrapper.devices.performAction(
       this.id,
-      ACTION_NAMES.setColor,
+      ACTION_NAMES.setBrightness,
         [value]
     );
 
