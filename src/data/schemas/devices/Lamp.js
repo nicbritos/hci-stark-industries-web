@@ -113,7 +113,7 @@ export default class Lamp extends CommonDeviceSchema {
   } */
 
   async setColor(new_color) {
-    console.log(typeof new_color);
+
     if (typeof new_color != "string")
       throw new Error("Invalid argument. Color should be string");
 

@@ -37,7 +37,7 @@ export default {
         let retURL = BASE_URL + element.images.find(img => {
             return img.action === action;
         }).path;
-        console.log(retURL);
+
         return retURL;
     }
 }

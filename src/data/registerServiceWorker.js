@@ -11,13 +11,13 @@ if (process.env.NODE_ENV === "production") {
       );
     },
     registered() {
-      console.log("El service worker ha sido registrado.");
+
     },
     cached() {
-      console.log("El contenido ha sido cacheado para uso offline.");
+
     },
     updatefound() {
-      console.log("Nuevo contenido está siendo descargado.");
+
     },
     updated() {
       console.log("Hay nuevo contenido disponible, por favor refresque.");

@@ -44,19 +44,20 @@ export default {
   },
   methods:{
     reloadSite(){
+      this.errorDialog = false
       location.reload();
-      errorDialog = false
+
     }
   },
   watch:{
     open:function (val) {
-      console.log("CAMBIANDO");
+
       this.errorDialog = val;
 
     },
     errorDialog: function (val) {
       if(!val){
-        console.log("Emiting Event:")
+
         this.$emit("CloseErrorDialog");
       }
     }

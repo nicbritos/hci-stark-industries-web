@@ -21,15 +21,14 @@
           <v-row align="center">
             <v-col>
               <v-row class=" mb-6 " justify="center" no-gutters>
-                <v-avatar size="100">
-                  <v-img :src="this.SecurityRepresentation.image" />
-                </v-avatar>
+                  <v-img max-height="70" max-width="70" contain  :src="this.SecurityRepresentation.image" />
               </v-row>
 
               <v-row class=" mb-6 " justify="center" no-gutters>
                 <v-img
                   max-width="100"
-                  max-height="300"
+                  height="190"
+                  contain
                   :src="this.StatusRepresentation.image"
                 />
               </v-row>
@@ -234,7 +233,7 @@ export default {
       this.Exit(true);
     },
     Exit(confirm) {
-      console.log("Sending Close Event from Door")
+
       this.$emit('CloseMenu',{
         confirmed: confirm,
         deviceId: this.device.deviceId,

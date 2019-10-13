@@ -123,9 +123,9 @@
     },
     methods: {
       async reload(ev){
-        console.log("Reloading Devices");
+
          this.reloadDevice(ev);
-        console.log("Reloading FAV devices");
+
          this.reloadFavDevice(ev);
       },
       async reloadFavDevice(ev){

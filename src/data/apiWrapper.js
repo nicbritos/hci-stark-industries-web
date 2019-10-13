@@ -186,15 +186,15 @@ async function requestQuery(url, method, data) {
     };
   }
 
-  console.log(init)
+
   try {
     response = await fetch(url, init);
   } catch (error) {
-    console.log('NETWORK ERROR TRHOWN');
+
     throw ERRORS.NETWORK;
   }
-  console.log(response)
-  console.log(response.responseText)
+
+
   if (!response.ok)
     throw ERRORS.BAD_REQUEST;
   return response.json();
@@ -275,10 +275,7 @@ export default {
       return response;
     },
     performAction: async (deviceId, actionName, params) => {
-      // TODO: UNDO
-      console.log(
-        `en perform action. URL: ${URLS.devices.action.url + "/" + actionName}`
-      );
+
       return await requestQuery(
         composeURL(URLS.devices.action.url, deviceId, actionName),
         URLS.devices.action.method,
@@ -286,7 +283,7 @@ export default {
       );
     },
     getState: async deviceId => {
-      console.log(`en getState URL: ${URLS.devices.state.url}`);
+
       return await requestQuery(
         composeURL(URLS.devices.state.url, deviceId, "state"),
         URLS.devices.state.method
@@ -422,7 +419,7 @@ export default {
         URLS.routines.create.method,
         data
       );
-      console.log(res.result);
+
       return res.result;
     },
     update: async (routineId, data) => {

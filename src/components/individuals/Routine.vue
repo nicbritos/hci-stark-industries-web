@@ -59,7 +59,7 @@ export default {
   }),
   methods: {
     async Execute() {
-      console.log("Executing Routine: " + this.routine.name);
+
       this.openSnackbar = true;
       await apiWrapper.routines.execute(this.routine.id);
 
@@ -83,18 +83,18 @@ export default {
 
       data.meta.favourite = !data.meta.favourite;
       this.routine.meta.favourite = data.meta.favourite;
-      console.log("FAV: dATA: ")
-      console.log(data);
 
-      console.log("Updating");
+
+
+
       await apiWrapper.routines.update(this.routine.id, data);
-      console.log("Forcing to reload site");
+
       this.$emit("reload-site");
     }
   },
   mounted() {
-    console.log("Cargando RUTINA");
-    console.log(this.routine);
+
+
   }
 };
 </script>

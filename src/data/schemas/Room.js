@@ -68,11 +68,11 @@ export default class Room extends CommonSchema {
   async createDevice(data) {
     let device = Object.assign({}, data);
     device.room = this;
-    console.log(device);
-    console.log("GETT INSTANCE");
+
+
 
     let deviceInstance = await DeviceCreator.create(device.device);
-    console.log(deviceInstance)
+
     await apiWrapper.devices.addToRoom(deviceInstance.id, this.id);
     this.devices.push(deviceInstance);
 
@@ -106,7 +106,7 @@ export default class Room extends CommonSchema {
 
     if (index === -1) return false;
     let favIndex = this.favouriteDevices.indexOf(device);
-    console.log("A eliminarlo posta");
+
     let result = await device.delete();
     if (result) {
       this.devices.splice(index, 1);
@@ -116,7 +116,7 @@ export default class Room extends CommonSchema {
       this.meta.count--;
       this._updateMeta(this.meta);
       this.refreshInformation();
-      console.log(this);
+
 
 
     }

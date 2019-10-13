@@ -157,7 +157,7 @@ export default {
     closeMenu(ev) {
 
       this.menu = false;
-      console.log("CLOSING MENUUU");
+
 
       this.$emit('CloseMenu',ev);
 
@@ -166,13 +166,13 @@ export default {
 
     },
     OpenMenu() {
-      console.log("OPENING MENU");
+
       this.openMenu = true;
-      console.log("LA PUTA QUE TE PARIO")
+
     },
     GetImage() {
-      console.log("Getting device for GETIMAGES");
-      console.log(this.device);
+
+
       switch (this.device.deviceId) {
         case "rnizejqr2di0okho": // FRIDGE
           return ImageRetriever.GetImages(
@@ -235,7 +235,7 @@ export default {
                     ImageRetriever.ACTIONS.OFF
             );
         case "lsf78ly0eqrjbz91": // DOOR
-          console.log(this.device.isLocked);
+
           if (this.device.isLocked)
             return ImageRetriever.GetImages(
                     this.device.deviceId,
@@ -251,14 +251,14 @@ export default {
     async LoadModel(){
       await this.device.refreshState();
 
-      console.log("LOADING: " + this.device.name);
+
       this.image = this.GetImage();
 
 
       this.hasAction = await QuickActionHelper.hasQuickAction(
               this.device.deviceId
       );
-      console.log("has action: " + this.hasAction);
+
 
       if (this.hasAction) {
         this.quickAction = await QuickActionHelper.getQuickAction(

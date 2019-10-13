@@ -76,7 +76,7 @@ export default class Fridge extends CommonDeviceSchema {
   }
 
   async setFreezerTemperature(value) {
-    console.log("Veo si es un numero: " + value);
+
     if (typeof value != "number")
       throw new Error(
         "Invalid argument. Freezer temperature should be of type numeric"
@@ -87,19 +87,19 @@ export default class Fridge extends CommonDeviceSchema {
       Fridge.minFreezerTemperature(),
       Fridge.maxFreezerTemperature()
     );
-    console.log("ajusto el numero: " + value);
+
 
     if (this.freezerTemperature === value) return false;
 
-    console.log("El numero es distinto que el valor anterior");
-    console.log("Hago la accion");
+
+
     let result = await apiWrapper.devices.performAction(
       this.id,
       ACTION_NAMES.setFreezerTemperature,
       [value]
     );
 
-    console.log("la accion fue : " + result.result);
+
 
     if (result.result) this.freezerTemperature = value;
 

@@ -256,17 +256,17 @@ export default {
     },
 
   errorCaptured(err, vm, info){
-    console.log("HANDLING ERROR");
-    console.log(err);
-    console.log(vm);
-    console.log(info);
+
+
+
+
 
     if(err === apiWrapper.ERRORS.NETWORK) {
-      console.log("NETWORK ERROR");
+
       this.OpenErrorDialog("Conecction Error. Please reload this website");
     }
     else if (err === apiWrapper.ERRORS.BAD_REQUEST){
-      console.log("BAD REQUEST");
+
       this.OpenErrorDialog("There was an error trying to reach the API. Please reload the website");
     }
     return false;
@@ -274,7 +274,7 @@ export default {
   methods:{
 
     applySearch(){
-      console.log("Going to Search");
+
       this.$router.push({
         name:"Search",
         params:{
@@ -314,12 +314,12 @@ export default {
     OpenErrorDialog(msg){
       this.errorModel.openDialog = true;
       this.errorModel.message = msg;
-      console.log("Opening dialog: " + this.errorModel.openDialog);
+
     },
     CloseErrorDialog(){
       this.errorModel.openDialog = false;
       this.errorModel.message = "";
-      console.log("Closing Dialog")
+
     },
     upOneLevel() {
       if (
