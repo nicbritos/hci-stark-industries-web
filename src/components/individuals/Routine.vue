@@ -67,13 +67,26 @@ export default {
     async UpdateFavoriteState() {
       let data = {
         name: this.routine.name,
-        actions: this.routine.actions,
+        actions: this.routine.actions.map(el=>{return{
+          actionName: el.actionName,
+          device:{
+            id: el.device.id,
+          },
+          params: el.params,
+          meta: el.meta,
+        } }),
         meta: this.routine.meta
       };
 
+
+
+
       data.meta.favourite = !data.meta.favourite;
       this.routine.meta.favourite = data.meta.favourite;
+      console.log("FAV: dATA: ")
+      console.log(data);
 
+      console.log("Updating");
       await apiWrapper.routines.update(this.routine.id, data);
       console.log("Forcing to reload site");
       this.$emit("reload-site");
