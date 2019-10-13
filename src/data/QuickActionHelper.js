@@ -122,9 +122,7 @@ export default {
       return new Error("Invalid Argument: deviceId is not valid");
 
 
-
-
-    return QUICK_ACTIONS[index] != null;
+    return ( QUICK_ACTIONS[index].quickAction != null);
   },
 
   getQuickAction(deviceTypeID) {

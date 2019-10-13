@@ -82,13 +82,13 @@ function getActionsDoor(device) {
     let id = device.id;
     let actions =[];
 
-    if(state.isOpen) {
+    if(state.open) {
         actions.push(getAction(id, 'unlock'));
         actions.push(getAction(id, 'open'));
     }
     else{
         actions.push(getAction(id,'close'));
-        if(state.isLocked)
+        if(state.locked)
             actions.push(getAction(id,'lock'));
         else
             actions.push(getAction(id,'unlock'));
@@ -102,6 +102,8 @@ function getActionsLamp(device) {
     let state = device.customState;
     let id = device.id;
     let actions =[];
+
+    console.log(state);
 
     if(state.isOn) {
         actions.push(getAction(id, 'turnOn'));

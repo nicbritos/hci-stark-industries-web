@@ -263,7 +263,7 @@ export default {
 
     if(err === apiWrapper.ERRORS.NETWORK) {
 
-      this.OpenErrorDialog("Conecction Error. Please reload this website");
+      this.OpenErrorDialog("Conection Error. Please reload this website");
     }
     else if (err === apiWrapper.ERRORS.BAD_REQUEST){
 

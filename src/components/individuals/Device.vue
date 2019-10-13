@@ -118,7 +118,7 @@ export default {
     image: "",
     fav: false,
     isOn: false,
-    hasAction: true,
+    hasAction: false,
     loadingFav: false,
     loadingToggle: false,
     quickAction: null
@@ -250,15 +250,10 @@ export default {
     },
     async LoadModel(){
       await this.device.refreshState();
-
-
       this.image = this.GetImage();
-
-
       this.hasAction = await QuickActionHelper.hasQuickAction(
               this.device.deviceId
       );
-
 
       if (this.hasAction) {
         this.quickAction = await QuickActionHelper.getQuickAction(
