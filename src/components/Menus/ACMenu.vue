@@ -21,7 +21,7 @@
           <v-switch v-model="isOn"></v-switch>
         </v-row>
         <span>Temperature</span>
-        <v-row justify="space-around" class="text-center">
+        <v-row justify="space-around" align="center" class="text-center">
           <v-btn
             icon
             class="justify-center col-md-1"
