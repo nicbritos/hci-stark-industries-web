@@ -137,12 +137,12 @@ export default {
     return QUICK_ACTIONS[index].quickAction;
   }
 
-  // getQuickActionState(deviceTypeID){
-  //     let index = QUICK_ACTIONS.findIndex(element =>{return element.deviceId === deviceTypeID;})
-  //     if(index === -1)
-  //         return new Error("Invalid Argument: deviceId is not valid");
-  //
-  //     return QUICK_ACTIONS[index].checkState;
-  //
-  // }
+
+
+
+
+
+
+
+
 };

@@ -196,16 +196,16 @@ export default {
     items2: [
       { icon: "help", title: "About", to: "/about" }
     ],
-    // expandableItems: [
-    //   {
-    //     icon: "devices",
-    //     title: "Devices",
-    //     expanded: false,
-    //     items: [
-    //       { icon: "add", title: "New Device", to: "/regions/new" }
-    //     ]
-    //   }
-    // ],
+
+
+
+
+
+
+
+
+
+
     title: "Stark Industries"
   }),
   computed: {
@@ -301,10 +301,10 @@ export default {
       }
     },
     logOut() {
-      // database.signOut().then(() => {
-      //   this.$router.push("/");
-      //   location.reload();
-      // });
+
+
+
+
     },
     ev(event){
       if(event.keyCode === 13){
@@ -340,10 +340,10 @@ export default {
       }
     },
     logOut() {
-      // database.signOut().then(() => {
-      //   this.$router.push("/");
-      //   location.reload();
-      // });
+
+
+
+
     },
   }
 
