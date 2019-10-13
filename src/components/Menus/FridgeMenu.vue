@@ -215,7 +215,7 @@ export default {
       this.Exit(true);
     },
     Exit(confirm) {
-      console.log("Sending Close Event from Fridge");
+
       this.$emit("CloseMenu", {
         confirmed: confirm,
         deviceId: this.device.deviceId,

@@ -167,8 +167,8 @@ function getActionsSpeaker(device) {
 };
 
 function getAction(deviceId,name,...param) {
-    console.log("deviceID: " + deviceId);
-    console.log("name: " + name);
+
+
     let temp = {
         device: {
             id: deviceId

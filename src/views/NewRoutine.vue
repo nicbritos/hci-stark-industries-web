@@ -60,34 +60,34 @@
                     v-on:CloseMenu="configureDeviceClose"
             ></DeviceSelector>
 
-<!--          <Device-->
-<!--                  :editable="true"-->
-<!--                  :selectable="false"-->
-<!--                  :room="true"-->
-<!--                  :device="this.selectedDevice"-->
-<!--                  mode="routine"-->
-<!--                  v-on:CloseMenu="configureDeviceClose"-->
-<!--          ></Device>-->
+
+
+
+
+
+
+
+
           </v-container>
         </v-card-text>
 
-<!--        <v-card-actions>-->
-<!--          <v-spacer></v-spacer>-->
-<!--          <v-btn-->
-<!--            color="blue darken-1"-->
-<!--            text-->
-<!--            @click="configureDeviceClose(false)"-->
-<!--            v-blur-->
-<!--            >Cancel</v-btn-->
-<!--          >-->
-<!--          <v-btn-->
-<!--            color="blue darken-1"-->
-<!--            text-->
-<!--            @click="configureDeviceClose(true)"-->
-<!--            v-blur-->
-<!--            >Save</v-btn-->
-<!--          >-->
-<!--        </v-card-actions>-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       </v-card>
     </v-dialog>
 
@@ -355,10 +355,10 @@ export default {
   },
   methods: {
     AddDeviceToList(ev){
-      console.log("Adding device to list");
+
       this.selectedDevices.push(ev);
       this.addDeviceClose(null);
-      console.log(this.selectedDevices);
+
 
     },
     addDeviceOpen() {
@@ -367,10 +367,10 @@ export default {
     addDeviceClose(item) {
       // Save to DB
       if (item != null) {
-        console.log("Opening Configure Device")
+
         this.configureDeviceOpen();
         this.selectedDevice = item;
-        console.log(this.selectedDevice);
+
       } else {
         this.closeDialog(this.dialogs.devices, "add");
       }
@@ -381,21 +381,21 @@ export default {
     },
     configureDeviceClose(result) {
       // Save to DB
-      console.log("CONFIGURE DEVICES CLOSE");
-      console.log(result);
+
+
       if (result.confirmed) { // result
-        console.log("Device added");
-        console.log(result);
+
+
         this.selectedDevices.push(result);
         this.SelectedDevicesToShow.push(this.selectedDevice);
         this.closeDialog(this.dialogs.devices, "configure");
         this.closeDialog(this.dialogs.devices, "add");
       } else {
-        console.log("Device not added");
+
         this.closeDialog(this.dialogs.devices, "configure");
       }
-      console.log("Devices Selected: " + this.selectedDevices.length);
-      console.log("Errors: " + this.data.error)
+
+
     },
 
     openDialog(item, type) {
@@ -404,7 +404,7 @@ export default {
       if (!item[type])
         item[type] = true;
 
-      console.log("HOLA");
+
     },
     closeDialog(item, type) {
       if (item == null || type == null || item[type] == null) return;
@@ -467,22 +467,22 @@ export default {
     },
     async onSave() {
 
-      console.log(this.selectedDevices);
+
       let actions = this.selectedDevices.map(el=> {return RoutineHelper.GetActionsForDevice(el)}).flat(Infinity);
 
 
-      console.log("ACCIONES TRANSFORMADAS")
-      console.log(actions);
+
+
 
       this.data.loading = true;
 
-      console.log("CREANDO RUTINA");
+
       let temp = await Routine.create(this.data.name,this.data.description,actions);
-      console.log(temp);
+
 
       this.data.loading = false;
 
-      console.log("GOING TO /ROUTINEs");
+
       this.$router.push({
         name:"routines"
       });

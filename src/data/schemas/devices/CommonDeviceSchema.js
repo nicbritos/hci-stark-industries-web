@@ -68,12 +68,12 @@ export default class CommonDeviceSchema extends CommonSchema {
   }
 
   async _getState() {
-    console.log("En GetState, Por hacer performAction");
+
     let result = await apiWrapper.devices.getState(this.id);
 
-    console.log(result);
 
-    console.log("Saliendo de GET state");
+
+
 
     return result.result;
   }

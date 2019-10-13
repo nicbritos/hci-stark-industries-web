@@ -19,7 +19,7 @@ export default {
   },
   methods:{
     propagateReload(){
-      console.log("Propagating");
+
       this.$emit('reload')
     }
   }

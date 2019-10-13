@@ -36,50 +36,50 @@
           <v-spacer />
         </v-list-item>
 
-<!--        <v-list-group-->
-<!--          v-for="(item, i) in expandableItems"-->
-<!--          :key="800 + i + items.length + item.items.length"-->
-<!--          ripple-->
-<!--          :prepend-icon="item.icon"-->
-<!--          dense-->
-<!--          v-model="item.expanded"-->
-<!--        >-->
-<!--          <template v-slot:activator>-->
-<!--            <v-list-item-content>-->
-<!--              <v-list-item-title v-text="item.title" />-->
-<!--            </v-list-item-content>-->
-<!--          </template>-->
 
-<!--          <v-divider v-if="item.expanded && item.items.length > 0"></v-divider>-->
-<!--          <v-list-item-->
-<!--            v-for="(expandableItem, j) in item.items"-->
-<!--            :key="500 +(1 + i) * j + items.length"-->
-<!--            router-->
-<!--            :to="expandableItem.to"-->
-<!--            exact-->
-<!--            ripple-->
-<!--            class="inner-drawer"-->
-<!--          >-->
-<!--            <v-list-item-action>-->
-<!--              <v-icon-->
-<!--                v-html="expandableItem.icon"-->
-<!--                v-if="expandableItem.icon !== undefined"-->
-<!--              />-->
-<!--              <v-icon>-->
-<!--                <v-img-->
-<!--                  :src="expandableItem.image"-->
-<!--                  v-if="expandableItem.image !== undefined"-->
-<!--                ></v-img>-->
-<!--              </v-icon>-->
-<!--            </v-list-item-action>-->
-<!--            <v-list-item-content>-->
-<!--              <v-list-item-title v-text="expandableItem.title" />-->
-<!--            </v-list-item-content>-->
-<!--            <v-spacer />-->
-<!--          </v-list-item>-->
 
-<!--          <v-divider v-if="item.expanded && item.items.length > 0"></v-divider>-->
-<!--        </v-list-group>-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         <v-list-item
           v-for="(item, i) in items2"
@@ -196,16 +196,16 @@ export default {
     items2: [
       { icon: "help", title: "About", to: "/about" }
     ],
-    // expandableItems: [
-    //   {
-    //     icon: "devices",
-    //     title: "Devices",
-    //     expanded: false,
-    //     items: [
-    //       { icon: "add", title: "New Device", to: "/regions/new" }
-    //     ]
-    //   }
-    // ],
+
+
+
+
+
+
+
+
+
+
     title: "Stark Industries"
   }),
   computed: {
@@ -256,17 +256,17 @@ export default {
     },
 
   errorCaptured(err, vm, info){
-    console.log("HANDLING ERROR");
-    console.log(err);
-    console.log(vm);
-    console.log(info);
+
+
+
+
 
     if(err === apiWrapper.ERRORS.NETWORK) {
-      console.log("NETWORK ERROR");
+
       this.OpenErrorDialog("Conecction Error. Please reload this website");
     }
     else if (err === apiWrapper.ERRORS.BAD_REQUEST){
-      console.log("BAD REQUEST");
+
       this.OpenErrorDialog("There was an error trying to reach the API. Please reload the website");
     }
     return false;
@@ -274,7 +274,7 @@ export default {
   methods:{
 
     applySearch(){
-      console.log("Going to Search");
+
       this.$router.push({
         name:"Search",
         params:{
@@ -301,10 +301,10 @@ export default {
       }
     },
     logOut() {
-      // database.signOut().then(() => {
-      //   this.$router.push("/");
-      //   location.reload();
-      // });
+
+
+
+
     },
     ev(event){
       if(event.keyCode === 13){
@@ -314,12 +314,12 @@ export default {
     OpenErrorDialog(msg){
       this.errorModel.openDialog = true;
       this.errorModel.message = msg;
-      console.log("Opening dialog: " + this.errorModel.openDialog);
+
     },
     CloseErrorDialog(){
       this.errorModel.openDialog = false;
       this.errorModel.message = "";
-      console.log("Closing Dialog")
+
     },
     upOneLevel() {
       if (
@@ -340,10 +340,10 @@ export default {
       }
     },
     logOut() {
-      // database.signOut().then(() => {
-      //   this.$router.push("/");
-      //   location.reload();
-      // });
+
+
+
+
     },
   }
 

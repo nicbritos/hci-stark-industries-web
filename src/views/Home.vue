@@ -31,7 +31,7 @@
 
         <DeviceContainer
           :room="true"
-
+          @reloadall="reload"
           :items="devices"
           v-on:favourited="processFavourited"
         ></DeviceContainer>
@@ -62,13 +62,13 @@ export default {
   },
   methods:{
      async reload(){
-      console.log("LATEST EVENT SEND");
 
-      console.log("'Bout to Update");
+
+
       await this.LoadModel();
-      console.log("LATEST EVENT SEND");
 
-      console.log("LATEST EVENT SEND");
+
+
     },
 
     processFavourited(item, value) {
@@ -83,7 +83,7 @@ export default {
         this.devices = (await CommonDeviceSchema.getAll()).filter(device => {
       return device.isFavourite();
     });
-    console.log(this.devices);
+
     this.routines = (await RoutineSchema.getAll()).filter(routine => {
       return routine.isFavourite();
     });

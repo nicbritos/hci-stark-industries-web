@@ -114,8 +114,8 @@ export default {
       }
     },
     async resetData() {
-      console.log(this.color);
-      console.log(this.device.color);
+
+
       var hash = "#";
       var trasparency = "FF";
       if (this.device != null) {
@@ -142,7 +142,7 @@ export default {
       this.Exit(true);
     },
     Exit(confirm) {
-      console.log("Sending Close Event from Lamp");
+
 
       this.$emit("CloseMenu", {
         confirmed: confirm,

@@ -59,7 +59,7 @@ export default {
   }),
   methods: {
     async Execute() {
-      console.log("Executing Routine: " + this.routine.name);
+
       this.openSnackbar = true;
       await apiWrapper.routines.execute(this.routine.id);
 
@@ -67,21 +67,34 @@ export default {
     async UpdateFavoriteState() {
       let data = {
         name: this.routine.name,
-        actions: this.routine.actions,
+        actions: this.routine.actions.map(el=>{return{
+          actionName: el.actionName,
+          device:{
+            id: el.device.id,
+          },
+          params: el.params,
+          meta: el.meta,
+        } }),
         meta: this.routine.meta
       };
+
+
+
 
       data.meta.favourite = !data.meta.favourite;
       this.routine.meta.favourite = data.meta.favourite;
 
+
+
+
       await apiWrapper.routines.update(this.routine.id, data);
-      console.log("Forcing to reload site");
+
       this.$emit("reload-site");
     }
   },
   mounted() {
-    console.log("Cargando RUTINA");
-    console.log(this.routine);
+
+
   }
 };
 </script>

@@ -131,7 +131,7 @@ export default class Oven extends CommonDeviceSchema {
   }
 
   async turnOn() {
-    console.log("en turnOn(), el horno está On:" + this.isOn ) ;
+
     if (this.isOn) return false;
 
     let result = await apiWrapper.devices.performAction(

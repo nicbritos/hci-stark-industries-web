@@ -101,21 +101,21 @@ export default {
   },
 		watch: {
           openMenu: function (val) {
-            console.log("opening Device Selector");
+
             this.superOpen = val;
-            console.log("Selected device: " + this.device.name);
-            console.log(this.device);
-            console.log("STate: " + val);
+
+
+
           }
         },
   methods: {
     ResendEvent(name, event) {
-      console.log("In Device Selector. Propagating event: " + name);
+
       this.$emit(name, event);
     }
   },
   mounted() {
-    console.log(this.device);
+
   }
 };
 </script>

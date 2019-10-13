@@ -105,7 +105,7 @@ export default {
     resetData() {
       this.newItem = Object.assign({}, this.defaultNewItem);
       if (this.room) {
-        console.log(this.room)
+
         this.newItem.name = this.room.name;
       }
     },

@@ -46,11 +46,11 @@ const QUICK_ACTIONS = [
       action: async function(door, val) {
         if (val  ) {
           if(!door.isOpen) {
-            console.log("Lock Door");
+
             await door.lock();
           }
         } else {
-          console.log("UnLock Door");
+
           await door.unlock();
         }
       },
@@ -121,8 +121,8 @@ export default {
     if (index === -1)
       return new Error("Invalid Argument: deviceId is not valid");
 
-    console.log("Elemtn");
-    console.log(QUICK_ACTIONS[index]);
+
+
 
     return QUICK_ACTIONS[index] != null;
   },
@@ -137,12 +137,12 @@ export default {
     return QUICK_ACTIONS[index].quickAction;
   }
 
-  // getQuickActionState(deviceTypeID){
-  //     let index = QUICK_ACTIONS.findIndex(element =>{return element.deviceId === deviceTypeID;})
-  //     if(index === -1)
-  //         return new Error("Invalid Argument: deviceId is not valid");
-  //
-  //     return QUICK_ACTIONS[index].checkState;
-  //
-  // }
+
+
+
+
+
+
+
+
 };

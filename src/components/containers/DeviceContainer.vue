@@ -67,17 +67,17 @@ export default {
   methods: {
     CloseMenu(ev) {
       this.openMenu = false;
-      console.log("CLOSING MENUUU");
-      console.log(ev);
+
+
       this.$emit('CloseMenu',ev);
 
     },
     propagateReload(ev){
-      console.log("Propagating Reload Event");
+
       this.$emit('reload',ev);
     },
     propagateReloadAll(ev){
-      console.log("Propagating RELOADALL Event");
+
       this.$emit('reloadall',ev);
     },
     processSelection(item, isSelected) {
@@ -86,7 +86,7 @@ export default {
     },
     processClick(item) {
       if (this.pick) this.$emit("pick", item);
-      else console.log("Open its menu");
+
     },
     processFavourited(item, newValue) {
       this.$emit("favourited", item, newValue);

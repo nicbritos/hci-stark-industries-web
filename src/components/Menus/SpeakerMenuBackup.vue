@@ -210,7 +210,7 @@ export default {
   }),
   methods: {
       Exit(confirm){
-          console.log("Sending Close Event from Speaker")
+
           this.$emit('CloseMenu', {
             confirmed: confirm,
             deviceId: this.device.deviceId,
@@ -378,7 +378,7 @@ export default {
         if (this.SpeakerModel.isSongLoaded) {
           if (this.SpeakerModel.currentSong.isPlaying) {
             this.SpeakerModel.currentSong.timemark++;
-            console.log("aumento el timer");
+
 
             this.SpeakerModel.currentSong.progress =
               100 *
@@ -389,7 +389,7 @@ export default {
               this.SpeakerModel.currentSong.timemark >=
               this.SpeakerModel.currentSong.duration
             ) {
-              console.log("NOOOOOOOOO");
+
               this.nextSong();
             }
           }
@@ -417,7 +417,7 @@ export default {
   watch: {
     SelectedVolume: function(val) {
       if (val === this.SpeakerModel.volume) return;
-      console.log("Detecting new volume: " + val);
+
       this.acknowledgeVolumenChange();
     },
     show: function(val) {

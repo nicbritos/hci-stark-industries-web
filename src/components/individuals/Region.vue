@@ -101,8 +101,8 @@ export default {
   },
   computed: {
     roomQuantityString() {
-      console.log("In Region");
-      console.log(this.region.rooms);
+
+
       return (
         (this.region.rooms.length === 0 ? "No" : this.region.rooms.length) +
         (this.region.rooms.length === 1 ? " room" : " rooms")

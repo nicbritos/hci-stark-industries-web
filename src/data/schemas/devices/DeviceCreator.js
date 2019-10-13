@@ -10,7 +10,7 @@ import Oven from "./Oven";
 export default {
   async create(device) {
     let type = DeviceIds.byId[device.id];
-    console.log(type);
+
     switch (type) {
       case "Air Conditioner":
         return AC.create(device.name, device.room);
