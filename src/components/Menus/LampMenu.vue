@@ -28,7 +28,7 @@
             <v-slider
               v-model="brightness"
               prepend-icon="lightbulb"
-              append-icon="lightbulb"
+              append-icon="mdi-lightbulb-on"
               :disabled="!isOn" 
             ></v-slider>
           </v-col>
@@ -56,9 +56,11 @@
   </v-card>
 </template>
 
+
 <script>
 import Lamp from "../../data/schemas/devices/Lamp";
 import DeleteDialog from "../info_dialogs/DeleteDialog";
+
 
 export default {
   name: "LampMenu",
